@@ -1,22 +1,23 @@
 /* =========================================================
-   محطة كنعان للحروف — نظام بصري هادئ
-   - ألوان قليلة دافئة (مستوحاة من الصورة الرئيسية)
+   محطة كنعان للحروف — نظام بصري هادئ بهوية فلسطينية
+   - حجر القدس خلفيةً، وألوان العلم تظهر كما في غرز التطريز (لا رموز مكررة)
+   - التطريز زخرفة ثابتة في مواضع محددة: الشريط العلوي، العناوين، النوافذ، ورقة الرسالة
    - شاشة واحدة = مهمة واحدة = تركيز واحد
    - الحركة فقط للكشف/الانتقال/التغذية الراجعة/توجيه الانتباه
    ========================================================= */
 :root {
-  --bg: #FBF4E6;
+  --bg: #F5EDDD;          /* حجر القدس */
   --surface: #FFFDF8;
   --ink: #2B2118;
   --ink-soft: #5E4D3D;
-  --line: #E6D7BD;
+  --line: #E2D2B4;
   --amber: #F5A623;
   --amber-soft: #FFF0D2;
   --amber-deep: #9A5B00;
-  --studio: #3D4066;      /* جدار الاستوديو */
+  --studio: #1F4E35;      /* أخضر الزيتون الداكن: العناوين والحروف */
   --wood: #6B4226;        /* خشب الراديو */
   --wave: #FFC857;
-  --olive: #3F6B2A;       /* نجاح */
+  --olive: #3C7A2A;       /* نجاح */
   --olive-soft: #E7F0DC;
   --clay: #A4432A;        /* إيقاف/تسجيل */
   --focus: #2F5DCC;
@@ -24,6 +25,13 @@
   --font-ui: "Baloo Bhaijaan 2", "Tahoma", "Segoe UI", sans-serif;
   --font-letter: "Noto Naskh Arabic", "Amiri", "Traditional Arabic", serif; /* خط النسخ: شكل الحرف كما في الكتاب المدرسي */
   --host-space: 132px;
+  /* الهوية الفلسطينية: ألوان العلم كما تظهر في غرز التطريز، على حجر القدس */
+  --pal-red: #A3161E;
+  --pal-green: #1E6B3C;
+  --pal-black: #1C1C1C;
+  --tatreez-band: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='14'><rect width='22' height='14' fill='%23F7F0E1'/><rect x='6' y='2' width='2' height='2' fill='%23A3161E'/><rect x='4' y='4' width='2' height='2' fill='%23A3161E'/><rect x='6' y='4' width='2' height='2' fill='%231E6B3C'/><rect x='8' y='4' width='2' height='2' fill='%23A3161E'/><rect x='16' y='4' width='2' height='2' fill='%231E6B3C'/><rect x='2' y='6' width='2' height='2' fill='%23A3161E'/><rect x='4' y='6' width='2' height='2' fill='%231E6B3C'/><rect x='6' y='6' width='2' height='2' fill='%231C1C1C'/><rect x='8' y='6' width='2' height='2' fill='%231E6B3C'/><rect x='10' y='6' width='2' height='2' fill='%23A3161E'/><rect x='14' y='6' width='2' height='2' fill='%231E6B3C'/><rect x='16' y='6' width='2' height='2' fill='%231E6B3C'/><rect x='18' y='6' width='2' height='2' fill='%231E6B3C'/><rect x='4' y='8' width='2' height='2' fill='%23A3161E'/><rect x='6' y='8' width='2' height='2' fill='%231E6B3C'/><rect x='8' y='8' width='2' height='2' fill='%23A3161E'/><rect x='16' y='8' width='2' height='2' fill='%231E6B3C'/><rect x='6' y='10' width='2' height='2' fill='%23A3161E'/></svg>");
+  --tatreez-divider: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='51' height='15'><rect x='6' y='0' width='3' height='3' fill='%23A3161E'/><rect x='24' y='0' width='3' height='3' fill='%23A3161E'/><rect x='42' y='0' width='3' height='3' fill='%23A3161E'/><rect x='3' y='3' width='3' height='3' fill='%23A3161E'/><rect x='6' y='3' width='3' height='3' fill='%231E6B3C'/><rect x='9' y='3' width='3' height='3' fill='%23A3161E'/><rect x='21' y='3' width='3' height='3' fill='%23A3161E'/><rect x='24' y='3' width='3' height='3' fill='%231C1C1C'/><rect x='27' y='3' width='3' height='3' fill='%23A3161E'/><rect x='39' y='3' width='3' height='3' fill='%23A3161E'/><rect x='42' y='3' width='3' height='3' fill='%231E6B3C'/><rect x='45' y='3' width='3' height='3' fill='%23A3161E'/><rect x='0' y='6' width='3' height='3' fill='%23A3161E'/><rect x='3' y='6' width='3' height='3' fill='%231E6B3C'/><rect x='6' y='6' width='3' height='3' fill='%231C1C1C'/><rect x='9' y='6' width='3' height='3' fill='%231E6B3C'/><rect x='12' y='6' width='3' height='3' fill='%23A3161E'/><rect x='18' y='6' width='3' height='3' fill='%23A3161E'/><rect x='21' y='6' width='3' height='3' fill='%231C1C1C'/><rect x='24' y='6' width='3' height='3' fill='%231E6B3C'/><rect x='27' y='6' width='3' height='3' fill='%231C1C1C'/><rect x='30' y='6' width='3' height='3' fill='%23A3161E'/><rect x='36' y='6' width='3' height='3' fill='%23A3161E'/><rect x='39' y='6' width='3' height='3' fill='%231E6B3C'/><rect x='42' y='6' width='3' height='3' fill='%231C1C1C'/><rect x='45' y='6' width='3' height='3' fill='%231E6B3C'/><rect x='48' y='6' width='3' height='3' fill='%23A3161E'/><rect x='3' y='9' width='3' height='3' fill='%23A3161E'/><rect x='6' y='9' width='3' height='3' fill='%231E6B3C'/><rect x='9' y='9' width='3' height='3' fill='%23A3161E'/><rect x='21' y='9' width='3' height='3' fill='%23A3161E'/><rect x='24' y='9' width='3' height='3' fill='%231C1C1C'/><rect x='27' y='9' width='3' height='3' fill='%23A3161E'/><rect x='39' y='9' width='3' height='3' fill='%23A3161E'/><rect x='42' y='9' width='3' height='3' fill='%231E6B3C'/><rect x='45' y='9' width='3' height='3' fill='%23A3161E'/><rect x='6' y='12' width='3' height='3' fill='%23A3161E'/><rect x='24' y='12' width='3' height='3' fill='%23A3161E'/><rect x='42' y='12' width='3' height='3' fill='%23A3161E'/></svg>");
+  --stone-wall: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='120'><g fill='none' stroke='%238A6F45' stroke-opacity='.045' stroke-width='2'><path d='M0 1H240M0 61H240M120 1V61M0 61V120M240 61V120M60 61V120M180 61V120'/></g></svg>");
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -31,7 +39,7 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--bg);
+  background: var(--stone-wall) 0 0 / 240px 120px repeat, var(--bg);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 1.2rem;
@@ -54,9 +62,15 @@ button { font: inherit; color: inherit; }
   position: sticky; top: 0; z-index: 10;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 10px 20px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+/* شريط تطريز تحت شريط المحطة */
+.station-bar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -14px; height: 14px;
+  background: var(--tatreez-band) 0 0 / 22px 14px repeat-x;
+  border-block: 1px solid #D9C7A3;
 }
 .station-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--studio); white-space: nowrap; }
 .brand-icon { font-size: 1.5rem; }
@@ -94,6 +108,8 @@ button { font: inherit; color: inherit; }
 .screen-enter { animation: enter .45s ease-out both; }
 @keyframes enter { from { opacity: 0; transform: translateY(14px); } }
 .screen-title { margin: 0; font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; color: var(--studio); outline: none; }
+/* فاصل مطرّز صغير تحت كل عنوان */
+.screen-title::after { content: ""; display: block; width: 51px; height: 15px; margin: 6px auto 0; background: var(--tatreez-divider) center / contain no-repeat; }
 .instruction, .question-text { margin: 0; font-size: 1.35rem; font-weight: 700; }
 .footnote { margin: 0; font-size: .9rem; color: var(--ink-soft); }
 .row { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -138,7 +154,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- الشاشة ١: الاستوديو الحيّ ---------- */
 body[data-screen="welcome"] .stage { padding: 0 0 16px; }
-body[data-screen="welcome"] { background: #2A2433; }
+body[data-screen="welcome"] { background: var(--tatreez-band) bottom / 22px 14px repeat-x, #1E1611; }
 .screen--welcome { max-width: none; gap: 0; }
 .studio { width: 100%; display: flex; flex-direction: column; align-items: center; }
 .st-frame { position: relative; overflow: hidden; margin: 0 auto; }
@@ -359,7 +375,7 @@ body[data-screen="welcome"] { background: #2A2433; }
   background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius); box-shadow: 0 4px 0 var(--line);
 }
 .sound-card:hover { border-color: var(--studio); }
-.sound-card.is-picked { border-color: var(--studio); background: #EEF0FA; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
+.sound-card.is-picked { border-color: var(--studio); background: #E5EFE6; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
 .sound-bars { display: flex; align-items: center; gap: 4px; height: 40px; }
 .sound-bars i { width: 7px; height: 40%; border-radius: 4px; background: var(--studio); }
 .sound-bars i:nth-child(2), .sound-bars i:nth-child(4) { height: 70%; }
@@ -490,7 +506,7 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
   background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius);
 }
 .channel:hover { border-color: var(--studio); }
-.channel.is-tuned { border-color: var(--studio); background: #EEF0FA; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
+.channel.is-tuned { border-color: var(--studio); background: #E5EFE6; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
 .channel-num { font-weight: 700; color: var(--studio); }
 .channel-word { font-family: var(--font-letter); font-size: 2.3rem; font-weight: 700; line-height: 1.3; }
 .channel.is-revealed .channel-word { animation: enter .35s ease-out both; }
@@ -548,13 +564,14 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 .station.is-new { animation: lightUp 1.4s ease-out both; }
 @keyframes lightUp { 0% { color: #8C7A5E; text-shadow: none; transform: scale(.8); } 60% { transform: scale(1.25); } }
 .dial-now { margin: 0; font-weight: 700; color: var(--ink-soft); min-height: 1.6em; }
-.dial-dialog { border: 0; border-radius: 28px; padding: 24px; width: min(680px, calc(100vw - 32px)); background: var(--bg); color: var(--ink); text-align: center; }
+.dial-dialog { border: 0; border-radius: 28px; padding: 36px 24px 24px; width: min(680px, calc(100vw - 32px)); background: var(--tatreez-band) 0 0 / 22px 14px repeat-x, var(--bg); color: var(--ink); text-align: center; }
 .dial-dialog::backdrop { background: rgba(43,33,24,.45); }
 .dial-dialog form { margin-top: 14px; }
 .dial-dialog .dial { margin: 12px auto 0; }
 
 /* ---------- الرسالة الغامضة ---------- */
-.message-paper {
+.message-paper::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--tatreez-band) 0 0 / 22px 14px repeat-x; }
+.message-paper { position: relative; overflow: hidden; padding-top: 34px !important;
   width: min(100%, 640px); padding: 22px 26px; border-radius: 6px 26px 6px 26px;
   background: #FFFBF1; border: 2px solid var(--line); box-shadow: 0 10px 28px rgba(61,64,102,.12);
   background-image: repeating-linear-gradient(180deg, transparent 0 63px, #EFE3CB 63px 64px);
@@ -584,7 +601,7 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 .mission-card p { margin: 0; font-weight: 700; }
 .mission-letter {
   flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%;
-  background: #EEF0FA; font-family: var(--font-letter); font-size: 2.2rem; font-weight: 700; color: var(--studio); line-height: 1;
+  background: #E5EFE6; font-family: var(--font-letter); font-size: 2.2rem; font-weight: 700; color: var(--studio); line-height: 1;
 }
 .next-block { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 
