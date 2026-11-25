@@ -8,10 +8,10 @@
   const stageEl = document.getElementById('stage');
   const bar = document.getElementById('station-bar');
 
-  let ep = null, index = 0, active = null, token = 0;
+  let ep = null, flow = [], index = 0, active = null, token = 0, missionEp = null, reviewEp = null;
 
   function show(i) {
-    const id = ep.flow[i];
+    const id = flow[i];
     const def = UI.screens[id];
     if (!def) { console.error('[Kanaan] شاشة غير معروفة:', id); return; }
 
@@ -23,16 +23,18 @@
 
     const ctx = {
       ep,
-      next: () => { if (my === token && index + 1 < ep.flow.length) { Sound.sfx('whoosh'); show(index + 1); } },
+      next: () => { if (my === token && index + 1 < flow.length) { Sound.sfx('whoosh'); show(index + 1); } },
       restart: () => startEpisode(ep.id),
       goEpisode: (id) => startEpisode(id),
-      alive: () => my === token
+      alive: () => my === token,
+      missionEp,
+      reviewEp
     };
     active = def.render(ctx);
 
     bar.hidden = id === 'welcome';
     document.body.dataset.screen = id;
-    if (def.stage || id === 'success') UI.renderJourney(def.stage, Progress.stagesDone(ep.id));
+    if (id !== 'welcome') UI.renderJourney(def.stage, Progress.stagesDone(ep.id));
 
     active.node.classList.add('screen-enter');
     stageEl.replaceChildren(active.node);
@@ -50,6 +52,16 @@
     document.getElementById('episode-chip').textContent =
       `📬 الرسالة ${UI.digits(all.indexOf(ep) + 1)} من ${UI.digits(all.length)}`;
     Progress.start(ep.id);
+
+    /* شاشات التهيئة في بداية الحلقة (فقط عند وجود حروف سابقة):
+       تقرير المهمة — عن آخر حرف أُعطيت مهمته في جلسة سابقة
+       رسالة من الأرشيف — حرف أقدم لم يُراجَع منذ مدة (مراجعة متباعدة) */
+    const mId = Progress.pendingMission(ep.id);
+    missionEp = mId ? Episodes.get(mId) : null;
+    const rId = Progress.reviewCandidate([ep.id, mId].filter(Boolean));
+    reviewEp = rId && Sound.canPlay(Episodes.get(rId)?.sound) ? Episodes.get(rId) : null;
+    const warmup = [missionEp && 'mission', reviewEp && 'review'].filter(Boolean);
+    flow = [ep.flow[0], ...warmup, ...ep.flow.slice(1)];
     show(0);
   }
 
@@ -61,6 +73,7 @@
     sfxBtn.querySelector('.sfx-label').textContent = Sound.sfxOn ? 'المؤثرات: تعمل' : 'المؤثرات: متوقفة';
   }
   sfxBtn.addEventListener('click', () => { Sound.setSfx(!Sound.sfxOn); paintSfx(); });
+  document.getElementById('dial-open').addEventListener('click', () => Kanaan.Dial.openDialog());
   paintSfx();
 
   Host.init();

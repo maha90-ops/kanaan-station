@@ -86,6 +86,36 @@ Kanaan.Progress = (function () {
 
     isDone(epId) { return !!memory.episodes[epId]?.everCompleted; },
 
+    /* ---- مهمة خارج الشاشة ---- */
+    assignMission(epId) {
+      memory.missions = memory.missions || {};
+      const m = memory.missions[epId];
+      if (!m || m.reportedAt) memory.missions[epId] = { assignedAt: Date.now(), reportedAt: null, found: null };
+      save();
+    },
+    /** مهمة تنتظر التقرير: أُعطيت قبل ٢٠ دقيقة على الأقل (أي في جلسة سابقة) */
+    pendingMission(currentId, minAgeMs = 20 * 60 * 1000) {
+      const ms = memory.missions || {};
+      const open = Object.entries(ms)
+        .filter(([id, m]) => id !== currentId && !m.reportedAt && Date.now() - m.assignedAt >= minAgeMs)
+        .sort((a, b) => b[1].assignedAt - a[1].assignedAt);
+      return open.length ? open[0][0] : null;
+    },
+    reportMission(epId, found) {
+      const m = (memory.missions || {})[epId];
+      if (m) { m.reportedAt = Date.now(); m.found = found; save(); }
+    },
+
+    /* ---- مراجعة متباعدة ---- */
+    reviewed(epId) { memory.reviewedAt = memory.reviewedAt || {}; memory.reviewedAt[epId] = Date.now(); save(); },
+    /** أقدم حرف مكتمل لم يُراجَع مؤخرًا (عدا المستبعَدين) */
+    reviewCandidate(excludeIds) {
+      const r = memory.reviewedAt || {};
+      const done = Object.keys(memory.episodes).filter((id) => memory.episodes[id].everCompleted && !excludeIds.includes(id));
+      done.sort((a, b) => (r[a] || 0) - (r[b] || 0));
+      return done[0] || null;
+    },
+
     get(epId) { return episode(epId); },
 
     /** مراحل «رحلتي» المكتملة */
@@ -101,6 +131,6 @@ Kanaan.Progress = (function () {
     },
 
     export: () => JSON.parse(JSON.stringify(memory)),
-    reset() { memory = { version: 1, episodes: {} }; save(); }
+    reset() { memory = { version: 1, episodes: {} }; save(); if (Kanaan.Archive) Kanaan.Archive.clear(); }
   };
 })();

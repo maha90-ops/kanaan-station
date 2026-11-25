@@ -79,6 +79,7 @@ Kanaan.UI.registerScreen({
 
       const result = Kanaan.Pronunciation.evaluate(recording, act);
       Kanaan.Progress.pronunciation(ep.id, result);
+      if (result.reason !== 'silent') Kanaan.Archive.save(`voice:${ep.id}`, recording.blob);
       showResult(result);
     }
 

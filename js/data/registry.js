@@ -18,7 +18,8 @@ Kanaan.Episodes = (function () {
     'transferActivity', 'feedback', 'script', 'flow'
   ];
 
-  const FLOW = ['welcome', 'signal', 'reveal', 'speak', 'build', 'meaning', 'transfer', 'success'];
+  // تُضاف شاشتا «تقرير المهمة» و«الأرشيف» تلقائيًا بعد welcome عند توفّر حروف سابقة (app.js)
+  const FLOW = ['welcome', 'signal', 'reveal', 'speak', 'build', 'meaning', 'transfer', 'success', 'onair', 'message'];
 
   /** العبارات الافتراضية — تُبنى من بيانات الحلقة نفسها */
   function defaults(ep) {

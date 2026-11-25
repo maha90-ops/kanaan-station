@@ -97,6 +97,7 @@ Kanaan.Recorder = (function () {
             resolve({
               frames,
               durationMs: performance.now() - t0,
+              blob,
               playbackUrl: blob ? URL.createObjectURL(blob) : null
             });
           };
