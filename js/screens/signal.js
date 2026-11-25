@@ -80,6 +80,8 @@ Kanaan.UI.registerScreen({
       el('h2.screen-title', { id: 'signal-title', tabindex: '-1' }, 'التقط الإشارة'),
       radio.node, status,
       el('div.row.row--center', null, replay),
+      Kanaan.Sound.canPlay(ep.sound) ? null
+        : el('p.footnote', null, `ⓘ لا يتوفّر صوت لهذا الحرف على هذا الجهاز بعد؛ اطلب من معلّمك أن ينطق «${ep.sound.label}».`),
       question, fbSlot, scaffoldSlot);
 
     return {

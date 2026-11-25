@@ -76,8 +76,12 @@ Kanaan.Sound = (function () {
     return ok ? 'tts' : 'none';
   }
 
-  /* ---------- توليد صوت احتكاكي (ششش / سسس) ----------
-   * ضوضاء بيضاء ← مرشّحات تحدد «لون» الصوت ← غلاف هادئ ← محلل للعرض */
+  /* ---------- صوت الحرف ----------
+   * الأولوية: تسجيل بشري (audio) ← توليد صوتي (synth) ← صوت آلي (tts، مثل «بَ»)
+   * أنواع التوليد:
+   *   fricative        ضوضاء مرشَّحة (ش، س)
+   *   hum              طنين منخفض بشفتين مغلقتين (م)
+   *   voicedFricative  ضوضاء عالية + طنين الحنجرة (ز) */
   function noiseBuffer(c, seconds) {
     const b = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate);
     const d = b.getChannelData(0);
@@ -85,38 +89,59 @@ Kanaan.Sound = (function () {
     return b;
   }
 
+  function canPlay(spec) {
+    return !!(spec && (spec.audio || spec.synth || (spec.tts && canSpeak())));
+  }
+
   function phoneme(spec) {
-    // ملف مسجّل إن وجد
-    if (spec.audio) {
-      return { analyser: null, done: playFile(spec.audio) };
+    if (spec.audio) return { analyser: null, done: playFile(spec.audio) };
+    if (!spec.synth) {
+      return { analyser: null, done: spec.tts ? speakTTS(spec.tts, { rate: 0.6 }) : Promise.resolve(false) };
     }
-    const s = spec.synth || spec;
+    const s = spec.synth;
     const c = audioCtx();
     if (!c) return { analyser: null, done: Promise.resolve(false) };
     const dur = (s.durationMs || 1200) / 1000;
-    const src = c.createBufferSource();
-    src.buffer = noiseBuffer(c, dur + 0.3);
-
-    let node = src;
-    const chain = (n) => { node.connect(n); node = n; };
-    if (s.highpassHz) { const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = s.highpassHz; chain(hp); }
-    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = s.centerHz; bp.Q.value = s.q || 1; chain(bp);
-    if (s.lowpassHz) { const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = s.lowpassHz; chain(lp); }
-
-    const g = c.createGain();
     const t0 = c.currentTime;
+    const sources = [];
+
+    // الغلاف: بداية ونهاية ناعمتان
+    const g = c.createGain();
     g.gain.setValueAtTime(0.0001, t0);
     g.gain.exponentialRampToValueAtTime(0.9, t0 + 0.12);
     g.gain.setValueAtTime(0.9, t0 + dur - 0.25);
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    chain(g);
+
+    // جزء الضوضاء (الهواء)
+    if (s.kind === 'fricative' || s.kind === 'voicedFricative') {
+      const src = c.createBufferSource();
+      src.buffer = noiseBuffer(c, dur + 0.3);
+      let node = src;
+      const chain = (n) => { node.connect(n); node = n; };
+      if (s.highpassHz) { const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = s.highpassHz; chain(hp); }
+      const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = s.centerHz; bp.Q.value = s.q || 1; chain(bp);
+      if (s.lowpassHz) { const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = s.lowpassHz; chain(lp); }
+      if (s.kind === 'voicedFricative') { const ng = c.createGain(); ng.gain.value = 0.7; chain(ng); }
+      node.connect(g);
+      sources.push(src);
+    }
+    // جزء الطنين (اهتزاز الحنجرة)
+    if (s.kind === 'hum' || s.kind === 'voicedFricative') {
+      const osc = c.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = s.f0 || 140;
+      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = s.lowpassHz || 500; lp.Q.value = 0.7;
+      const vg = c.createGain(); vg.gain.value = s.kind === 'hum' ? 0.55 : 0.22;
+      osc.connect(lp); lp.connect(vg); vg.connect(g);
+      sources.push(osc);
+    }
 
     const an = c.createAnalyser(); an.fftSize = 2048;
     g.connect(an); an.connect(c.destination);
 
-    const done = new Promise((resolve) => { src.onended = () => resolve(true); });
-    src.start(t0); src.stop(t0 + dur + 0.05);
-    current.push({ stop: () => { try { src.stop(); } catch (e) { /* انتهى */ } } });
+    const done = new Promise((resolve) => { sources[0].onended = () => resolve(true); });
+    sources.forEach((src) => { src.start(t0); src.stop(t0 + dur + 0.05); });
+    current.push({ stop: () => sources.forEach((src) => { try { src.stop(); } catch (e) { /* انتهى */ } }) });
     return { analyser: an, done };
   }
 
@@ -171,7 +196,7 @@ Kanaan.Sound = (function () {
   return {
     unlock: audioCtx,
     ctx: () => ctx,
-    say, phoneme, sfx, stop, canSpeak,
+    say, phoneme, sfx, stop, canSpeak, canPlay,
     get sfxOn() { return sfxOn; },
     setSfx(on) {
       sfxOn = on;

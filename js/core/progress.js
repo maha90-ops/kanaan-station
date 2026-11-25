@@ -68,7 +68,7 @@ Kanaan.Progress = (function () {
       a.completed = true;
       a.mode = result.mode;
       a.levels = (a.levels || []).concat(result.level || 'self-report');
-      const rank = { excellent: 3, close: 2, retry: 1 };
+      const rank = { excellent: 3, clear: 2, close: 2, retry: 1 };
       if (!a.best || (rank[result.level] || 0) > (rank[a.best] || 0)) a.best = result.level || 'self-report';
       if (result.metrics) a.lastMetrics = result.metrics;
       save();
@@ -77,7 +77,14 @@ Kanaan.Progress = (function () {
 
     patch(epId, name, data) { Object.assign(activity(epId, name), data); save(); },
 
-    complete(epId) { episode(epId).completedAt = new Date().toISOString(); save(); },
+    complete(epId) {
+      const ep = episode(epId);
+      ep.completedAt = new Date().toISOString();
+      ep.everCompleted = true; // لا يُمسح عند إعادة الحلقة
+      save();
+    },
+
+    isDone(epId) { return !!memory.episodes[epId]?.everCompleted; },
 
     get(epId) { return episode(epId); },
 

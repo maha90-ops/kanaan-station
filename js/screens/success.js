@@ -21,7 +21,7 @@ Kanaan.UI.registerScreen({
     const nextSlot = el('div.next-slot');
     const nextEp = Kanaan.Episodes.next(ep.id);
 
-    const levelAr = { excellent: 'واضح', close: 'قريب', retry: 'يحتاج إعادة', 'self-report': 'تقرير ذاتي' };
+    const levelAr = { excellent: 'واضح', clear: 'صوت مسموع (دون تقييم آلي للمخرج)', close: 'قريب', retry: 'يحتاج إعادة', 'self-report': 'تقرير ذاتي' };
     const yesNo = (v) => (v ? 'نعم' : 'لا');
     const row = (label, a, extra = '') => el('tr', null,
       el('th', { scope: 'row' }, label),

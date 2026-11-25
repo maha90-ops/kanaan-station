@@ -41,8 +41,9 @@ Kanaan.Recorder = (function () {
     const freq = new Float32Array(an.frequencyBinCount);
     const power = new Float32Array(an.frequencyBinCount);
     const frames = [];
-    const [tLo, tHi] = profile.targetBandHz;
-    const [cLo, cHi] = profile.competitorBandHz;
+    const bands = { targetBandHz: [1500, 5000], competitorBandHz: [5000, 11000], ...(profile || {}) };
+    const [tLo, tHi] = bands.targetBandHz;
+    const [cLo, cHi] = bands.competitorBandHz;
 
     // تسجيل ملف للاستماع الذاتي
     let recorder = null; const chunks = [];

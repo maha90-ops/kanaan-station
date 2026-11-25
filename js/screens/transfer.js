@@ -17,7 +17,7 @@ Kanaan.UI.registerScreen({
     const radio = Kanaan.UI.radio({ compact: true });
     const wave = Kanaan.UI.waveView(radio.canvas);
 
-    const hl = (w) => Kanaan.UI.highlightLetter(w, ep.letter);
+    const hl = (w) => Kanaan.UI.highlightLetter(w, ep.letter, { firstOnly: true });
 
     const channels = act.channels.map((c, i) => {
       const label = el('span.channel-word', null, canHear ? '؟' : c.word);

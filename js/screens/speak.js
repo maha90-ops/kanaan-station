@@ -18,7 +18,9 @@ Kanaan.UI.registerScreen({
     });
 
     const panel = el('div.mic-panel');
-    const footnote = el('p.footnote', null, 'ⓘ تقدير تقريبي يقدّره الجهاز من شكل الصوت؛ أذن المعلّم هي الحكم الأدق.');
+    const footnote = el('p.footnote', null, act.evaluator === 'clarity'
+      ? 'ⓘ يتحقق الجهاز فقط من وصول صوتك بوضوح؛ قارن نطقك بالنموذج، وأذن المعلّم هي الحكم.'
+      : 'ⓘ تقدير تقريبي يقدّره الجهاز من شكل الصوت؛ أذن المعلّم هي الحكم الأدق.');
 
     /* --- الحالة ١: جاهز للتسجيل --- */
     function ready() {
@@ -75,7 +77,7 @@ Kanaan.UI.registerScreen({
       if (playbackUrl) URL.revokeObjectURL(playbackUrl);
       playbackUrl = recording.playbackUrl;
 
-      const result = Kanaan.Pronunciation.evaluate(recording, act.profile);
+      const result = Kanaan.Pronunciation.evaluate(recording, act);
       Kanaan.Progress.pronunciation(ep.id, result);
       showResult(result);
     }
@@ -84,16 +86,18 @@ Kanaan.UI.registerScreen({
       const look = {
         excellent: { icon: '🌟', text: fb.excellent },
         close: { icon: '👍', text: fb.close },
-        retry: { icon: '🔁', text: fb.retry }
+        retry: { icon: '🔁', text: fb.retry },
+        clear: { icon: '👂', text: fb.clear }
       }[result.level];
-      const tip = result.level === 'excellent' ? null : act.tips[result.reason];
+      const tip = ['excellent', 'clear'].includes(result.level) ? null : act.tips[result.reason];
+      const good = ['excellent', 'clear'].includes(result.level);
 
       const mine = playbackUrl ? button('استمع لصوتك', {
         variant: 'secondary', icon: '▶',
         onClick: () => { const a = new Audio(playbackUrl); a.play(); }
       }) : null;
       const retry = button('أعد المحاولة', { variant: 'secondary', icon: '🎙️', onClick: startRec });
-      const cont = button('متابعة', { variant: result.level === 'excellent' ? 'primary' : 'ghost', icon: '←', onClick: next });
+      const cont = button('متابعة', { variant: good ? 'primary' : 'ghost', icon: '←', onClick: next });
 
       panel.replaceChildren(
         el('p.heard', null, '👂 ', fb.heard),
@@ -105,7 +109,7 @@ Kanaan.UI.registerScreen({
         el('div.row.row--center', null, mine, modelBtn(), retry),
         el('div.row.row--center', null, cont));
       Kanaan.UI.announce(`${fb.heard} ${look.text}`);
-      Kanaan.Sound.sfx(result.level === 'excellent' ? 'success' : 'gentle');
+      Kanaan.Sound.sfx(good ? 'success' : 'gentle');
       Kanaan.Sound.say(`${fb.heard} ${look.text}`);
     }
 
@@ -118,7 +122,7 @@ Kanaan.UI.registerScreen({
           el('span.result-icon', { 'aria-hidden': 'true' }, '🎧'),
           el('div', null,
             el('p.result-text', null, denied ? 'لم نحصل على إذن الميكروفون.' : 'الميكروفون غير متاح في هذا الجهاز.'),
-            el('p.result-tip', null, 'انطق «ششش» بصوت عالٍ أمام معلّمك أو أحد أفراد أسرتك، ثم اضغط الزر.'))),
+            el('p.result-tip', null, `انطق «${ep.sound.label}» بصوت عالٍ أمام معلّمك أو أحد أفراد أسرتك، ثم اضغط الزر.`))),
         el('div.row.row--center', null,
           modelBtn(),
           denied ? button('حاول مرة أخرى', { variant: 'secondary', icon: '🎙️', onClick: startRec }) : null,

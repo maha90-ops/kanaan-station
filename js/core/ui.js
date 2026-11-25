@@ -54,10 +54,16 @@ Kanaan.UI = (function () {
   }
 
   /** تمييز الحرف الهدف (مع حركته) داخل كلمة: لون + خط سفلي */
-  function highlightLetter(word, letter) {
+  function highlightLetter(word, letter, { firstOnly = false } = {}) {
     const span = el('span.word');
     const re = new RegExp(`(${letter}[\\u064B-\\u0652]*)`);
-    word.split(re).forEach((part) => part && span.append(re.test(part) ? el('mark.target', null, part) : part));
+    let marked = false;
+    word.split(re).forEach((part) => {
+      if (!part) return;
+      const hit = re.test(part) && !(firstOnly && marked);
+      if (hit) marked = true;
+      span.append(hit ? el('mark.target', null, part) : part);
+    });
     return span;
   }
 

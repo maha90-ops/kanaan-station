@@ -61,6 +61,7 @@ button { font: inherit; color: inherit; }
 .station-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--studio); white-space: nowrap; }
 .brand-icon { font-size: 1.5rem; }
 
+.episode-chip { margin: 0; font-size: .9rem; font-weight: 700; color: var(--studio); white-space: nowrap; }
 .journey { display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .journey-title { margin: 0; font-size: .8rem; color: var(--ink-soft); font-weight: 600; }
 .journey-steps { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; }
@@ -375,6 +376,7 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
   .journey-step .journey-label { display: none; }
   .journey-step.is-current .journey-label { display: inline; padding-inline-end: 8px; }
   .sfx-label { display: none; }
+  .episode-chip { display: none; }
   .stage { padding-inline: 16px; }
   .choice--letter { width: 96px; height: 96px; }
   .slot { width: 82px; height: 94px; }

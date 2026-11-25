@@ -46,6 +46,9 @@
   function startEpisode(id) {
     ep = Episodes.get(id) || Episodes.list()[0];
     if (!ep) return;
+    const all = Episodes.list();
+    document.getElementById('episode-chip').textContent =
+      `📬 الرسالة ${UI.digits(all.indexOf(ep) + 1)} من ${UI.digits(all.length)}`;
     Progress.start(ep.id);
     show(0);
   }
@@ -62,7 +65,9 @@
 
   Host.init();
   const params = new URLSearchParams(location.search);
-  startEpisode(params.get('ep') || 'sh');
+  // المتابعة من أول رسالة لم تكتمل (أو اختيار حلقة محددة: ?ep=b)
+  const firstOpen = Episodes.list().find((e) => !Progress.isDone(e.id)) || Episodes.list()[0];
+  startEpisode(params.get('ep') || firstOpen.id);
 
   // للمعلم/المطوّر: Kanaan.debug.export() لتصدير السجل
   Kanaan.debug = { export: Progress.export, reset: Progress.reset, go: (n) => show(n) };
