@@ -1,0 +1,396 @@
+/* =========================================================
+   محطة كنعان للحروف — نظام بصري هادئ
+   - ألوان قليلة دافئة (مستوحاة من الصورة الرئيسية)
+   - شاشة واحدة = مهمة واحدة = تركيز واحد
+   - الحركة فقط للكشف/الانتقال/التغذية الراجعة/توجيه الانتباه
+   ========================================================= */
+:root {
+  --bg: #FBF4E6;
+  --surface: #FFFDF8;
+  --ink: #2B2118;
+  --ink-soft: #5E4D3D;
+  --line: #E6D7BD;
+  --amber: #F5A623;
+  --amber-soft: #FFF0D2;
+  --amber-deep: #9A5B00;
+  --studio: #3D4066;      /* جدار الاستوديو */
+  --wood: #6B4226;        /* خشب الراديو */
+  --wave: #FFC857;
+  --olive: #3F6B2A;       /* نجاح */
+  --olive-soft: #E7F0DC;
+  --clay: #A4432A;        /* إيقاف/تسجيل */
+  --focus: #2F5DCC;
+  --radius: 22px;
+  --font-ui: "Baloo Bhaijaan 2", "Tahoma", "Segoe UI", sans-serif;
+  --font-letter: "Noto Naskh Arabic", "Amiri", "Traditional Arabic", serif; /* خط النسخ: شكل الحرف كما في الكتاب المدرسي */
+  --host-space: 132px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+[hidden] { display: none !important; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; }
+
+.sr-only {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; margin: -1px; padding: 0; border: 0;
+}
+.skip-link { position: absolute; inset-inline-start: 12px; top: -60px; z-index: 50; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 10px; }
+.skip-link:focus { top: 12px; }
+:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; border-radius: 12px; }
+
+/* ---------- شريط المحطة ---------- */
+.station-bar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 20px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+.station-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--studio); white-space: nowrap; }
+.brand-icon { font-size: 1.5rem; }
+
+.journey { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.journey-title { margin: 0; font-size: .8rem; color: var(--ink-soft); font-weight: 600; }
+.journey-steps { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; }
+.journey-step {
+  display: flex; align-items: center; gap: 6px;
+  padding: 2px 10px 2px 4px; border-radius: 999px;
+  border: 2px solid var(--line); background: var(--surface);
+  font-size: .95rem; color: var(--ink-soft);
+}
+.journey-num {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--line); font-weight: 700; font-size: .9rem;
+}
+.journey-step.is-current { border-color: var(--amber); color: var(--ink); font-weight: 700; background: var(--amber-soft); }
+.journey-step.is-current .journey-num { background: var(--amber); color: var(--ink); }
+.journey-step.is-done { border-color: var(--olive); color: var(--olive); }
+.journey-step.is-done .journey-num { background: var(--olive); color: #fff; }
+
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  background: transparent; border: 2px solid var(--line); border-radius: 999px;
+  padding: 6px 12px; font-size: .9rem; color: var(--ink-soft); min-height: 44px;
+}
+.icon-btn:hover { border-color: var(--ink-soft); }
+.icon-btn--round { width: 52px; height: 52px; padding: 0; justify-content: center; font-size: 1.3rem; background: var(--surface); }
+
+/* ---------- المسرح ---------- */
+.stage { outline: none; padding: 24px 20px calc(var(--host-space) + 24px); }
+.screen { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+.screen-enter { animation: enter .45s ease-out both; }
+@keyframes enter { from { opacity: 0; transform: translateY(14px); } }
+.screen-title { margin: 0; font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; color: var(--studio); outline: none; }
+.instruction, .question-text { margin: 0; font-size: 1.35rem; font-weight: 700; }
+.footnote { margin: 0; font-size: .9rem; color: var(--ink-soft); }
+.row { display: flex; flex-wrap: wrap; gap: 12px; }
+.row--center { justify-content: center; }
+.appear { animation: enter .4s ease-out both; }
+
+/* ---------- الأزرار ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 58px; padding: 10px 26px; border-radius: 999px; cursor: pointer;
+  font-size: 1.25rem; font-weight: 700; border: 3px solid transparent;
+  transition: transform .15s, box-shadow .15s, background .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.btn--primary { background: var(--amber); color: var(--ink); box-shadow: 0 5px 0 var(--amber-deep); }
+.btn--primary:hover:not([disabled]) { background: #FFB53D; }
+.btn--secondary { background: var(--surface); border-color: var(--ink-soft); color: var(--ink); }
+.btn--ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn--ghost:hover { border-color: var(--ink-soft); }
+.btn--stop { background: var(--clay); color: #fff; }
+.btn--big { min-height: 68px; font-size: 1.45rem; padding: 12px 36px; }
+.btn-icon { font-size: 1.2em; line-height: 1; }
+.attention { animation: nudge 1.2s ease-in-out 2; }
+@keyframes nudge { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--amber) 45%, transparent); } }
+
+/* ---------- التغذية الراجعة: أيقونة + نص + شكل حدّ (ليس اللون وحده) ---------- */
+.feedback-slot { min-height: 56px; display: flex; justify-content: center; }
+.feedback {
+  margin: 0; display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 20px; border-radius: 16px; font-weight: 700; font-size: 1.2rem;
+  animation: enter .3s ease-out both;
+}
+.feedback-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-size: 1.1rem; }
+.feedback--success { background: var(--olive-soft); color: var(--olive); border: 2px solid var(--olive); }
+.feedback--success .feedback-icon { background: var(--olive); color: #fff; }
+.feedback--retry { background: var(--amber-soft); color: var(--ink); border: 2px dashed var(--amber-deep); }
+.feedback--retry .feedback-icon { background: var(--amber); }
+.scaffold { background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius); padding: 14px 18px; }
+.scaffold p { margin: 0 0 10px; }
+.scaffold-pair { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+/* ---------- الشاشة ١: الاستقبال ---------- */
+body[data-screen="welcome"] .stage { padding: 0 0 24px; }
+.screen--welcome { max-width: none; gap: 0; }
+.hero { position: relative; width: min(100%, calc((100dvh - 96px) * 1.777)); margin: 0 auto; }
+.hero-img { width: 100%; height: auto; }
+/* الزر الحقيقي فوق الزر المرسوم في الصورة (النِّسب ثابتة لأن أبعاد الصورة ثابتة) */
+.hero-start {
+  position: absolute; left: 62.6%; top: 59.2%; width: 31.4%; height: 17.8%;
+  border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+  transition: box-shadow .2s, transform .2s;
+}
+.hero-start:hover { box-shadow: 0 0 0 6px color-mix(in srgb, #fff 55%, transparent); }
+.hero-start:active { transform: scale(.98); }
+.hero-start:focus-visible { outline: 5px solid #fff; box-shadow: 0 0 0 10px var(--focus); }
+.hero-caption { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 14px 16px; flex-wrap: wrap; }
+.hero-text { display: none; margin: 0; max-width: 60ch; font-size: 1.15rem; }
+.hero-start-fallback { display: none; }
+@media (max-width: 720px) {
+  /* في الهاتف يصغر نص الفقاعة داخل الصورة، فنعرضه نصًا حقيقيًا مع زر كبير */
+  .hero-text { display: block; }
+  .hero-start-fallback { display: inline-flex; }
+}
+
+/* ---------- الراديو ---------- */
+.radio { position: relative; width: min(100%, 440px); padding-top: 34px; }
+.radio-antenna {
+  position: absolute; top: 0; inset-inline-end: 22%; width: 6px; height: 46px;
+  background: #4A3426; border-radius: 3px; transform: rotate(-18deg); transform-origin: bottom;
+}
+.radio-antenna::after {
+  content: ""; position: absolute; top: -8px; left: -5px; width: 16px; height: 16px; border-radius: 50%;
+  background: #8C6A4F; transition: background .2s, box-shadow .2s;
+}
+.radio.is-on .radio-antenna::after { background: var(--wave); box-shadow: 0 0 0 6px color-mix(in srgb, var(--wave) 35%, transparent); }
+.radio-body {
+  position: relative; background: linear-gradient(180deg, #7A4C2C, var(--wood));
+  border-radius: 26px; padding: 16px; box-shadow: inset 0 -6px 0 rgba(0,0,0,.18), 0 10px 24px rgba(61,64,102,.18);
+}
+.radio-display {
+  background: radial-gradient(ellipse at center, #4C3A22, #2A1F14); border-radius: 14px;
+  border: 3px solid #C9A46A; padding: 6px; height: 96px; display: flex;
+}
+.radio-wave { width: 100%; height: 100%; }
+.radio-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.radio-knob { width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #F7D58A, #B07A26); }
+.radio-grille {
+  flex: 1; height: 28px; border-radius: 8px;
+  background: repeating-linear-gradient(90deg, #3E2716 0 4px, #5B3A22 4px 9px);
+}
+.radio--compact { width: min(100%, 320px); padding-top: 26px; }
+.radio--compact .radio-body { padding: 12px; }
+.radio--compact .radio-display { height: 64px; }
+.radio--compact .radio-antenna { height: 36px; }
+.radio--compact .radio-knob { width: 26px; height: 26px; }
+.radio--compact .radio-grille { height: 20px; }
+.signal-status { margin: 0; color: var(--ink-soft); font-weight: 600; min-height: 1.6em; }
+
+/* ---------- الاختيارات ---------- */
+.choices { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.choice {
+  position: relative; cursor: pointer; background: var(--surface);
+  border: 3px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 4px 0 var(--line); transition: transform .15s, border-color .15s;
+}
+.choice:hover:not([disabled]) { border-color: var(--amber); transform: translateY(-2px); }
+.choice--letter { width: 118px; height: 118px; }
+.choice-glyph { font-family: var(--font-letter); font-size: 4.2rem; font-weight: 700; line-height: 1; }
+.choice-mark, .achievement-check {
+  position: absolute; top: -12px; inset-inline-start: -12px; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.1rem; font-weight: 800;
+}
+.choice-mark:empty { display: none; }
+.is-correct { border-color: var(--olive) !important; border-style: solid !important; background: var(--olive-soft) !important; }
+.is-correct .choice-mark { background: var(--olive); color: #fff; }
+.is-tried { border-style: dashed !important; border-color: var(--amber-deep) !important; opacity: .75; }
+.is-tried .choice-mark { background: var(--amber); }
+.choice[disabled] { opacity: .45; cursor: default; }
+.choice.is-correct[disabled] { opacity: 1; }
+
+/* ---------- الشاشة ٣: الحرف يخرج من الراديو ---------- */
+.reveal-stage { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+.big-letter {
+  font-family: var(--font-letter); font-weight: 700; color: var(--studio);
+  font-size: clamp(7rem, 26vw, 11rem); line-height: 1.1; height: 1.25em;
+  opacity: 0; transform: translateY(70%) scale(.25);
+}
+.big-letter.is-rising { animation: rise 1s cubic-bezier(.2,.8,.2,1.1) forwards; }
+.big-letter.is-sounding { text-shadow: 0 0 0 transparent; animation: rise 1s forwards, glow 1.4s ease-in-out; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes glow { 50% { text-shadow: 0 0 28px color-mix(in srgb, var(--wave) 90%, transparent); } }
+.letter-name { margin: 0; font-size: 1.4rem; font-weight: 700; }
+.letter-hint { margin: 0; background: var(--amber-soft); padding: 8px 18px; border-radius: 14px; }
+
+/* ---------- الشاشة ٤: النطق ---------- */
+.model-strip {
+  display: flex; align-items: center; gap: 14px; background: var(--surface);
+  border: 2px solid var(--line); border-radius: 999px; padding: 4px 22px 4px 8px;
+}
+.model-letter {
+  font-family: var(--font-letter); font-size: 2.6rem; font-weight: 700; color: var(--studio);
+  width: 64px; height: 64px; display: grid; place-items: center; background: var(--amber-soft); border-radius: 50%; line-height: 1;
+}
+.model-sound { font-weight: 700; }
+.mic-panel { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; min-height: 260px; }
+.mic-btn {
+  width: 190px; height: 190px; border-radius: 50%; cursor: pointer;
+  background: var(--amber); border: 6px solid var(--surface); box-shadow: 0 0 0 4px var(--amber), 0 8px 0 var(--amber-deep);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.mic-btn:active { transform: scale(.97); }
+.mic-icon { font-size: 3.4rem; line-height: 1; }
+.mic-label { font-weight: 800; font-size: 1.1rem; line-height: 1.3; max-width: 9em; }
+.rec-indicator { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.3rem; }
+.rec-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--clay); animation: blink 1s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+.level { display: flex; align-items: center; gap: 8px; height: 110px; }
+.level-bar { width: 16px; height: 100%; border-radius: 8px; background: var(--studio); transform: scaleY(.15); transition: transform .08s; }
+.heard { margin: 0; font-weight: 700; color: var(--ink-soft); }
+.result {
+  display: flex; align-items: flex-start; gap: 14px; text-align: start;
+  padding: 16px 22px; border-radius: var(--radius); max-width: 560px; border: 2px solid var(--line); background: var(--surface);
+}
+.result-icon { font-size: 2.4rem; line-height: 1; }
+.result-text { margin: 0; font-weight: 800; font-size: 1.3rem; }
+.result-tip { margin: 6px 0 0; color: var(--ink-soft); }
+.result--excellent { border-color: var(--olive); background: var(--olive-soft); }
+.result--close { border-color: var(--amber); background: var(--amber-soft); }
+.result--retry { border-style: dashed; border-color: var(--amber-deep); }
+
+/* ---------- الشاشة ٥: بناء الكلمة ---------- */
+.board { position: relative; padding: 26px 22px 18px; background: var(--surface); border: 2px solid var(--line); border-radius: 28px; min-height: 160px; display: grid; place-items: center; transition: transform .5s; }
+.board-start { position: absolute; top: -14px; inset-inline-start: 22px; background: var(--studio); color: #fff; font-size: .85rem; padding: 0 10px; border-radius: 999px; }
+.board-start::after { content: " ←"; }
+.slots { display: flex; gap: 14px; }
+.slot {
+  position: relative; width: 98px; height: 108px; border-radius: 18px; cursor: pointer;
+  border: 3px dashed var(--line); background: var(--bg);
+  display: grid; place-items: center;
+}
+.slot.is-filled { border-style: solid; border-color: var(--studio); background: var(--surface); }
+.slot.is-wrong { border-color: var(--amber-deep); border-style: dashed; animation: wobble .4s; }
+@keyframes wobble { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.slot-num { position: absolute; bottom: 4px; font-size: .8rem; color: var(--ink-soft); }
+.slot-letter, .tile { font-family: var(--font-letter); font-size: 3.4rem; font-weight: 700; line-height: 1; }
+.tray { display: flex; gap: 14px; justify-content: center; min-height: 92px; }
+.tile {
+  width: 84px; height: 88px; border-radius: 18px; cursor: grab; touch-action: none;
+  background: var(--amber-soft); border: 3px solid var(--amber); box-shadow: 0 5px 0 var(--amber);
+  transition: transform .15s, opacity .2s;
+}
+.tile:hover:not([disabled]) { transform: translateY(-3px); }
+.tile.is-used { opacity: .18; box-shadow: none; cursor: default; }
+.tile--ghost { position: fixed; top: 0; left: 0; z-index: 40; pointer-events: none; opacity: .9; margin: 0; }
+.board.is-merging .slots { transform: scale(.9); opacity: .4; transition: all .5s; }
+.joined { animation: enter .5s ease-out both; }
+.equation { margin: 0; font-family: var(--font-letter); font-size: 1.6rem; color: var(--ink-soft); }
+.joined-word { margin: 0; font-family: var(--font-letter); font-size: clamp(4.2rem, 16vw, 6.4rem); font-weight: 700; color: var(--studio); line-height: 1.3; }
+
+/* ---------- الشاشة ٦: المعنى ---------- */
+.scene { margin: 0; width: min(100%, 380px); }
+.scene-art { border-radius: 26px; overflow: hidden; border: 3px solid var(--surface); box-shadow: 0 10px 30px rgba(61,64,102,.15); }
+.scene-art svg { display: block; width: 100%; height: auto; }
+.scene.is-revealing .scene-art { animation: unveil 1s ease-out both; }
+@keyframes unveil { from { opacity: 0; filter: blur(12px); transform: scale(.94); } }
+.scene-word { margin-top: 4px; font-family: var(--font-letter); font-size: 3rem; font-weight: 700; line-height: 1.4; }
+mark.target { background: transparent; color: var(--amber-deep); text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 10px; }
+.word-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+.word-card {
+  position: relative; display: flex; align-items: center; gap: 6px; padding: 6px;
+  background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius);
+}
+.word-pick { cursor: pointer; background: none; border: 0; padding: 8px 18px; font-family: var(--font-letter); font-size: 2.3rem; font-weight: 700; min-width: 120px; border-radius: 16px; }
+.word-pick:hover { background: var(--amber-soft); }
+.word-card .choice-mark:empty { display: none; }
+
+/* ---------- الشاشة ٧: القنوات ---------- */
+.channels { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.channel {
+  position: relative; cursor: pointer; width: 150px; min-height: 120px; padding: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius);
+}
+.channel:hover { border-color: var(--studio); }
+.channel.is-tuned { border-color: var(--studio); background: #EEF0FA; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
+.channel-num { font-weight: 700; color: var(--studio); }
+.channel-word { font-family: var(--font-letter); font-size: 2.3rem; font-weight: 700; line-height: 1.3; }
+.channel.is-revealed .channel-word { animation: enter .35s ease-out both; }
+.channel-heard { position: absolute; top: 6px; inset-inline-end: 8px; font-size: 1rem; }
+
+/* ---------- الشاشة ٨: النجاح ---------- */
+.success-host { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.success-avatar { width: 140px; height: 140px; border-radius: 50%; border: 5px solid var(--amber); animation: enter .5s ease-out both; }
+.achievements { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: min(100%, 560px); }
+.achievement {
+  position: relative; display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+  background: var(--surface); border: 2px solid var(--line); border-radius: 18px; font-weight: 700; text-align: start;
+}
+.achievement.is-done { border-color: var(--olive); }
+.achievement-icon { font-size: 1.8rem; }
+.achievement-check { position: static; margin-inline-start: auto; background: var(--line); }
+.achievement.is-done .achievement-check { background: var(--olive); color: #fff; }
+.soon { margin: 0; background: var(--amber-soft); padding: 10px 20px; border-radius: 14px; font-weight: 700; }
+.teacher { width: min(100%, 640px); text-align: start; font-size: 1rem; border-top: 1px solid var(--line); padding-top: 10px; color: var(--ink-soft); }
+.teacher summary { cursor: pointer; font-weight: 700; }
+.teacher table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.teacher th, .teacher td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: start; }
+
+/* ---------- كنعان المرشد ---------- */
+.host {
+  position: fixed; z-index: 20; bottom: 18px; inset-inline-start: 18px;
+  display: flex; align-items: flex-end; gap: 10px; max-width: min(520px, calc(100vw - 36px));
+  animation: hostIn .35s ease-out both;
+}
+.host.is-leaving { animation: hostOut .25s ease-in both; }
+@keyframes hostIn { from { opacity: 0; transform: translateY(20px); } }
+@keyframes hostOut { to { opacity: 0; transform: translateY(20px); } }
+.host-avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid var(--surface); box-shadow: 0 0 0 3px var(--amber); flex: none; }
+.host.is-speaking .host-avatar { animation: talk 1.1s ease-in-out infinite; }
+@keyframes talk { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--amber) 40%, transparent); } }
+.host-bubble {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 2px solid var(--line); border-radius: 22px 22px 6px 22px;
+  padding: 12px 16px; box-shadow: 0 8px 24px rgba(61,64,102,.14); margin-bottom: 12px;
+}
+.host-text { margin: 0; font-weight: 600; font-size: 1.1rem; line-height: 1.55; }
+.host-replay { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); cursor: pointer; font-size: 1.1rem; }
+
+/* ---------- الاستجابة ---------- */
+@media (max-width: 900px) {
+  .station-brand .brand-name { display: none; }
+}
+@media (max-width: 640px) {
+  :root { --host-space: 150px; }
+  body { font-size: 1.1rem; }
+  .station-bar { padding: 8px 12px; }
+  .journey-title { display: none; }
+  .journey-step { padding: 2px; border-width: 2px; }
+  .journey-step .journey-label { display: none; }
+  .journey-step.is-current .journey-label { display: inline; padding-inline-end: 8px; }
+  .sfx-label { display: none; }
+  .stage { padding-inline: 16px; }
+  .choice--letter { width: 96px; height: 96px; }
+  .slot { width: 82px; height: 94px; }
+  .tile { width: 74px; height: 80px; }
+  .channel { width: calc(33% - 10px); min-width: 96px; min-height: 104px; }
+  .channel-word { font-size: 1.9rem; }
+  .achievements { grid-template-columns: 1fr; }
+  .host { bottom: 10px; inset-inline-start: 10px; }
+  .host-avatar { width: 64px; height: 64px; }
+  .host-text { font-size: 1rem; }
+  .mic-btn { width: 168px; height: 168px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .big-letter { opacity: 1; transform: none; }
+}
+
+.noscript { padding: 24px; text-align: center; }

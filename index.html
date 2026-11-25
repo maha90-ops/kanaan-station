@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>محطة كنعان للحروف</title>
+  <meta name="description" content="بيئة تعلم سمعية تفاعلية للمرحلة الأساسية المبكرة: اسمع… اكتشف… انطق… ابنِ الكلمة">
+  <meta name="theme-color" content="#3D4066">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Noto+Naskh+Arabic:wght@600;700&display=swap">
+  <link rel="stylesheet" href="css/station.css">
+</head>
+<body>
+  <a class="skip-link" href="#stage">انتقل إلى النشاط</a>
+
+  <!-- شريط المحطة: الهوية + رحلتي + التحكم بالمؤثرات. يختفي في شاشة الاستقبال. -->
+  <header class="station-bar" id="station-bar" hidden>
+    <div class="station-brand" aria-hidden="true">
+      <span class="brand-icon">📻</span>
+      <span class="brand-name">محطة كنعان للحروف</span>
+    </div>
+
+    <nav class="journey" aria-label="رحلتي في محطة كنعان">
+      <p class="journey-title">رحلتي في محطة كنعان</p>
+      <ol class="journey-steps" id="journey-steps"></ol>
+    </nav>
+
+    <button class="icon-btn" id="sfx-toggle" type="button" aria-pressed="true">
+      <span aria-hidden="true" class="sfx-icon">🔔</span>
+      <span class="sfx-label">المؤثرات: تعمل</span>
+    </button>
+  </header>
+
+  <main id="stage" class="stage" tabindex="-1" aria-live="off"></main>
+
+  <!-- كنعان: يظهر فقط عند الحاجة إلى توجيه -->
+  <aside class="host" id="host" aria-live="polite" hidden>
+    <img class="host-avatar" src="assets/images/kanaan.webp" alt="كنعان، مذيع المحطة" width="88" height="88">
+    <div class="host-bubble">
+      <p class="host-text" id="host-text"></p>
+      <button class="host-replay" id="host-replay" type="button" aria-label="أعد كلام كنعان">🔊</button>
+    </div>
+  </aside>
+
+  <!-- منطقة إعلانات لقارئ الشاشة للتغذية الراجعة -->
+  <div class="sr-only" id="announcer" aria-live="assertive"></div>
+
+  <noscript><p class="noscript">تحتاج المحطة إلى تفعيل JavaScript.</p></noscript>
+
+  <!-- البيانات (قابلة للتوسعة: أضف ملف حلقة جديد فقط) -->
+  <script src="js/data/registry.js"></script>
+  <script src="js/data/episodes/sh.js"></script>
+
+  <!-- النواة -->
+  <script src="js/core/ui.js"></script>
+  <script src="js/core/sound.js"></script>
+  <script src="js/core/progress.js"></script>
+  <script src="js/core/recorder.js"></script>
+  <script src="js/core/pronunciation.js"></script>
+  <script src="js/core/host.js"></script>
+
+  <!-- الشاشات: كل شاشة نشاط مستقل يقرأ بياناته من الحلقة -->
+  <script src="js/screens/welcome.js"></script>
+  <script src="js/screens/signal.js"></script>
+  <script src="js/screens/reveal.js"></script>
+  <script src="js/screens/speak.js"></script>
+  <script src="js/screens/build.js"></script>
+  <script src="js/screens/meaning.js"></script>
+  <script src="js/screens/transfer.js"></script>
+  <script src="js/screens/success.js"></script>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
