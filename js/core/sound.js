@@ -41,7 +41,18 @@ Kanaan.Sound = (function () {
     return !voicesReady || !!arVoice;
   }
 
-  function speakTTS(text, { rate = 0.88, pitch = 1.25 } = {}) {
+  /* ---------- أحداث الصوت ----------
+   * كل كلام يُعلن بحدث 'kanaan:voice' {state:'start'|'end', who, analyser}
+   * who: 'kanaan' (يحرّك فم كنعان) | 'radio' (يحرّك الراديو فقط)
+   * analyser: متاح مع الملفات المسجّلة والأصوات المولّدة (موجة حقيقية)؛
+   * الصوت الآلي لا يتيح بياناته، فتُقدَّر الحركة تقديرًا. */
+  let speaking = 0;
+  function emit(state, who, analyser) {
+    speaking = Math.max(0, speaking + (state === 'start' ? 1 : -1));
+    window.dispatchEvent(new CustomEvent('kanaan:voice', { detail: { state, who, analyser: analyser || null } }));
+  }
+
+  function speakTTS(text, { rate = 0.88, pitch = 1.25, who = 'radio', onWord } = {}) {
     return new Promise((resolve) => {
       if (!canSpeak()) return resolve(false);
       speechSynthesis.cancel();
@@ -49,31 +60,58 @@ Kanaan.Sound = (function () {
       u.lang = arVoice ? arVoice.lang : 'ar-SA';
       if (arVoice) u.voice = arVoice;
       u.rate = rate; u.pitch = pitch; // نبرة أعلى قليلًا لتناسب صوت طفل
+      let started = false, done = false;
+      const finish = (result) => {
+        if (done) return;
+        done = true;
+        clearTimeout(guard);
+        if (started) emit('end', who);
+        resolve(result);
+      };
       // مهلة أمان: بعض المتصفحات لا تطلق onend
-      const guard = setTimeout(() => resolve(true), 1500 + text.length * 120);
-      u.onend = u.onerror = () => { clearTimeout(guard); resolve(true); };
+      const guard = setTimeout(() => finish(true), 1500 + text.length * 120);
+      u.onstart = () => { started = true; emit('start', who); };
+      u.onboundary = (e) => { if (onWord && e.name !== 'sentence') onWord(e.charIndex); };
+      u.onend = () => finish(true);
+      // المتصفح يمنع الكلام قبل أول تفاعل من المستخدم
+      u.onerror = (e) => finish(e.error === 'not-allowed' ? 'blocked' : true);
       speechSynthesis.speak(u);
     });
   }
 
-  function playFile(src) {
+  /** تشغيل ملف صوتي عبر محلّل (لتزامن الشفاه والموجة مع الصوت الحقيقي) */
+  function playFile(src, { who = 'radio' } = {}) {
     return new Promise((resolve) => {
       const a = new Audio(src);
-      current.push({ stop: () => { a.pause(); resolve(false); } });
-      a.onended = () => resolve(true);
-      a.onerror = () => resolve(false);
-      a.play().catch(() => resolve(false));
+      let analyser = null;
+      const c = audioCtx();
+      if (c) {
+        try {
+          const node = c.createMediaElementSource(a);
+          analyser = c.createAnalyser(); analyser.fftSize = 1024;
+          node.connect(analyser); analyser.connect(c.destination);
+        } catch (e) { analyser = null; }
+      }
+      let started = false;
+      const end = (r) => { if (started) { started = false; emit('end', who); } resolve(r); };
+      current.push({ stop: () => { a.pause(); end(false); } });
+      a.onplaying = () => { if (!started) { started = true; emit('start', who, analyser); } };
+      a.onended = () => end(true);
+      a.onerror = () => end(false);
+      a.play().catch((e) => end(e && e.name === 'NotAllowedError' ? 'blocked' : false));
     });
   }
 
-  /** كلام كنعان أو نطق كلمة: الملف أولًا، ثم الصوت الآلي */
-  async function say(text, { audio, rate, pitch } = {}) {
+  /** كلام كنعان أو نطق كلمة: الملف أولًا، ثم الصوت الآلي.
+   *  يعيد: 'file' | 'tts' | 'blocked' (يحتاج لمسة من المستخدم) | 'none' */
+  async function say(text, { audio, rate, pitch, who, onWord } = {}) {
     if (audio) {
-      const ok = await playFile(audio);
-      if (ok) return 'file';
+      const r = await playFile(audio, { who });
+      if (r === true) return 'file';
+      if (r === 'blocked') return 'blocked';
     }
-    const ok = await speakTTS(text, { rate, pitch });
-    return ok ? 'tts' : 'none';
+    const r = await speakTTS(text, { rate, pitch, who, onWord });
+    return r === 'blocked' ? 'blocked' : r ? 'tts' : 'none';
   }
 
   /* ---------- صوت الحرف ----------
@@ -94,9 +132,9 @@ Kanaan.Sound = (function () {
   }
 
   function phoneme(spec) {
-    if (spec.audio) return { analyser: null, done: playFile(spec.audio) };
+    if (spec.audio) return { analyser: null, done: playFile(spec.audio, { who: 'radio' }) };
     if (!spec.synth) {
-      return { analyser: null, done: spec.tts ? speakTTS(spec.tts, { rate: 0.6 }) : Promise.resolve(false) };
+      return { analyser: null, done: spec.tts ? speakTTS(spec.tts, { rate: 0.6, who: 'radio' }) : Promise.resolve(false) };
     }
     const s = spec.synth;
     const c = audioCtx();
@@ -139,7 +177,8 @@ Kanaan.Sound = (function () {
     const an = c.createAnalyser(); an.fftSize = 2048;
     g.connect(an); an.connect(c.destination);
 
-    const done = new Promise((resolve) => { sources[0].onended = () => resolve(true); });
+    emit('start', 'radio', an);
+    const done = new Promise((resolve) => { sources[0].onended = () => { emit('end', 'radio'); resolve(true); }; });
     sources.forEach((src) => { src.start(t0); src.stop(t0 + dur + 0.05); });
     current.push({ stop: () => sources.forEach((src) => { try { src.stop(); } catch (e) { /* انتهى */ } }) });
     return { analyser: an, done };
@@ -197,6 +236,8 @@ Kanaan.Sound = (function () {
     unlock: audioCtx,
     ctx: () => ctx,
     say, phoneme, sfx, stop, canSpeak, canPlay,
+    get speaking() { return speaking > 0; },
+    playClip: playFile,
     get sfxOn() { return sfxOn; },
     setSfx(on) {
       sfxOn = on;

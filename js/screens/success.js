@@ -42,7 +42,7 @@ Kanaan.UI.registerScreen({
 
     const node = el('section.screen.screen--success', { 'aria-labelledby': 'success-title' },
       el('div.success-host', null,
-        el('img.success-avatar', { src: 'assets/images/kanaan.webp', alt: '', width: 140, height: 140 }),
+        el('div.success-avatar', { 'aria-hidden': 'true' }, Kanaan.Puppet.avatar(140)),
         el('h2.screen-title', { id: 'success-title', tabindex: '-1' }, ep.script.success)),
       el('ul.achievements', { 'aria-label': 'ما أنجزتُه' },
         items.map((it) => el(`li.achievement${it.done ? '.is-done' : ''}`, null,
@@ -56,7 +56,7 @@ Kanaan.UI.registerScreen({
       node,
       onEnter() {
         Kanaan.Sound.sfx('built');
-        Kanaan.Sound.say(ep.script.success);
+        Kanaan.Sound.say(ep.script.success, { who: 'kanaan' });
       }
     };
   }

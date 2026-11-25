@@ -21,6 +21,8 @@ Kanaan.Episodes = (function () {
   // تُضاف شاشتا «تقرير المهمة» و«الأرشيف» تلقائيًا بعد welcome عند توفّر حروف سابقة (app.js)
   const FLOW = ['welcome', 'signal', 'reveal', 'speak', 'build', 'meaning', 'transfer', 'success', 'onair', 'message'];
 
+  const POS_AR = { start: 'بداية', middle: 'وسط', end: 'نهاية' };
+
   /** العبارات الافتراضية — تُبنى من بيانات الحلقة نفسها */
   function defaults(ep) {
     const L = ep.letter;
@@ -34,7 +36,7 @@ Kanaan.Episodes = (function () {
         reveal: `لقد اكتشفنا الحرف السري: ${L}`,
         speak: `والآن أريد أن أسمع صوتك! انطق صوت الحرف ${L}.`,
         build: `الحرف ${L} يريد أن يجد أصدقاءه. ساعده في بناء كلمة.`,
-        meaning: `${W.text}! تبدأ كلمة ${W.plain} بصوت ${L}.`,
+        meaning: `${W.text}! أحسنت، بنيتَ كلمة ${W.plain}.`,
         transfer: `وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أي كلمة تبدأ بصوت ${L}.`,
         success: `رائع يا مستكشف الحروف! لقد فككتَ ${ep.title}.`
       },
@@ -44,31 +46,52 @@ Kanaan.Episodes = (function () {
           ? `استمع إلى الفرق: هذا صوت «${ep.phonemeActivity.contrast.letter}»… وهذا صوت الإشارة.` : '',
         pronunciation: {
           heard: 'استمعتُ إلى نطقك.',
-          excellent: 'رائع! نطقك واضح.',
+          excellent: 'رائع! نطقك واضح 👏',
           close: 'محاولة جميلة! استمع إلى النموذج وحاول مرة أخرى.',
           retry: 'لنحاول معًا. استمع جيدًا ثم أعد النطق.',
           // للحروف التي لا يقيّمها الجهاز صوتيًا (ب، ت، ع): لا ندّعي حكمًا
           clear: 'سمعتُ صوتك بوضوح! استمع لصوتك وقارنه بالنموذج.'
         },
         build: { correct: 'رائع! بنيتَ كلمة.', retry: `اقتربت! ابدأ بالحرف الذي صوته ${S}.` },
-        meaning: { correct: `نعم! في كلمة ${W.text} صوت ${L}.`, retry: `استمع إلى الكلمة… هل فيها صوت ${L}؟` },
+        meaning: { correct: `نعم! نسمع صوت ${L} في ${POS_AR[W.position]} كلمة ${W.text}.`, retry: `استمع إلى الكلمة ببطء… أين تسمع صوت ${L}؟` },
         transfer: {
           correct: `أحسنت! «${correctChannel.word}» تبدأ بصوت ${L}.`,
           retry: 'هذه كلمة تبدأ بصوت آخر. استمع للقنوات مرة أخرى.'
         }
       },
       prompts: {
-        phoneme: 'ما الصوت الذي سمعتَه؟',
+        phoneme: 'استمع جيدًا… أيُّ صوت سمعت؟',
         pronunciation: `انطق صوت الحرف ${L}`,
         build: `رتّب الحروف لتبني كلمة تبدأ بصوت ${L}.`,
-        meaning: `أين تسمع صوت ${L}؟`,
+        meaning: `أين تسمع صوت ${L} في كلمة ${W.text}؟`,
         transfer: `أيّ قناة تبدأ كلمتها بصوت ${L}؟`
       }
     };
   }
 
   /** دمج الافتراضي مع ما في الحلقة (ما في الحلقة يتغلّب) */
-  function complete(raw) {
+  function complete(src) {
+    // ما لا تحدده الحلقة يُؤخذ من فهرس الحروف (js/data/alphabet.js)
+    const A = Kanaan.Alphabet.get(src.letter) || {};
+    const sound = src.sound || Kanaan.Alphabet.soundOf(src.letter);
+    const W = src.exampleWord;
+    const i = W.letters.indexOf(src.letter);
+    const position = W.position || (i <= 0 ? 'start' : i === W.letters.length - 1 ? 'end' : 'middle');
+    const pa = src.phonemeActivity || {};
+    const contrast = pa.contrast || (A.contrast ? { letter: A.contrast, ...Kanaan.Alphabet.soundOf(A.contrast) } : null);
+    // صوت كل خيار في نشاط التمييز (يُختار بالأذن لا بالعين)
+    const sounds = {};
+    (pa.options || []).forEach((l) => {
+      sounds[l] = (pa.sounds && pa.sounds[l]) || (l === src.letter ? sound : contrast && contrast.letter === l ? contrast : Kanaan.Alphabet.soundOf(l));
+    });
+    const raw = {
+      ...src,
+      letterName: src.letterName || A.name,
+      sound,
+      forms: src.forms || Kanaan.Alphabet.forms(src.letter),
+      exampleWord: { ...W, position },
+      phonemeActivity: { ...pa, contrast, sounds }
+    };
     const d = defaults(raw);
     const ep = { flow: FLOW, ...raw };
     ep.script = { ...d.script, ...(raw.script || {}) };
@@ -79,7 +102,7 @@ Kanaan.Episodes = (function () {
     });
     const withPrompt = (key, p) => ({ prompt: d.prompts[p], ...raw[key] });
     ep.phonemeActivity = withPrompt('phonemeActivity', 'phoneme');
-    ep.pronunciationActivity = { maxRecordMs: 4000, evaluator: 'fricative', tips: {}, ...withPrompt('pronunciationActivity', 'pronunciation') };
+    ep.pronunciationActivity = { maxRecordMs: 4000, evaluator: Kanaan.Alphabet.evaluatorOf(raw.letter), tips: {}, ...withPrompt('pronunciationActivity', 'pronunciation') };
     ep.wordBuildingActivity = withPrompt('wordBuildingActivity', 'build');
     ep.meaningActivity = withPrompt('meaningActivity', 'meaning');
     ep.transferActivity = withPrompt('transferActivity', 'transfer');

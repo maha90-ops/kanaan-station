@@ -80,7 +80,7 @@ Kanaan.UI.registerScreen({
         fbSlot.replaceChildren(feedback('success', ep.feedback.build.correct));
         await Kanaan.Sound.say(word.text, { audio: word.audio, rate: 0.7 });
         if (!alive()) return;
-        await Kanaan.Sound.say(ep.feedback.build.correct);
+        await Kanaan.Sound.say(ep.feedback.build.correct, { who: 'kanaan' });
         await wait(600);
         if (alive()) next();
       } else {
@@ -88,7 +88,7 @@ Kanaan.UI.registerScreen({
         // نُرجع فقط الحروف التي ليست في مكانها: يحتفظ الطفل بما أنجزه
         letters.forEach((l, i) => { if (l !== act.target[i]) slots[i].classList.add('is-wrong'); });
         fbSlot.replaceChildren(feedback('retry', ep.feedback.build.retry));
-        Kanaan.Sound.say(ep.feedback.build.retry);
+        Kanaan.Sound.say(ep.feedback.build.retry, { who: 'kanaan' });
         await wait(900);
         letters.forEach((l, i) => { if (l !== act.target[i]) returnTile(i, true); });
       }

@@ -73,7 +73,7 @@
     sfxBtn.querySelector('.sfx-label').textContent = Sound.sfxOn ? 'المؤثرات: تعمل' : 'المؤثرات: متوقفة';
   }
   sfxBtn.addEventListener('click', () => { Sound.setSfx(!Sound.sfxOn); paintSfx(); });
-  document.getElementById('dial-open').addEventListener('click', () => Kanaan.Dial.openDialog());
+  document.getElementById('dial-open').addEventListener('click', () => Kanaan.Panels.achievements());
   paintSfx();
 
   Host.init();

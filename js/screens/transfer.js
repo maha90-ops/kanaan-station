@@ -72,7 +72,7 @@ Kanaan.UI.registerScreen({
           await wait(350);
         }
         fbSlot.replaceChildren(feedback('success', ep.feedback.transfer.correct));
-        await Kanaan.Sound.say(ep.feedback.transfer.correct);
+        await Kanaan.Sound.say(ep.feedback.transfer.correct, { who: 'kanaan' });
         await wait(700);
         if (alive()) next();
       } else {
@@ -82,7 +82,7 @@ Kanaan.UI.registerScreen({
         const msg = `«${ch.data.word}» تبدأ بصوت ${ch.data.startSound}. ${ep.feedback.transfer.retry}`;
         Kanaan.Sound.sfx('gentle');
         fbSlot.replaceChildren(feedback('retry', msg));
-        Kanaan.Sound.say(msg);
+        Kanaan.Sound.say(msg, { who: 'kanaan' });
       }
     }
 

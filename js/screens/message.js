@@ -51,7 +51,7 @@ Kanaan.UI.registerScreen({
       el('p.question-text', null, nextEp ? 'هل أنت مستعد للرسالة التالية؟' : 'أنهيتَ كل رسائل المحطة! 🎉'),
       el('div.row.row--center', null,
         nextEp ? button('الرسالة التالية', { icon: '📻', big: true, onClick: () => goEpisode(nextEp.id) })
-          : button('محطاتي', { icon: '📻', big: true, onClick: () => Kanaan.Dial.openDialog() }),
+          : button('إنجازاتي', { icon: '🏆', big: true, onClick: () => Kanaan.Panels.achievements() }),
         button('أعد الحلقة', { variant: 'ghost', icon: '↺', onClick: restart })),
       soon);
 

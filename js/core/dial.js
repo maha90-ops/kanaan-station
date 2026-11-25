@@ -50,23 +50,5 @@ Kanaan.Dial = (function () {
     return { node };
   }
 
-  /** نافذة «محطاتي» من الشريط العلوي */
-  function openDialog() {
-    let d = document.getElementById('dial-dialog');
-    if (!d) {
-      d = el('dialog.dial-dialog', { id: 'dial-dialog', 'aria-labelledby': 'dial-title' });
-      document.body.append(d);
-      d.addEventListener('close', () => Kanaan.Sound.stop());
-    }
-    Kanaan.Sound.stop();
-    Kanaan.Host.hide();
-    d.replaceChildren(
-      el('h2.screen-title', { id: 'dial-title' }, '📻 محطاتي'),
-      el('p.instruction', null, 'كل حرف اكتشفتَه صار محطة. استمع إليه وإلى صوتك.'),
-      create().node,
-      el('form', { method: 'dialog' }, el('button.btn.btn--secondary', { type: 'submit' }, 'إغلاق')));
-    d.showModal();
-  }
-
-  return { create, openDialog, freq };
+  return { create, freq };
 })();

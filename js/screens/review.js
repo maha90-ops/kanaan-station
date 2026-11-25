@@ -55,7 +55,7 @@ Kanaan.UI.registerScreen({
       if (ok) {
         Kanaan.Sound.sfx('success');
         fbSlot.replaceChildren(feedback('success', `أحسنت! ما زلتَ تتذكّر صوت ${old.letter}.`));
-        await Kanaan.Sound.say(`أحسنت! ما زلتَ تتذكّر صوت ${old.letter}.`);
+        await Kanaan.Sound.say(`أحسنت! ما زلتَ تتذكّر صوت ${old.letter}.`, { who: 'kanaan' });
         await wait(400);
         if (alive()) next();
       } else {
@@ -63,7 +63,7 @@ Kanaan.UI.registerScreen({
         Kanaan.Sound.sfx('gentle');
         const msg = `هذه إشارة الحرف ${old.letter}. استمع إليها مرة أخرى.`;
         fbSlot.replaceChildren(feedback('retry', msg));
-        await Kanaan.Sound.say(msg);
+        await Kanaan.Sound.say(msg, { who: 'kanaan' });
         if (!alive()) return;
         await play();
         after.replaceChildren(button('متابعة', { icon: '←', onClick: next }));

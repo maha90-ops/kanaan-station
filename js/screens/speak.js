@@ -27,7 +27,7 @@ Kanaan.UI.registerScreen({
       panel.replaceChildren(
         el('button.mic-btn', { type: 'button', onclick: startRec },
           el('span.mic-icon', { 'aria-hidden': 'true' }, '🎙️'),
-          el('span.mic-label', null, attempts ? 'سجّل مرة أخرى' : 'اضغط وسجّل صوتك')),
+          el('span.mic-label', null, attempts ? 'سجّل مرة أخرى' : 'سجّل نطقك')),
         el('div.row.row--center', null, modelBtn()));
     }
 
@@ -111,7 +111,7 @@ Kanaan.UI.registerScreen({
         el('div.row.row--center', null, cont));
       Kanaan.UI.announce(`${fb.heard} ${look.text}`);
       Kanaan.Sound.sfx(good ? 'success' : 'gentle');
-      Kanaan.Sound.say(`${fb.heard} ${look.text}`);
+      Kanaan.Sound.say(`${fb.heard} ${look.text}`, { who: 'kanaan' });
     }
 
     /* --- بديل: لا ميكروفون — لا يعلق الطفل --- */

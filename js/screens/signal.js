@@ -1,15 +1,17 @@
 /**
- * الشاشة ٢ — التقط الإشارة (التمييز السمعي)
- * لماذا دون صورة أو حرف؟ لنقيس ونبني الوعي الصوتي نفسه؛ الصورة تكشف الإجابة
- * (شمس ← ش) فيتحول النشاط إلى تخمين بصري.
+ * الشاشة ٢ — التقط الإشارة (تمييز سمعي خالص)
+ * يسمع الطفل الإشارة، ثم يستمع إلى ثلاثة أصوات (لا حروف ولا صور) ويختار المطابق.
+ * لماذا أصوات لا حروف؟ الحرف لم يُكتشف بعد؛ عرضه هنا يكشف الإجابة لمن يعرف شكله،
+ * ويحوّل المهمة إلى تعرّف بصري. بعد الإجابة الصحيحة تُكشف حروف الأصوات الثلاثة
+ * (ربط الصوت بالرمز) ثم يخرج الحرف من الراديو في الشاشة التالية.
  */
 Kanaan.UI.registerScreen({
   id: 'signal',
   stage: 'listen',
-  render({ ep, next }) {
-    const { el, button, feedback, wait } = Kanaan.UI;
+  render({ ep, next, alive }) {
+    const { el, button, feedback, wait, digits } = Kanaan.UI;
     const act = ep.phonemeActivity;
-    let wrong = 0, busy = false, solved = false;
+    let wrong = 0, busy = false, solved = false, picked = null;
 
     const radio = Kanaan.UI.radio();
     const wave = Kanaan.UI.waveView(radio.canvas);
@@ -17,55 +19,87 @@ Kanaan.UI.registerScreen({
     const fbSlot = el('div.feedback-slot');
     const scaffoldSlot = el('div.scaffold-slot');
 
-    async function play(spec = ep.sound, label = 'الإشارة') {
-      if (busy) return;
+    async function play(spec = ep.sound, label = 'الإشارة', card = null) {
+      Kanaan.Sound.stop();
       busy = true;
       radio.node.classList.add('is-on');
+      cards.forEach((c) => c.node.classList.toggle('is-playing', c.node === card));
       status.textContent = `📡 أستمع إلى ${label}…`;
       const { analyser, done } = Kanaan.Sound.phoneme(spec);
       analyser ? wave.live(analyser) : wave.speech();
       await done;
       wave.idle();
       radio.node.classList.remove('is-on');
-      status.textContent = '👂 انتهت الإشارة.';
+      if (card) card.classList.remove('is-playing');
+      status.textContent = '👂 انتهى الصوت.';
       busy = false;
     }
 
-    const replay = button('أعد الاستماع', { variant: 'secondary', icon: '🔁', onClick: () => play() });
+    const replay = button('أعد سماع الإشارة', { variant: 'secondary', icon: '📡', onClick: () => play() });
 
-    const options = act.options.map((letter) => el('button.choice.choice--letter', {
-      type: 'button', 'aria-label': `الحرف ${letter}`,
-      onclick: (e) => choose(letter, e.currentTarget)
-    }, el('span.choice-glyph', null, letter), el('span.choice-mark', { 'aria-hidden': 'true' })));
+    // بطاقات الأصوات: لمس البطاقة يُسمع صوتها ويختارها؛ زر «هذا هو» يؤكد
+    const cards = act.options.map((letter, i) => {
+      const glyph = el('span.sound-glyph', { 'aria-hidden': 'true' }, '؟');
+      const node = el('button.sound-card', {
+        type: 'button', 'aria-pressed': 'false', 'aria-label': `الصوت ${digits(i + 1)}`,
+        onclick: () => {
+          if (solved) return;
+          picked = i;
+          cards.forEach((c, j) => { c.node.classList.toggle('is-picked', j === i); c.node.setAttribute('aria-pressed', String(j === i)); });
+          confirm.removeAttribute('disabled');
+          play(act.sounds[letter], `الصوت ${digits(i + 1)}`, node);
+        }
+      },
+      el('span.sound-bars', { 'aria-hidden': 'true' }, el('i'), el('i'), el('i'), el('i'), el('i')),
+      el('span.sound-name', null, `صوت ${digits(i + 1)}`),
+      glyph,
+      el('span.choice-mark', { 'aria-hidden': 'true' }));
+      return { node, glyph, letter };
+    });
+
+    const confirm = button('هذا هو الصوت!', { icon: '✔', onClick: () => choose() });
+    confirm.setAttribute('disabled', '');
 
     const question = el('div.question', { hidden: true },
       el('p.question-text', null, act.prompt),
-      el('div.choices', { role: 'group', 'aria-label': act.prompt }, options));
+      el('div.sound-cards', { role: 'group', 'aria-label': act.prompt }, cards.map((c) => c.node)),
+      el('div.row.row--center', null, confirm));
 
-    async function choose(letter, btn) {
-      if (solved || busy) return;
-      const ok = letter === act.correct;
+    async function choose() {
+      if (solved || picked == null) return;
+      const c = cards[picked];
+      const ok = c.letter === act.correct;
       Kanaan.Progress.attempt(ep.id, 'discrimination', ok);
+      Kanaan.Sound.stop();
       if (ok) {
         solved = true;
-        btn.classList.add('is-correct');
-        btn.querySelector('.choice-mark').textContent = '✔';
-        options.forEach((o) => o !== btn && o.setAttribute('disabled', ''));
+        confirm.setAttribute('disabled', '');
+        c.node.classList.add('is-correct');
+        c.node.querySelector('.choice-mark').textContent = '✔';
+        // كشف رموز الأصوات الثلاثة: كل صوت له حرف
+        cards.forEach((x, j) => setTimeout(() => {
+          x.glyph.textContent = x.letter;
+          x.node.classList.add('is-revealed');
+          x.node.setAttribute('aria-label', `الصوت ${digits(j + 1)}: حرف ${x.letter}`);
+        }, 250 + j * 180));
         Kanaan.Sound.sfx('success');
         fbSlot.replaceChildren(feedback('success', ep.feedback.discrimination.correct));
-        await Kanaan.Sound.say(ep.feedback.discrimination.correct);
-        await wait(500);
-        next();
+        await Kanaan.Sound.say(ep.feedback.discrimination.correct, { who: 'kanaan' });
+        await wait(700);
+        if (alive()) next();
       } else {
         wrong++;
-        btn.classList.add('is-tried');
-        btn.querySelector('.choice-mark').textContent = '↺';
+        c.node.classList.add('is-tried');
+        c.node.classList.remove('is-picked');
+        c.node.querySelector('.choice-mark').textContent = '↺';
+        picked = null;
+        confirm.setAttribute('disabled', '');
         Kanaan.Sound.sfx('gentle');
         fbSlot.replaceChildren(feedback('retry', ep.feedback.discrimination.retry));
         replay.classList.add('attention');
         setTimeout(() => replay.classList.remove('attention'), 2400);
-        Kanaan.Sound.say(ep.feedback.discrimination.retry);
-        // دعامة بعد محاولتين: قارن بالصوت الأقرب (س) دون كشف حرف الإشارة
+        Kanaan.Sound.say(ep.feedback.discrimination.retry, { who: 'kanaan' });
+        // دعامة بعد محاولتين: المقارنة بالصوت الأقرب، دون كشف رمز الإشارة
         if (wrong >= 2 && act.contrast && !scaffoldSlot.firstChild) {
           scaffoldSlot.append(el('div.scaffold', null,
             el('p', null, '💡 ', ep.feedback.discriminationScaffold),
@@ -89,10 +123,12 @@ Kanaan.UI.registerScreen({
       async onEnter() {
         await Kanaan.Host.say(ep.script.signal, { keep: false });
         await wait(250);
+        if (!alive()) return;
         await play();
+        if (!alive()) return;
         question.hidden = false;
         question.classList.add('appear');
-        Kanaan.Sound.say(act.prompt);
+        Kanaan.Host.say(act.prompt, { keep: false });
       },
       cleanup() { wave.destroy(); }
     };

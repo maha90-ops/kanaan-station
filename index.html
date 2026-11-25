@@ -29,7 +29,7 @@
     <p class="episode-chip" id="episode-chip"></p>
 
     <button class="icon-btn" id="dial-open" type="button">
-      <span aria-hidden="true">📻</span><span class="sfx-label">محطاتي</span>
+      <span aria-hidden="true">🏆</span><span class="sfx-label">إنجازاتي</span>
     </button>
 
     <button class="icon-btn" id="sfx-toggle" type="button" aria-pressed="true">
@@ -42,7 +42,7 @@
 
   <!-- كنعان: يظهر فقط عند الحاجة إلى توجيه -->
   <aside class="host" id="host" aria-live="polite" hidden>
-    <img class="host-avatar" src="assets/images/kanaan.webp" alt="كنعان، مذيع المحطة" width="88" height="88">
+    <div class="host-avatar" id="host-avatar" role="img" aria-label="كنعان، مذيع المحطة"></div>
     <div class="host-bubble">
       <p class="host-text" id="host-text"></p>
       <button class="host-replay" id="host-replay" type="button" aria-label="أعد كلام كنعان">🔊</button>
@@ -56,6 +56,7 @@
 
   <!-- البيانات (قابلة للتوسعة: أضف ملف حلقة جديد فقط) -->
   <script src="js/data/registry.js"></script>
+  <script src="js/data/alphabet.js"></script>
   <script src="js/data/scenes.js"></script>
   <script src="js/data/message.js"></script>
   <script src="js/data/episodes/sh.js"></script>
@@ -74,6 +75,9 @@
   <script src="js/core/host.js"></script>
   <script src="js/core/archive.js"></script>
   <script src="js/core/dial.js"></script>
+  <script src="js/core/puppet.js"></script>
+  <script src="js/core/studio.js"></script>
+  <script src="js/core/panels.js"></script>
 
   <!-- الشاشات: كل شاشة نشاط مستقل يقرأ بياناته من الحلقة -->
   <script src="js/screens/welcome.js"></script>

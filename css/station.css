@@ -136,28 +136,164 @@ button { font: inherit; color: inherit; }
 .scaffold p { margin: 0 0 10px; }
 .scaffold-pair { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
-/* ---------- الشاشة ١: الاستقبال ---------- */
-body[data-screen="welcome"] .stage { padding: 0 0 24px; }
+/* ---------- الشاشة ١: الاستوديو الحيّ ---------- */
+body[data-screen="welcome"] .stage { padding: 0 0 16px; }
+body[data-screen="welcome"] { background: #2A2433; }
 .screen--welcome { max-width: none; gap: 0; }
-.hero { position: relative; width: min(100%, calc((100dvh - 96px) * 1.777)); margin: 0 auto; }
-.hero-img { width: 100%; height: auto; }
-/* الزر الحقيقي فوق الزر المرسوم في الصورة (النِّسب ثابتة لأن أبعاد الصورة ثابتة) */
-.hero-start {
-  position: absolute; left: 62.6%; top: 59.2%; width: 31.4%; height: 17.8%;
-  border: 0; border-radius: 999px; background: transparent; cursor: pointer;
-  transition: box-shadow .2s, transform .2s;
+.studio { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.st-frame { position: relative; overflow: hidden; margin: 0 auto; }
+/* نظام إحداثيات الرسم: من اليسار إلى اليمين؛ والنصوص داخله تعود RTL */
+.kp-canvas { position: absolute; left: 0; top: 0; width: 1672px; height: 941px; transform-origin: 0 0; direction: ltr; }
+.kp-canvas picture { left: 0; top: 0; }
+.st-bubble, .st-sign, .st-start-wrap, .st-navbar, .st-clock-wrap { direction: rtl; }
+.kp-canvas > *, .kp-canvas picture > img { position: absolute; }
+.kp-plate { left: 0; top: 0; width: 1672px; height: 941px; max-width: none; user-select: none; }
+.kp-head, .kp-hand { will-change: transform; }
+.kp-head > img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+.kp-mouth { position: absolute; will-change: transform; }
+.kp-mouth img { width: 100%; height: 100%; max-width: none; display: block; }
+.kp-lids { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.kp-lid { transform: scaleY(0); }
+.kp-enter { animation: kpEnter .9s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes kpEnter { from { opacity: 0; translate: 0 26px; } }
+
+/* موجات الهوائي: تتنفس ببطء، وتنشط مع الصوت */
+.st-waves { overflow: visible; --lv: 0; }
+.st-arc { fill: none; stroke: #FFC94A; stroke-width: 7; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,190,60,.7)); opacity: .45; animation: arcIdle 3.6s ease-in-out infinite; animation-delay: calc(var(--i) * .45s); }
+.st-tip { fill: #FFD25A; filter: drop-shadow(0 0 8px rgba(255,200,80,.9)); }
+@keyframes arcIdle { 50% { opacity: .85; } }
+.st-waves.is-live .st-arc { animation: arcLive .8s ease-in-out infinite; animation-delay: calc(var(--i) * .13s); stroke-width: calc(7px + var(--lv) * 3px); }
+@keyframes arcLive { 0%, 100% { opacity: calc(.45 + var(--lv) * .3); } 50% { opacity: 1; } }
+.st-waves.is-live { transform: scale(calc(1 + var(--lv) * .12)); transform-origin: 50% 48%; }
+
+.st-radio-screen { border-radius: 10px; background: radial-gradient(ellipse at center, #3A2812, #1C1108); box-shadow: inset 0 0 18px rgba(255,190,80,.35); }
+.st-radio-screen.is-live { box-shadow: inset 0 0 26px rgba(255,190,80,.6), 0 0 24px rgba(255,190,80,.45); }
+.st-mic-glow { border-radius: 50%; background: radial-gradient(circle, rgba(255,214,120,.75), rgba(255,180,60,.25) 45%, transparent 70%); mix-blend-mode: screen; opacity: 0; pointer-events: none; transition: opacity .08s; }
+
+/* فقاعة الكلام: النص الحقيقي فوق الفقاعة المرسومة */
+.st-bubble { display: flex; align-items: center; justify-content: center; }
+.st-bubble-text { margin: 0; text-align: center; font-weight: 700; font-size: 21.5px; line-height: 1.65; color: #2B2118; white-space: nowrap; }
+.st-bubble-btn { display: none; }
+.studio.is-mobile .st-bubble-btn {
+  display: grid; place-items: center; width: 150px; height: 150px; border-radius: 50%; cursor: pointer;
+  border: 6px solid #E5A93B; background: #FFF6E2; font-size: 76px; box-shadow: 0 6px 0 #C7831C;
 }
-.hero-start:hover { box-shadow: 0 0 0 6px color-mix(in srgb, #fff 55%, transparent); }
-.hero-start:active { transform: scale(.98); }
-.hero-start:focus-visible { outline: 5px solid #fff; box-shadow: 0 0 0 10px var(--focus); }
-.hero-caption { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 14px 16px; flex-wrap: wrap; }
-.hero-text { display: none; margin: 0; max-width: 60ch; font-size: 1.15rem; }
-.hero-start-fallback { display: none; }
-@media (max-width: 720px) {
-  /* في الهاتف يصغر نص الفقاعة داخل الصورة، فنعرضه نصًا حقيقيًا مع زر كبير */
-  .hero-text { display: block; }
-  .hero-start-fallback { display: inline-flex; }
+.st-w { border-radius: 8px; transition: background .15s, color .15s; padding: 0 2px; }
+.st-w.is-now { background: #FFE3A3; box-shadow: 0 0 0 3px #FFE3A3; }
+
+/* اللافتة */
+.st-sign { left: 735px; top: 85px; width: 450px; height: 258px; }
+.st-title {
+  position: absolute; left: 14px; right: 14px; top: 12px; height: 170px; margin: 0; outline: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 72px; font-weight: 800; line-height: 1.02; color: #FFF8EC;
+  text-shadow: 0 4px 0 rgba(40,20,5,.55), 0 0 18px rgba(0,0,0,.25);
 }
+.st-ribbon {
+  position: absolute; left: 32px; top: 197px; width: 418px; height: 58px; margin: 0;
+  display: grid; place-items: center; border-radius: 18px; border: 3px solid #E5A93B;
+  background: linear-gradient(180deg, #FFF8E8, #F3E2C0); box-shadow: 0 5px 10px rgba(40,20,5,.3);
+  font-size: 28px; font-weight: 700; color: #3B2A1A;
+}
+
+/* الساعة: الرسم المطرّز نفسه + عقارب حقيقية */
+.st-clock-wrap { left: 1227px; top: 95px; width: 390px; height: 390px; }
+.st-clock { position: absolute; inset: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; transition: transform .25s; }
+.st-clock:hover { transform: scale(1.02); }
+.st-clock:focus-visible { outline: 8px solid #fff; outline-offset: 2px; }
+.st-clock img, .st-hands { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.st-hands { filter: drop-shadow(2px 4px 3px rgba(0,0,0,.35)); }
+.motion-off .clk-s { display: none; }
+.st-clock-tip {
+  position: absolute; top: 330px; left: 50%; width: max-content; white-space: nowrap;
+  background: #FFFDF8; color: #2B2118; border: 4px solid var(--clay); border-radius: 22px;
+  padding: 10px 20px; font-size: 28px; font-weight: 700; box-shadow: 0 8px 18px rgba(0,0,0,.3);
+  opacity: 0; transform: translate(-50%, -8px); transition: opacity .2s, transform .2s; pointer-events: none; z-index: 3;
+}
+.st-clock-wrap.show-tip .st-clock-tip { opacity: 1; transform: translate(-50%, 0); }
+
+/* زر البدء */
+.st-start-wrap { left: 996px; top: 420px; width: 448px; height: 246px; }
+.st-start {
+  position: absolute; left: 4px; top: 87px; width: 440px; height: 153px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 26px; padding: 0 34px;
+  border-radius: 999px; border: 7px solid #FFE6A0;
+  background: linear-gradient(180deg, #FFD663 0%, #F7B32B 55%, #E99512 100%);
+  box-shadow: 0 9px 0 #B86E06, 0 0 30px rgba(255,190,60,.55), inset 0 4px 0 rgba(255,255,255,.5);
+  font-family: var(--font-ui); transition: transform .15s, box-shadow .15s, filter .15s;
+}
+.st-start:hover { filter: brightness(1.05); transform: translateY(-3px); }
+.st-start:active { transform: translateY(5px); box-shadow: 0 4px 0 #B86E06; }
+.st-start:focus-visible { outline: 8px solid #fff; outline-offset: 6px; }
+.st-start-label { font-size: 54px; font-weight: 800; color: #2B1A0A; line-height: 1; white-space: nowrap; }
+.st-start-play { flex: none; width: 92px; height: 92px; border-radius: 50%; background: #3A2210; position: relative; box-shadow: inset 0 -4px 0 rgba(0,0,0,.3); }
+.st-start-play::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-38%, -50%); border-style: solid; border-width: 21px 0 21px 33px; border-color: transparent transparent transparent #fff; }
+.st-rays { position: absolute; left: 98px; top: 4px; width: 150px; height: 75px; opacity: 0; }
+.st-rays svg { width: 100%; height: 100%; display: block; }
+.call-attention .st-rays { animation: rays 1.3s ease-out 3 both; }
+.call-attention .st-start { animation: startNudge 1.3s ease-in-out 3; }
+@keyframes rays { 0% { opacity: 0; transform: translateY(14px) scale(.8); } 40% { opacity: 1; } 100% { opacity: 0; transform: none; } }
+@keyframes startNudge { 40% { transform: scale(1.035); } }
+
+/* أزرار المكتب الأربعة */
+.st-navbar { position: static; }
+.st-nav {
+  position: absolute; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  border-radius: 44px; border: 4px solid #F2B233; background: linear-gradient(180deg, #FFF8EA, #F4E3C4);
+  box-shadow: 0 8px 0 #C7831C, 0 12px 18px rgba(0,0,0,.35); font-family: var(--font-ui); transition: transform .15s, filter .15s;
+}
+.st-nav:hover { transform: translateY(-3px); filter: brightness(1.04); }
+.st-nav:active { transform: translateY(4px); box-shadow: 0 4px 0 #C7831C; }
+.st-nav:focus-visible { outline: 7px solid #fff; outline-offset: 4px; }
+.st-nav-icon { width: 46px; height: 46px; }
+.st-nav-icon svg { width: 100%; height: 100%; display: block; }
+.st-nav-label { font-size: 34px; font-weight: 800; color: #2B1A0A; line-height: 1.1; }
+
+/* أزرار التحكم أسفل المشهد */
+.st-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.st-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; padding-top: 12px; }
+.st-ctl {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 18px; cursor: pointer;
+  border-radius: 999px; border: 2px solid rgba(255,240,210,.45); background: rgba(255,248,236,.1);
+  color: #FFF4DE; font-size: 1.05rem; font-weight: 700;
+}
+.st-ctl:hover { background: rgba(255,248,236,.2); }
+.attention-pulse { animation: nudge 1.2s ease-in-out infinite; border-color: var(--amber); }
+
+/* الهاتف: لقطة مقصوصة على كنعان والراديو، والباقي بحجم مقروء */
+.studio.is-mobile .st-top { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px 10px; }
+.studio.is-mobile .st-sign { position: static; width: auto; height: auto; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.studio.is-mobile .st-title {
+  position: static; height: auto; padding: 8px 16px; font-size: 1.75rem; flex-direction: row; gap: .3em;
+  border-radius: 16px; border: 4px solid #7A4C2C; background: linear-gradient(180deg, #6B4226, #4A2C17);
+}
+.studio.is-mobile .st-ribbon { position: static; width: auto; height: auto; padding: 2px 12px; font-size: .9rem; border-width: 2px; border-radius: 12px; }
+.studio.is-mobile .st-clock-wrap { position: relative; left: auto; top: auto; flex: none; width: 92px; height: 92px; }
+.studio.is-mobile .st-clock-tip { white-space: normal; max-width: 220px; top: 96px; left: 0; right: auto; transform: none; font-size: .95rem; padding: 6px 12px; border-width: 3px; }
+.studio.is-mobile .st-clock-wrap.show-tip .st-clock-tip { transform: none; }
+.studio.is-mobile .st-bubble-text { white-space: normal; font-size: 1.15rem; color: #FFF4DE; padding: 12px 16px 0; max-width: 34ch; }
+.studio.is-mobile .st-w.is-now { background: #8A5A1E; box-shadow: 0 0 0 3px #8A5A1E; }
+.studio.is-mobile .st-start-wrap { position: relative; left: auto; top: auto; width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
+.studio.is-mobile .st-rays { position: static; width: 90px; height: 40px; }
+.studio.is-mobile .st-start { position: static; width: auto; height: auto; gap: 14px; padding: 12px 26px; border-width: 4px; box-shadow: 0 6px 0 #B86E06; }
+.studio.is-mobile .st-start-label { font-size: 1.7rem; }
+.studio.is-mobile .st-start-play { width: 52px; height: 52px; }
+.studio.is-mobile .st-start-play::after { border-width: 12px 0 12px 19px; }
+.studio.is-mobile .st-navbar { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 16px 0; }
+.studio.is-mobile .st-nav { position: static; flex-direction: row; min-height: 60px; border-radius: 20px; border-width: 3px; box-shadow: 0 5px 0 #C7831C; gap: 8px; }
+.studio.is-mobile .st-nav-icon { width: 28px; height: 28px; }
+.studio.is-mobile .st-nav-label { font-size: 1.05rem; }
+
+/* المرشد: دمية مقصوصة */
+.kp-avatar { position: relative; overflow: hidden; border-radius: 50%; }
+.kp-avatar-inner { position: absolute; left: 0; top: 0; width: 310px; height: 310px; transform-origin: 0 0; }
+.kp-avatar .kp-canvas { transform-origin: 0 0; }
+
+/* «أوقف الحركة» أو تقليل الحركة في النظام: تتوقف الحركة المستمرة (تبقى حركة الفم مع الكلام) */
+.motion-off .st-arc { animation: none !important; opacity: .7; }
+.motion-off .st-waves.is-live .st-arc { opacity: calc(.5 + var(--lv) * .5); }
+.motion-off .kp-enter, .motion-off .call-attention .st-rays, .motion-off .call-attention .st-start { animation: none; }
+.motion-off .call-attention .st-rays { opacity: 1; }
 
 /* ---------- الراديو ---------- */
 .radio { position: relative; width: min(100%, 440px); padding-top: 34px; }
@@ -214,6 +350,41 @@ body[data-screen="welcome"] .stage { padding: 0 0 24px; }
 .is-tried .choice-mark { background: var(--amber); }
 .choice[disabled] { opacity: .45; cursor: default; }
 .choice.is-correct[disabled] { opacity: 1; }
+
+/* ---------- بطاقات الأصوات (تمييز سمعي) ---------- */
+.sound-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 10px 0 6px; }
+.sound-card {
+  position: relative; width: 132px; min-height: 150px; padding: 12px 8px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius); box-shadow: 0 4px 0 var(--line);
+}
+.sound-card:hover { border-color: var(--studio); }
+.sound-card.is-picked { border-color: var(--studio); background: #EEF0FA; box-shadow: 0 0 0 4px color-mix(in srgb, var(--studio) 20%, transparent); }
+.sound-bars { display: flex; align-items: center; gap: 4px; height: 40px; }
+.sound-bars i { width: 7px; height: 40%; border-radius: 4px; background: var(--studio); }
+.sound-bars i:nth-child(2), .sound-bars i:nth-child(4) { height: 70%; }
+.sound-bars i:nth-child(3) { height: 100%; }
+.sound-card.is-playing .sound-bars i { animation: bars .5s ease-in-out infinite alternate; }
+.sound-card.is-playing .sound-bars i:nth-child(2n) { animation-delay: .15s; }
+@keyframes bars { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+.sound-name { font-weight: 700; }
+.sound-glyph { font-family: var(--font-letter); font-size: 2.6rem; font-weight: 700; line-height: 1.1; color: var(--ink-soft); min-height: 1.1em; }
+.sound-card.is-revealed .sound-glyph { color: var(--studio); animation: enter .35s ease-out both; }
+.sound-card.is-correct .sound-glyph { color: var(--olive); }
+
+/* ---------- موضع الصوت في الكلمة ---------- */
+.pos-cards { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.pos-card {
+  position: relative; min-width: 150px; padding: 14px 16px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--surface); border: 3px solid var(--line); border-radius: var(--radius); box-shadow: 0 4px 0 var(--line);
+  font-weight: 700; font-size: 1.2rem;
+}
+.pos-card:hover:not([disabled]) { border-color: var(--amber); }
+.pos-card[disabled] { opacity: .45; }
+.pos-icon { display: flex; gap: 6px; }
+.pos-dot { width: 26px; height: 26px; border-radius: 8px; border: 3px solid var(--studio); }
+.pos-dot.on { background: var(--amber); border-color: var(--amber-deep); }
 
 /* ---------- الشاشة ٣: الحرف يخرج من الراديو ---------- */
 .reveal-stage { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -327,7 +498,7 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 
 /* ---------- الشاشة ٨: النجاح ---------- */
 .success-host { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.success-avatar { width: 140px; height: 140px; border-radius: 50%; border: 5px solid var(--amber); animation: enter .5s ease-out both; }
+.success-avatar { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; border: 5px solid var(--amber); box-sizing: content-box; animation: enter .5s ease-out both; }
 .achievements { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: min(100%, 560px); }
 .achievement {
   position: relative; display: flex; align-items: center; gap: 12px; padding: 14px 18px;
@@ -417,6 +588,23 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 }
 .next-block { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 
+/* ---------- لوحات الاستوديو ---------- */
+.panel .guide { text-align: start; max-height: 60vh; overflow: auto; padding-inline: 4px; }
+.panel .guide h3 { margin: 14px 0 6px; color: var(--studio); font-size: 1.15rem; }
+.panel .guide ol, .panel .guide ul { margin: 0; padding-inline-start: 1.3em; }
+.panel .guide li { margin: 4px 0; }
+.panel table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 1rem; }
+.panel th, .panel td { border-bottom: 1px solid var(--line); padding: 6px; text-align: center; }
+.prog-list { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 8px; text-align: start; }
+.prog-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 16px; border: 2px solid var(--line); background: var(--surface); }
+.prog-row.is-done { border-color: var(--olive); }
+.prog-row.is-next { border-color: var(--amber); border-style: dashed; }
+.prog-letter { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: var(--amber-soft); font-family: var(--font-letter); font-size: 1.8rem; font-weight: 700; line-height: 1; }
+.prog-name { flex: 1; font-weight: 700; }
+.prog-stages { display: flex; gap: 2px; }
+.prog-stage { opacity: .22; filter: grayscale(1); font-size: 1.1rem; }
+.prog-stage.on { opacity: 1; filter: none; }
+
 /* ---------- كنعان المرشد ---------- */
 .host {
   position: fixed; z-index: 20; bottom: 18px; inset-inline-start: 18px;
@@ -426,7 +614,7 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 .host.is-leaving { animation: hostOut .25s ease-in both; }
 @keyframes hostIn { from { opacity: 0; transform: translateY(20px); } }
 @keyframes hostOut { to { opacity: 0; transform: translateY(20px); } }
-.host-avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid var(--surface); box-shadow: 0 0 0 3px var(--amber); flex: none; }
+.host-avatar { width: 88px; height: 88px; border-radius: 50%; border: 4px solid var(--surface); box-shadow: 0 0 0 3px var(--amber); flex: none; overflow: hidden; background: #E9D9BF; box-sizing: content-box; }
 .host.is-speaking .host-avatar { animation: talk 1.1s ease-in-out infinite; }
 @keyframes talk { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--amber) 40%, transparent); } }
 .host-bubble {
@@ -464,6 +652,8 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
   .message-paper { padding: 16px; }
   .host { bottom: 10px; inset-inline-start: 10px; }
   .host-avatar { width: 64px; height: 64px; }
+  .host-avatar .kp-avatar { width: 64px !important; height: 64px !important; }
+  .host-avatar .kp-avatar-inner { transform: scale(calc(64 / 310)) !important; }
   .host-text { font-size: 1rem; }
   .mic-btn { width: 168px; height: 168px; }
 }

@@ -26,10 +26,6 @@ Kanaan.Episodes.register({
 
   wordBuildingActivity: { tiles: ['ب', 'ع', 'ن'], target: ['ع', 'ن', 'ب'] },
 
-  meaningActivity: {
-    options: [{ word: 'عِنَب', has: true }, { word: 'بَيْت', has: false }, { word: 'تِين', has: false }]
-  },
-
   transferActivity: {
     channels: [
       { word: 'أَرْنَب', startsWithTarget: false, startSound: 'أ', audio: null },

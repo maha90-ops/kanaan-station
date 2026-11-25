@@ -43,11 +43,7 @@ Kanaan.Archive = (function () {
       const r = await this.get(key);
       if (!r) return false;
       const url = URL.createObjectURL(r.blob);
-      await new Promise((res) => {
-        const a = new Audio(url);
-        a.onended = a.onerror = res;
-        a.play().catch(res);
-      });
+      await Kanaan.Sound.playClip(url, { who: 'radio' }); // يحرّك موجات الراديو
       URL.revokeObjectURL(url);
       return true;
     },

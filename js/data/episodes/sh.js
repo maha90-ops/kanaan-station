@@ -8,7 +8,7 @@
  *  phonemeActivity         التمييز السمعي: خيارات + صوت مقارنة (دعامة)
  *  pronunciationActivity   النطق: evaluator يحدد طريقة التقييم التقريبي
  *  wordBuildingActivity    الحروف مبعثرة → الكلمة
- *  meaningActivity         أين تسمع الصوت؟ (كلمات مألوفة)
+ *  meaningActivity         اختياري: موضع الصوت في الكلمة يُحسب تلقائيًا (بداية/وسط/نهاية)
  *  transferActivity        قنوات بكلمات جديدة تُسمع قبل أن تُرى
  *  script / feedback       اختياري: ما لم يُذكر يُولَّد تلقائيًا في registry.js
  *
@@ -29,10 +29,8 @@ Kanaan.Episodes.register({
     image: { scene: 'sun-hills', alt: 'شمس دافئة تشرق فوق تلال فيها شجرة زيتون وبيت من حجر' }
   },
 
-  phonemeActivity: {
-    options: ['س', 'ش', 'ج'], correct: 'ش',
-    contrast: { letter: 'س', label: 'سسس', audio: null, synth: { kind: 'fricative', centerHz: 7200, q: 1.4, highpassHz: 5200, durationMs: 1100 } }
-  },
+  // التمييز السمعي: ثلاثة أصوات احتكاكية متقاربة تُسمع ولا تُرى (س · ش · ز)
+  phonemeActivity: { options: ['س', 'ش', 'ز'], correct: 'ش' },
 
   pronunciationActivity: {
     evaluator: 'fricative',
@@ -46,10 +44,6 @@ Kanaan.Episodes.register({
   },
 
   wordBuildingActivity: { tiles: ['س', 'ش', 'م'], target: ['ش', 'م', 'س'] },
-
-  meaningActivity: {
-    options: [{ word: 'بَيْت', has: false }, { word: 'شَمْس', has: true }, { word: 'قَمَر', has: false }]
-  },
 
   transferActivity: {
     channels: [
