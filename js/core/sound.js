@@ -104,7 +104,8 @@ Kanaan.Sound = (function () {
 
   /** كلام كنعان أو نطق كلمة: الملف أولًا، ثم الصوت الآلي.
    *  يعيد: 'file' | 'tts' | 'blocked' (يحتاج لمسة من المستخدم) | 'none' */
-  async function say(text, { audio, rate, pitch, who, onWord } = {}) {
+  async function say(text, { audio, cue, rate, pitch, who, onWord } = {}) {
+    audio = audio || (Kanaan.AudioLib && Kanaan.AudioLib.url(cue));
     if (audio) {
       const r = await playFile(audio, { who });
       if (r === true) return 'file';
@@ -127,11 +128,21 @@ Kanaan.Sound = (function () {
     return b;
   }
 
+  const fileOf = (spec) => spec.audio || (Kanaan.AudioLib && Kanaan.AudioLib.url(spec.cue));
+
   function canPlay(spec) {
-    return !!(spec && (spec.audio || spec.synth || (spec.tts && canSpeak())));
+    return !!(spec && (fileOf(spec) || spec.synth || (spec.tts && canSpeak())));
   }
 
-  function phoneme(spec) {
+  function phoneme(spec, { repeat = 1 } = {}) {
+    // نموذج «بَ بَ بَ»: ملف listen/ إن وُجد، وإلا يتكرر الصوت
+    if (repeat > 1 && spec.listenCue && Kanaan.AudioLib.url(spec.listenCue)) {
+      return { analyser: null, done: playFile(Kanaan.AudioLib.url(spec.listenCue), { who: 'radio' }) };
+    }
+    if (repeat > 1 && !fileOf(spec) && !spec.synth && spec.tts) {
+      return { analyser: null, done: speakTTS(Array(repeat).fill(spec.tts).join(' '), { rate: 0.6, who: 'radio' }) };
+    }
+    if (fileOf(spec)) spec = { ...spec, audio: fileOf(spec) };
     if (spec.audio) return { analyser: null, done: playFile(spec.audio, { who: 'radio' }) };
     if (!spec.synth) {
       return { analyser: null, done: spec.tts ? speakTTS(spec.tts, { rate: 0.6, who: 'radio' }) : Promise.resolve(false) };

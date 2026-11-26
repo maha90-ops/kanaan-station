@@ -85,5 +85,5 @@
   startEpisode(params.get('ep') || firstOpen.id);
 
   // للمعلم/المطوّر: Kanaan.debug.export() لتصدير السجل
-  Kanaan.debug = { export: Progress.export, reset: Progress.reset, go: (n) => show(n) };
+  Kanaan.debug = { export: Progress.export, reset: Progress.reset, go: (n) => show(n), goTo: (id) => show(Math.max(0, flow.indexOf(id))) };
 })();

@@ -115,6 +115,59 @@ def wall_fill(x0, y0, x1, y1, xl=None, xr=None):
 
 wall_fill(992, 498, 1452, 672)   # baked start button (a real button sits here)
 
+# ---------- v3: الساعة صارت أصغر، وأزرار المكتب أهدأ ----------
+# نزيل الساعة المرسومة كاملة من الخلفية (الساعة الحقيقية طبقة مستقلة بحجم أصغر)،
+# مع الإبقاء على أوراق الزيتون فوقها والفانوس على يمينها.
+hsv_p = cv2.cvtColor(plate, cv2.COLOR_BGR2HSV)
+yy, xx = np.mgrid[0:H, 0:W]
+mask = (np.hypot(xx - cx, yy - cy) <= cr + 26)                       # القرص + ظلّه
+leaf = (hsv_p[..., 0] > 25) & (hsv_p[..., 0] < 50) & (hsv_p[..., 1] > 60) & (yy < 150)
+lantern = (xx > 1580) & (yy < 208)
+mask &= ~leaf & ~lantern
+# ملء من تدرّج لوني مُلائم للجدار وحده: نأخذ عيّنات من حلقة حول الساعة (دون العلم والفانوس
+# والأوراق)، ونلائم سطحًا تربيعيًا لكل قناة لون، ثم نملأ القرص منه مع حبيبات خفيفة.
+rr = np.hypot(xx - cx, yy - cy)
+ring = (rr > cr + 40) & (rr < cr + 140) & ~leaf & ~lantern & ~((xx < 1270) & (yy < 240)) & (yy < 640)
+ring &= ~((xx > 1540) & (yy > 400))           # النبتة أسفل اليمين
+ring &= (hsv_p[..., 1] < 200)                 # الجدار (مع ضوء الفانوس الدافئ)
+X = ((xx[ring] - cx) / 300.0); Y = ((yy[ring] - cy) / 300.0)
+A = np.stack([np.ones_like(X), X, Y, X * X, X * Y, Y * Y], 1)
+fill = np.zeros((H, W, 3), np.float32)
+Xa = (xx - cx) / 300.0; Ya = (yy - cy) / 300.0
+Aall = np.stack([np.ones_like(Xa), Xa, Ya, Xa * Xa, Xa * Ya, Ya * Ya], -1)
+for c in range(3):
+    coef, *_ = np.linalg.lstsq(A, plate[..., c][ring].astype(np.float64), rcond=None)
+    fill[..., c] = Aall @ coef
+# ملمس الجدار الحقيقي: التفاصيل الدقيقة من رقعة جدار نظيفة، مكرّرة بالانعكاس
+patch = img[350:430, 935:1075].astype(np.float32)
+hf = patch - cv2.GaussianBlur(patch, (0, 0), 4)
+tile = np.concatenate([hf, hf[:, ::-1]], 1); tile = np.concatenate([tile, tile[::-1]], 0)
+reps = (H // tile.shape[0] + 1, W // tile.shape[1] + 1, 1)
+grain = np.tile(tile, reps)[:H, :W] * 0.9
+# ملء «متصل بالحدود»: حلّ معادلة لابلاس داخل القرص، فيطابق لون كل نقطة على الحافة تمامًا
+# ويتدرّج بنعومة إلى الداخل. حيث يجاور القرصَ علمٌ أو فانوس أو ورق، نستخدم التدرّج المُلائم بدلًا منه.
+field = cv2.GaussianBlur(plate.astype(np.float32), (0, 0), 5)
+dirty = leaf | lantern | ((xx < 1270) & (yy < 240))
+field[dirty] = fill[dirty]
+k = 4
+fs = cv2.resize(field, (W // k, H // k), interpolation=cv2.INTER_AREA)
+ms = cv2.resize(mask.astype(np.uint8), (W // k, H // k), interpolation=cv2.INTER_NEAREST).astype(bool)
+ms = cv2.dilate(ms.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool)
+fs[ms] = cv2.resize(fill, (W // k, H // k), interpolation=cv2.INTER_AREA)[ms]   # بداية جيدة
+for _ in range(1500):
+    avg = (np.roll(fs, 1, 0) + np.roll(fs, -1, 0) + np.roll(fs, 1, 1) + np.roll(fs, -1, 1)) / 4
+    fs[ms] = avg[ms]
+lap = cv2.resize(fs, (W, H), interpolation=cv2.INTER_CUBIC)
+soft = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), 5)[..., None]
+plate[:] = np.clip(plate * (1 - soft) + (lap + grain) * soft, 0, 255).astype(np.uint8)
+
+# أزرار المكتب المرسومة: نملؤها بخشب المكتب (عروق الخشب أفقية، فالمزج الأفقي يحافظ عليها)
+wall_fill(312, 774, 1353, 918)
+
+rgb = Image.fromarray(cv2.cvtColor(plate, cv2.COLOR_BGR2RGB))
+rgb.save(f'{OUT}/plate.webp', quality=84, method=6)
+rgb.save(f'{OUT}/plate.jpg', quality=82, optimize=True, progressive=True)
+
 rgb = Image.fromarray(cv2.cvtColor(plate, cv2.COLOR_BGR2RGB))
 rgb.save(f'{OUT}/plate.webp', quality=84, method=6)
 rgb.save(f'{OUT}/plate.jpg', quality=82, optimize=True, progressive=True)

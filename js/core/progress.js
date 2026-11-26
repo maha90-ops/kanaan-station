@@ -8,6 +8,8 @@
  *   wordBuilding:   { attempts, success, firstTry }
  *   meaning:        { attempts, success, firstTry }
  *   transfer:       { attempts, success, firstTry, channelsHeard }
+ *   listened:       { success, times }        (المرحلة ١)
+ *   writing:        { completed, levels: {trace, complete, free}, best }  (المرحلة ٦)
  * }
  */
 Kanaan.Progress = (function () {
@@ -118,14 +120,16 @@ Kanaan.Progress = (function () {
 
     get(epId) { return episode(epId); },
 
-    /** مراحل «رحلتي» المكتملة */
+    /** مراحل رحلة التعلم المكتملة (٧ مراحل) */
     stagesDone(epId) {
       const a = episode(epId).activities;
       const done = [];
-      if (a.discrimination?.success) done.push('listen');
-      if (a.discrimination?.success && a.revealed?.success) done.push('discover');
+      if (a.listened?.success) done.push('listen');
+      if (a.discrimination?.success) done.push('discriminate');
+      if (a.revealed?.success) done.push('discover');
       if (a.pronunciation?.completed) done.push('speak');
       if (a.wordBuilding?.success) done.push('build');
+      if (a.writing?.completed) done.push('write');
       if (a.transfer?.success) done.push('apply');
       return done;
     },

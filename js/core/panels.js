@@ -27,7 +27,7 @@ Kanaan.Panels = (function () {
     return d;
   }
 
-  const STAGE_ICONS = [['listen', '👂', 'أستمع'], ['discover', '🔍', 'أكتشف'], ['speak', '🎙️', 'أنطق'], ['build', '🧩', 'أبني'], ['apply', '🚀', 'أوظّف']];
+  const STAGE_ICONS = Kanaan.UI.STAGES.map((s) => [s.key, s.icon, s.label]);
 
   function achievements() {
     const eps = Kanaan.Episodes.list();
@@ -47,11 +47,15 @@ Kanaan.Panels = (function () {
       return el(`li.prog-row${done ? '.is-done' : ''}${isNext ? '.is-next' : ''}`, null,
         el('span.prog-letter', { 'aria-hidden': 'true' }, done || isNext ? ep.letter : '؟'),
         el('span.prog-name', null, `الرسالة ${digits(i + 1)}`, done ? ` — حرف ${ep.letterName}` : isNext ? ' — التالية' : ''),
-        el('span.prog-stages', { 'aria-label': done ? 'مكتملة' : `${digits(stages.length)} من ٥ مراحل` },
+        el('span.prog-stages', { 'aria-label': done ? 'مكتملة' : `${digits(stages.length)} من ${digits(STAGE_ICONS.length)} مراحل` },
           STAGE_ICONS.map(([k, icon, label]) => el(`span.prog-stage${done || stages.includes(k) ? '.on' : ''}`, { title: label, 'aria-hidden': 'true' }, icon))));
     });
+    // مقسّمة حسب مجموعات المنهج، داخل منطقة تمرير
+    const byGroup = Kanaan.Curriculum.groups.map((g) => el('section.prog-group', null,
+      el('h3.prog-group-title', null, g.title),
+      el('ol.prog-list', null, rows.filter((_, i) => g.letters.includes(eps[i].id)))));
     open('progress', '📊 تقدمي',
-      el('ol.prog-list', null, rows),
+      el('div.prog-scroll', null, byGroup),
       firstOpen ? el('p.footnote', null, `ستبدأ المحطة من الرسالة ${digits(eps.indexOf(firstOpen) + 1)}.`) : el('p.footnote', null, 'أنهيتَ كل الرسائل! 🎉'));
   }
 
@@ -87,13 +91,15 @@ Kanaan.Panels = (function () {
 
     open('teacher', '📖 دليل المعلم',
       el('div.guide', null,
-        el('h3', null, 'مسار كل رسالة'),
+        el('h3', null, 'مسار كل رسالة (٧ مراحل)'),
         el('ol', null,
-          el('li', null, el('b', null, 'أستمع: '), 'الطفل يسمع الصوت قبل أن يرى الحرف، ويختار من أصوات مشابهة (تمييز سمعي خالص).'),
-          el('li', null, el('b', null, 'أكتشف: '), 'يظهر الحرف بعد التمييز: الصوت أولًا ثم الرمز.'),
-          el('li', null, el('b', null, 'أنطق: '), 'يسجّل صوته ويسمعه ويقارنه بالنموذج. التقييم الآلي تقريبي، ولا يمنع التقدّم أبدًا.'),
+          el('li', null, el('b', null, 'أستمع: '), 'يسمع الطفل الصوت المختبئ («بَ بَ بَ») قبل أي رمز أو صورة.'),
+          el('li', null, el('b', null, 'أميّز: '), 'يستمع إلى أصوات متقاربة (دون حروف) ويختار الصوت الذي سمعه.'),
+          el('li', null, el('b', null, 'أكتشف: '), 'يظهر الحرف تدريجيًا من الراديو: الصوت أولًا ثم الرمز.'),
+          el('li', null, el('b', null, 'أنطق: '), 'يسجّل صوته ويسمعه ويقارنه بالنموذج. التقييم تقريبي، ولا يمنع التقدّم أبدًا.'),
           el('li', null, el('b', null, 'أبني: '), 'يركّب الكلمة من حروفها، ثم تظهر صورتها (الصورة مكافأة معنى، لا تلميح).'),
-          el('li', null, el('b', null, 'أوظّف: '), 'يحدّد موضع الصوت في الكلمة، ثم يميّزه في كلمات جديدة تُسمع قبل أن تُرى.')),
+          el('li', null, el('b', null, 'أكتب: '), 'ثلاثة مستويات: أتتبّع (مسار منقّط ونقطة بداية وسهم) ← أُكمل (نقاط أقل) ← أكتب (دون مسار).'),
+          el('li', null, el('b', null, 'أوظّف: '), 'يحدد موضع الصوت في الكلمة، ثم يميّزه في كلمات جديدة تُسمع قبل أن تُرى.')),
         el('h3', null, 'نصائح للاستخدام'),
         el('ul', null,
           el('li', null, 'استخدم سماعات أو مكانًا هادئًا: التمييز السمعي يتأثر بالضجيج.'),

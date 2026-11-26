@@ -9,7 +9,7 @@ Kanaan.UI.registerScreen({
   stage: null,
   render({ ep, alive, restart, goEpisode }) {
     const { el, button, digits, wait } = Kanaan.UI;
-    const M = Kanaan.Message;
+    const M = Kanaan.Curriculum.groupOf(ep.id).message; // لكل مجموعة رسالتها
     const NON_JOINING = 'اأإآدذرزوؤة'; // حروف لا تتصل بما بعدها
     const split = (w) => w.match(/^(.[ً-ْ]*)(.*)$/u).slice(1);
 

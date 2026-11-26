@@ -111,7 +111,8 @@ Kanaan.UI.registerScreen({
         el('div.row.row--center', null, cont));
       Kanaan.UI.announce(`${fb.heard} ${look.text}`);
       Kanaan.Sound.sfx(good ? 'success' : 'gentle');
-      Kanaan.Sound.say(`${fb.heard} ${look.text}`, { who: 'kanaan' });
+      Kanaan.Sound.say(`${fb.heard} ${look.text}`, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, `feedback.pronunciation.${result.level}`) });
+      if (good) Kanaan.Puppet.express('happy'); else Kanaan.Puppet.express('encourage');
     }
 
     /* --- بديل: لا ميكروفون — لا يعلق الطفل --- */
@@ -143,7 +144,7 @@ Kanaan.UI.registerScreen({
 
     return {
       node,
-      onEnter() { Kanaan.Host.say(ep.script.speak); },
+      onEnter() { Kanaan.Host.say(ep.script.speak, { cue: Kanaan.AudioLib.lineCue(ep, 'script.speak') }); },
       cleanup() {
         if (rec) rec.stop();
         if (playbackUrl) URL.revokeObjectURL(playbackUrl);

@@ -1,8 +1,8 @@
 /**
- * الشاشة ٥ — ابنِ الكلمة
+ * ٥ أبني — لنَبْنِ كلمة!
  * لماذا؟ ينتقل الطفل من الصوت المفرد إلى الكلمة (الدمج الصوتي)، ويرى أن الحروف
- * تتغيّر أشكالها عندما تتصل: ش + م + س ← شَمْس.
- * لماذا لا تظهر الصورة؟ حتى يبني الكلمة من أصواتها لا من تخمين الصورة.
+ * تتغيّر أشكالها عندما تتصل: ب + ي + ت ← بَيْت.
+ * الصورة تظهر بعد البناء فقط: «مكافأة معنى» لا تلميح — يبني الطفل من الأصوات لا من التخمين.
  * التفاعل: لمس الحرف يضعه في أول خانة فارغة (يناسب الهاتف ولوحة المفاتيح)، والسحب متاح أيضًا.
  */
 Kanaan.UI.registerScreen({
@@ -77,18 +77,26 @@ Kanaan.UI.registerScreen({
         await wait(550);
         board.replaceChildren(joined);
         tray.hidden = true;
-        fbSlot.replaceChildren(feedback('success', ep.feedback.build.correct));
-        await Kanaan.Sound.say(word.text, { audio: word.audio, rate: 0.7 });
+        await Kanaan.Sound.say(word.text, { cue: word.cue, rate: 0.7 });
         if (!alive()) return;
-        await Kanaan.Sound.say(ep.feedback.build.correct, { who: 'kanaan' });
-        await wait(600);
-        if (alive()) next();
+        // صورة الكلمة الآن فقط
+        const art = word.image.src
+          ? el('div.scene-art', null, el('img', { src: word.image.src, alt: word.image.alt }))
+          : el('div.scene-art', { role: 'img', 'aria-label': word.image.alt, html: Kanaan.Scenes[word.image.scene] });
+        meaning.replaceChildren(el('figure.scene.scene--small.is-revealing', null, art));
+        Kanaan.Sound.sfx('reveal');
+        fbSlot.replaceChildren(feedback('success', ep.feedback.build.correct));
+        Kanaan.Puppet.express('happy');
+        await Kanaan.Sound.say(ep.feedback.build.correct, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.build.correct') });
+        if (!alive()) return;
+        Kanaan.Progress.patch(ep.id, 'meaning', { seen: true });
+        nextRow.replaceChildren(button('أكتب الحرف', { icon: '✍️', big: true, onClick: next }));
       } else {
         Kanaan.Sound.sfx('gentle');
         // نُرجع فقط الحروف التي ليست في مكانها: يحتفظ الطفل بما أنجزه
         letters.forEach((l, i) => { if (l !== act.target[i]) slots[i].classList.add('is-wrong'); });
         fbSlot.replaceChildren(feedback('retry', ep.feedback.build.retry));
-        Kanaan.Sound.say(ep.feedback.build.retry, { who: 'kanaan' });
+        Kanaan.Sound.say(ep.feedback.build.retry, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.build.retry') });
         await wait(900);
         letters.forEach((l, i) => { if (l !== act.target[i]) returnTile(i, true); });
       }
@@ -126,14 +134,16 @@ Kanaan.UI.registerScreen({
       el('span.board-start', { 'aria-hidden': 'true' }, 'البداية'),
       el('div.slots', null, slots));
 
+    const meaning = el('div.meaning-slot');
+    const nextRow = el('div.row.row--center');
     const node = el('section.screen.screen--build', { 'aria-labelledby': 'build-title' },
-      el('h2.screen-title', { id: 'build-title', tabindex: '-1' }, 'ابنِ الكلمة'),
+      el('h2.screen-title', { id: 'build-title', tabindex: '-1' }, 'لنَبْنِ كلمة!'),
       el('p.instruction', null, act.prompt),
-      board, tray,
+      board, tray, meaning,
       el('div.row.row--center', null,
-        button('اسمع الكلمة', { variant: 'ghost', icon: '🔊', onClick: () => Kanaan.Sound.say(word.text, { audio: word.audio, rate: 0.6 }) })),
-      fbSlot);
+        button('اسمع الكلمة', { variant: 'ghost', icon: '🔊', onClick: () => Kanaan.Sound.say(word.text, { cue: word.cue, rate: 0.6 }) })),
+      fbSlot, nextRow);
 
-    return { node, onEnter() { Kanaan.Host.say(ep.script.build); } };
+    return { node, onEnter() { Kanaan.Host.say(ep.script.build, { cue: Kanaan.AudioLib.lineCue(ep, 'script.build') }); } };
   }
 });

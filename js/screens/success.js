@@ -11,19 +11,16 @@ Kanaan.UI.registerScreen({
     Kanaan.Progress.complete(ep.id);
     const rec = Kanaan.Progress.get(ep.id).activities;
 
-    const items = [
-      { icon: '⭐', text: 'اكتشفتَ الحرف', done: !!rec.revealed?.success },
-      { icon: '🎙️', text: 'نطقتَ الصوت', done: !!rec.pronunciation?.completed },
-      { icon: '🧩', text: 'بنيتَ الكلمة', done: !!rec.wordBuilding?.success },
-      { icon: '👂', text: 'ميّزتَ الصوت', done: !!rec.discrimination?.success && !!rec.transfer?.success }
-    ];
+    // ما أنجزه الطفل بلغة «أنا فعلتُ»: مراحل الرحلة السبع
+    const done = Kanaan.Progress.stagesDone(ep.id);
+    const items = Kanaan.UI.STAGES.map((st) => ({ icon: st.icon, text: done.includes(st.key) ? st.done : st.label, done: done.includes(st.key) }));
 
     const levelAr = { excellent: 'واضح', clear: 'صوت مسموع (دون تقييم آلي للمخرج)', close: 'قريب', retry: 'يحتاج إعادة', 'self-report': 'تقرير ذاتي' };
     const yesNo = (v) => (v ? 'نعم' : 'لا');
     const row = (label, a, extra = '') => el('tr', null,
       el('th', { scope: 'row' }, label),
       el('td', null, a ? yesNo(a.success || a.completed) : '—'),
-      el('td', null, a ? digits(a.attempts) : '—'),
+      el('td', null, a && a.attempts != null ? digits(a.attempts) : '—'),
       el('td', null, a && a.firstTry != null ? yesNo(a.firstTry) : '—'),
       el('td', null, extra));
     const p = rec.pronunciation;
@@ -35,7 +32,8 @@ Kanaan.UI.registerScreen({
           row('التمييز السمعي', rec.discrimination),
           row('النطق', p, p ? `أفضل تقدير: ${levelAr[p.best] || '—'}${p.mode === 'self-report' ? ' (دون ميكروفون)' : ''}` : ''),
           row('تركيب الكلمة', rec.wordBuilding),
-          row('المعنى', rec.meaning),
+          row('موضع الصوت', rec.meaning),
+          row('الكتابة', rec.writing, rec.writing?.levels ? Object.entries(rec.writing.levels).map(([k, v]) => `${({ trace: 'أتتبّع', complete: 'أُكمل', free: 'أكتب' })[k]} ${v.pass ? '✔' : '↻'}`).join(' · ') : ''),
           row('نقل التعلم', rec.transfer, rec.transfer ? `قنوات مسموعة: ${digits(rec.transfer.channelsHeard || 0)}` : ''),
           rec.review ? row('مراجعة الأرشيف', rec.review, `الحرف ${rec.review.letter}`) : null)),
       el('p.footnote', null, 'البيانات محفوظة على هذا الجهاز فقط. تقدير النطق تقريبي.'));

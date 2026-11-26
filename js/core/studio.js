@@ -19,7 +19,7 @@ Kanaan.Studio = (function () {
   const NS = 'http://www.w3.org/2000/svg';
   const W = 1672, H = 941;
   const MOBILE_VIEW = { x: 135, y: 212, w: 840, h: 560 };
-  const CLOCK = { x: 1227, y: 95, size: 390 }; // مركز الساعة (1422,290)
+  const CLOCK = { x: 1290, y: 100, size: 280 }; // أصغر من الرسم الأصلي حتى لا تنافس كنعان
 
   const pos = (x, y, w, h) => `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
 
@@ -36,7 +36,6 @@ Kanaan.Studio = (function () {
     return `<svg class="st-hands" viewBox="-195 -195 390 390" aria-hidden="true">
       <circle r="36" fill="#F7EEDC"/>${stitch}
       ${hand('clk-h', 104, 7)}${hand('clk-m', 140, 5.5)}
-      <g class="clk-s"><path d="M-1.4 22 L0 -150 L1.4 22 Z" fill="#A4161A"/></g>
       <circle r="14" fill="url(#clkGold)"/>
       <defs><radialGradient id="clkGold" cx=".35" cy=".35"><stop offset="0" stop-color="#FFF0A8"/><stop offset=".6" stop-color="#E7B333"/><stop offset="1" stop-color="#A9740F"/></radialGradient></defs>
     </svg>`;
@@ -102,10 +101,14 @@ Kanaan.Studio = (function () {
     const clock = el('button.st-clock', { type: 'button', 'aria-label': 'ساعة المحطة' },
       el('img', { src: 'assets/scene/clock.webp', alt: '', draggable: 'false' }));
     clock.insertAdjacentHTML('beforeend', clockHands());
-    const clockWrap = el('div.st-clock-wrap', null, clock, tip);
+    // «● على الهواء الآن»: جزء من الساعة، يفتح الرسالة نفسها عند الضغط
+    const onAir = el('button.st-onair', { type: 'button', 'aria-describedby': 'st-clock-tip' },
+      el('span.st-onair-dot', { 'aria-hidden': 'true' }), 'على الهواء الآن');
+    tip.id = 'st-clock-tip';
+    const clockWrap = el('div.st-clock-wrap', null, clock, onAir, tip);
     let tipTimer = 0;
     const showTip = (sticky) => {
-      tip.textContent = 'أنت الآن على الهواء مع كنعان 🔴';
+      tip.textContent = 'أنت الآن على الهواء مع كنعان';
       clockWrap.classList.add('show-tip');
       clearTimeout(tipTimer);
       if (sticky) tipTimer = setTimeout(() => clockWrap.classList.remove('show-tip'), 3200);
@@ -116,28 +119,44 @@ Kanaan.Studio = (function () {
     clock.addEventListener('focus', () => showTip(false));
     clock.addEventListener('blur', hideTip);
     clock.addEventListener('click', () => { Kanaan.Sound.sfx('tap'); showTip(true); });
+    onAir.addEventListener('click', () => { Kanaan.Sound.sfx('tap'); showTip(true); });
 
     function tickClock() {
       const d = new Date();
       const s = d.getSeconds(), m = d.getMinutes() + s / 60, h = (d.getHours() % 12) + m / 60;
       const set = (c, deg) => clock.querySelector(c).setAttribute('transform', `rotate(${deg.toFixed(2)})`);
-      set('.clk-h', h * 30); set('.clk-m', m * 6); set('.clk-s', s * 6);
+      set('.clk-h', h * 30); set('.clk-m', m * 6); // دون عقرب ثوانٍ: حركة مستمرة لا تخدم التعلّم
       clock.setAttribute('aria-label', `ساعة المحطة، الوقت الآن ${d.toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' })}`);
     }
     tickClock();
-    const clockTimer = setInterval(tickClock, 1000);
+    const clockTimer = setInterval(tickClock, 15000);
 
     /* ---------- زر البدء + أشعة الانتباه (بعد الترحيب فقط) ---------- */
-    const start = el('button.st-start', { type: 'button', onclick: () => onStart() },
+    let starting = false;
+    async function begin() {
+      if (starting) return;
+      starting = true;
+      Kanaan.Sound.unlock();
+      Kanaan.Sound.stop();
+      startWrap.classList.add('is-pressed');
+      // كنعان يبدأ الكلام هنا في الاستوديو: تتحرك شفتاه وموجات الراديو، ثم ينطلق المسار
+      await Promise.race([
+        Kanaan.Sound.say(ep.script.go, { who: 'kanaan', cue: 'common/go' }),
+        Kanaan.UI.wait(2600)
+      ]);
+      onStart();
+    }
+    const start = el('button.st-start', { type: 'button', onclick: begin },
       el('span.st-start-play', { 'aria-hidden': 'true' }), el('span.st-start-label', null, 'ابدأ الاستماع'));
     const rays = el('div.st-rays', { 'aria-hidden': 'true', html:
       '<svg viewBox="0 0 150 75"><g stroke="#FFC94A" stroke-width="9" stroke-linecap="round"><line x1="75" y1="8" x2="75" y2="34"/><line x1="40" y1="16" x2="51" y2="40"/><line x1="110" y1="16" x2="99" y2="40"/><line x1="8" y1="44" x2="28" y2="54"/><line x1="142" y1="44" x2="122" y2="54"/></g></svg>' });
     const startWrap = el('div.st-start-wrap', null, rays, start);
 
     /* ---------- أزرار المكتب ---------- */
+    // أزرار ثانوية هادئة وأصغر: لا تنافس «ابدأ الاستماع»
     const navDefs = [ // ترتيب DOM من اليمين إلى اليسار
-      ['about', 'عن المحطة', 1120, 227], ['teacher', 'دليل المعلم', 838, 232],
-      ['progress', 'تقدمي', 588, 200], ['achievements', 'إنجازاتي', 318, 214]
+      ['about', 'عن المحطة', 1096, 210], ['teacher', 'دليل المعلم', 864, 210],
+      ['progress', 'تقدمي', 632, 210], ['achievements', 'إنجازاتي', 400, 210]
     ];
     const navBtns = navDefs.map(([id, label, x, w]) => el('button.st-nav', {
       type: 'button', 'data-x': x, 'data-w': w,
@@ -259,7 +278,7 @@ Kanaan.Studio = (function () {
         } else {
           canvas.append(sign, clockWrap, startWrap, nav);
           bubble.prepend(bubbleText);
-          navBtns.forEach((b) => b.setAttribute('style', pos(+b.dataset.x, 783, +b.dataset.w, 122)));
+          navBtns.forEach((b) => b.setAttribute('style', pos(+b.dataset.x, 806, +b.dataset.w, 76)));
           top.replaceChildren();
           bottom.replaceChildren(controls);
         }

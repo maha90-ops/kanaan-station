@@ -1,5 +1,5 @@
 /**
- * الشاشة ٧ — مهمة انتقالية (نقل التعلم)
+ * ٧ أوظّف (٢) — مهمة انتقالية (نقل التعلم)
  * لماذا؟ معرفة «ش = شمس» قد تكون حفظًا. هنا كلمات جديدة لم تُدرَّس، تُسمع أولًا
  * دون كتابة، وعلى الطفل أن يميّز الصوت في أول الكلمة — بينها «سَمَك» لاختبار
  * التمييز بين ش وس في سياق جديد. الكلمات تُكشف بعد الإجابة لربط ما سُمع بما يُكتب.
@@ -17,7 +17,7 @@ Kanaan.UI.registerScreen({
     const radio = Kanaan.UI.radio({ compact: true });
     const wave = Kanaan.UI.waveView(radio.canvas);
 
-    const hl = (w) => Kanaan.UI.highlightLetter(w, ep.letter, { firstOnly: true });
+    const hl = (w) => Kanaan.UI.highlightLetter(w, ep.wordLetter, { firstOnly: true });
 
     const channels = act.channels.map((c, i) => {
       const label = el('span.channel-word', null, canHear ? '؟' : c.word);
@@ -44,7 +44,7 @@ Kanaan.UI.registerScreen({
       Kanaan.Sound.sfx('tap');
       radio.node.classList.add('is-on');
       wave.speech();
-      await Kanaan.Sound.say(ch.data.word, { audio: ch.data.audio, rate: 0.7 });
+      await Kanaan.Sound.say(ch.data.word, { cue: ch.data.cue, rate: 0.7 });
       wave.idle();
       radio.node.classList.remove('is-on');
       ch.heard = true;
@@ -72,7 +72,8 @@ Kanaan.UI.registerScreen({
           await wait(350);
         }
         fbSlot.replaceChildren(feedback('success', ep.feedback.transfer.correct));
-        await Kanaan.Sound.say(ep.feedback.transfer.correct, { who: 'kanaan' });
+        Kanaan.Puppet.express('happy');
+        await Kanaan.Sound.say(ep.feedback.transfer.correct, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.transfer.correct') });
         await wait(700);
         if (alive()) next();
       } else {
@@ -97,7 +98,7 @@ Kanaan.UI.registerScreen({
 
     return {
       node,
-      onEnter() { Kanaan.Host.say(ep.script.transfer); },
+      onEnter() { Kanaan.Host.say(ep.script.transfer, { cue: Kanaan.AudioLib.lineCue(ep, 'script.transfer') }); },
       cleanup() { wave.destroy(); }
     };
   }

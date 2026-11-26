@@ -1,5 +1,5 @@
 /**
- * الشاشة ٢ — التقط الإشارة (تمييز سمعي خالص)
+ * ٢ أميّز — تمييز سمعي خالص
  * يسمع الطفل الإشارة، ثم يستمع إلى ثلاثة أصوات (لا حروف ولا صور) ويختار المطابق.
  * لماذا أصوات لا حروف؟ الحرف لم يُكتشف بعد؛ عرضه هنا يكشف الإجابة لمن يعرف شكله،
  * ويحوّل المهمة إلى تعرّف بصري. بعد الإجابة الصحيحة تُكشف حروف الأصوات الثلاثة
@@ -7,7 +7,7 @@
  */
 Kanaan.UI.registerScreen({
   id: 'signal',
-  stage: 'listen',
+  stage: 'discriminate',
   render({ ep, next, alive }) {
     const { el, button, feedback, wait, digits } = Kanaan.UI;
     const act = ep.phonemeActivity;
@@ -15,7 +15,7 @@ Kanaan.UI.registerScreen({
 
     const radio = Kanaan.UI.radio();
     const wave = Kanaan.UI.waveView(radio.canvas);
-    const status = el('p.signal-status', { 'aria-live': 'polite' }, '📡 استعدّ لاستقبال الإشارة…');
+    const status = el('p.signal-status', { 'aria-live': 'polite' }, '👂 اضغط على كل صوت لتسمعه.');
     const fbSlot = el('div.feedback-slot');
     const scaffoldSlot = el('div.scaffold-slot');
 
@@ -35,7 +35,7 @@ Kanaan.UI.registerScreen({
       busy = false;
     }
 
-    const replay = button('أعد سماع الإشارة', { variant: 'secondary', icon: '📡', onClick: () => play() });
+    const replay = button('أعد سماع الصوت المختبئ', { variant: 'secondary', icon: '📡', onClick: () => play() });
 
     // بطاقات الأصوات: لمس البطاقة يُسمع صوتها ويختارها؛ زر «هذا هو» يؤكد
     const cards = act.options.map((letter, i) => {
@@ -60,7 +60,7 @@ Kanaan.UI.registerScreen({
     const confirm = button('هذا هو الصوت!', { icon: '✔', onClick: () => choose() });
     confirm.setAttribute('disabled', '');
 
-    const question = el('div.question', { hidden: true },
+    const question = el('div.question', null,
       el('p.question-text', null, act.prompt),
       el('div.sound-cards', { role: 'group', 'aria-label': act.prompt }, cards.map((c) => c.node)),
       el('div.row.row--center', null, confirm));
@@ -84,7 +84,7 @@ Kanaan.UI.registerScreen({
         }, 250 + j * 180));
         Kanaan.Sound.sfx('success');
         fbSlot.replaceChildren(feedback('success', ep.feedback.discrimination.correct));
-        await Kanaan.Sound.say(ep.feedback.discrimination.correct, { who: 'kanaan' });
+        await Kanaan.Sound.say(ep.feedback.discrimination.correct, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.discrimination.correct') });
         await wait(700);
         if (alive()) next();
       } else {
@@ -98,7 +98,7 @@ Kanaan.UI.registerScreen({
         fbSlot.replaceChildren(feedback('retry', ep.feedback.discrimination.retry));
         replay.classList.add('attention');
         setTimeout(() => replay.classList.remove('attention'), 2400);
-        Kanaan.Sound.say(ep.feedback.discrimination.retry, { who: 'kanaan' });
+        Kanaan.Sound.say(ep.feedback.discrimination.retry, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.discrimination.retry') });
         // دعامة بعد محاولتين: المقارنة بالصوت الأقرب، دون كشف رمز الإشارة
         if (wrong >= 2 && act.contrast && !scaffoldSlot.firstChild) {
           scaffoldSlot.append(el('div.scaffold', null,
@@ -111,7 +111,7 @@ Kanaan.UI.registerScreen({
     }
 
     const node = el('section.screen.screen--signal', { 'aria-labelledby': 'signal-title' },
-      el('h2.screen-title', { id: 'signal-title', tabindex: '-1' }, 'التقط الإشارة'),
+      el('h2.screen-title', { id: 'signal-title', tabindex: '-1' }, 'أميّز الصوت'),
       radio.node, status,
       el('div.row.row--center', null, replay),
       Kanaan.Sound.canPlay(ep.sound) ? null
@@ -120,15 +120,9 @@ Kanaan.UI.registerScreen({
 
     return {
       node,
-      async onEnter() {
-        await Kanaan.Host.say(ep.script.signal, { keep: false });
-        await wait(250);
-        if (!alive()) return;
-        await play();
-        if (!alive()) return;
-        question.hidden = false;
-        question.classList.add('appear');
-        Kanaan.Host.say(act.prompt, { keep: false });
+      onEnter() {
+        // الصوت سُمع في «أستمع»؛ هنا تبدأ المقارنة مباشرة
+        Kanaan.Host.say(ep.script.signal, { cue: Kanaan.AudioLib.lineCue(ep, 'script.signal'), keep: false });
       },
       cleanup() { wave.destroy(); }
     };

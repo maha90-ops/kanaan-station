@@ -13,15 +13,15 @@ Kanaan.Host = (function () {
     b.setAttribute('aria-label', talking ? 'أوقف كلام كنعان' : 'أعد كلام كنعان');
   }
 
-  async function say(text, { audio, keep = true } = {}) {
-    lastLine = { text, audio };
+  async function say(text, { audio, cue, keep = true } = {}) {
+    lastLine = { text, audio, cue };
     const h = root();
     document.getElementById('host-text').textContent = text;
     h.hidden = false;
     h.classList.remove('is-leaving');
     h.classList.add('is-speaking');
     talking = true; paintBtn();
-    await Kanaan.Sound.say(text, { audio, who: 'kanaan' });
+    await Kanaan.Sound.say(text, { audio, cue, who: 'kanaan' });
     talking = false; paintBtn();
     h.classList.remove('is-speaking');
     if (!keep) hide();
@@ -40,7 +40,7 @@ Kanaan.Host = (function () {
     if (slot && Kanaan.Puppet) slot.replaceChildren(Kanaan.Puppet.avatar());
     document.getElementById('host-replay').addEventListener('click', () => {
       if (talking) { Kanaan.Sound.stop(); return; }
-      if (lastLine) say(lastLine.text, { audio: lastLine.audio });
+      if (lastLine) say(lastLine.text, { audio: lastLine.audio, cue: lastLine.cue });
     });
   }
 

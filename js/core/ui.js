@@ -71,33 +71,43 @@ Kanaan.UI = (function () {
   const screens = {};
   function registerScreen(def) { screens[def.id] = def; }
 
-  /* ---------------- رحلتي ---------------- */
+  /* ---------------- رحلة التعلم (٧ مراحل) ----------------
+   * مكتملة: ✓ + الفعل الماضي (استمعت) · الحالية: رقمها مملوء + خط عريض · القادمة: رقم في دائرة فارغة.
+   * لا اعتماد على اللون وحده: الشكل (✓ / رقم مملوء / دائرة فارغة) والنص يحملان المعنى. */
   const STAGES = [
-    { key: 'listen', label: 'أستمع', icon: '👂' },
-    { key: 'discover', label: 'أكتشف', icon: '🔍' },
-    { key: 'speak', label: 'أنطق', icon: '🎙️' },
-    { key: 'build', label: 'أبني', icon: '🧩' },
-    { key: 'apply', label: 'أوظِّف', icon: '🚀' }
+    { key: 'listen', label: 'أستمع', done: 'استمعت', icon: '🎙️' },
+    { key: 'discriminate', label: 'أميّز', done: 'ميّزت', icon: '👂' },
+    { key: 'discover', label: 'أكتشف', done: 'اكتشفت', icon: '🔎' },
+    { key: 'speak', label: 'أنطق', done: 'نطقت', icon: '🗣️' },
+    { key: 'build', label: 'أبني', done: 'بنيت', icon: '🧩' },
+    { key: 'write', label: 'أكتب', done: 'كتبت', icon: '✍️' },
+    { key: 'apply', label: 'أوظّف', done: 'وظّفت', icon: '🎯' }
   ];
 
   function renderJourney(currentKey, doneKeys) {
     const ol = document.getElementById('journey-steps');
     ol.replaceChildren(...STAGES.map((s, i) => {
-      const done = doneKeys.includes(s.key);
+      const done = doneKeys.includes(s.key) && s.key !== currentKey;
       const current = s.key === currentKey;
       const state = done ? 'مكتملة' : current ? 'الحالية' : 'قادمة';
       return el(`li.journey-step${done ? '.is-done' : ''}${current ? '.is-current' : ''}`,
         { 'aria-current': current ? 'step' : null, 'aria-label': `${digits(i + 1)}. ${s.label} — ${state}` },
         el('span.journey-num', { 'aria-hidden': 'true' }, done ? '✓' : digits(i + 1)),
-        el('span.journey-label', { 'aria-hidden': 'true' }, s.label));
+        el('span.journey-label', { 'aria-hidden': 'true' }, done ? s.done : s.label));
     }));
   }
 
-  /* ---------------- مكوّن الراديو (SVG + شاشة موجة) ---------------- */
-  function radio({ withCanvas = true, compact = false } = {}) {
+  /* ---------------- مكوّن الراديو: مركز التجربة الصوتية ----------------
+   * موجات بث فوق الهوائي + شاشة موجة صوتية. الاثنتان ساكنتان دون صوت،
+   * وتتحركان مع أي صوت (كنعان أو الراديو) ثم تهدآن. */
+  function radio({ withCanvas = true, compact = false, big = false } = {}) {
     const canvas = withCanvas ? el('canvas.radio-wave', { width: 520, height: 120, 'aria-hidden': 'true' }) : null;
-    const node = el(`div.radio${compact ? '.radio--compact' : ''}`, { role: 'img', 'aria-label': 'جهاز راديو المحطة' },
-      el('div.radio-antenna', { 'aria-hidden': 'true' }),
+    const arcs = el('div.radio-arcs', { 'aria-hidden': 'true', html:
+      '<svg viewBox="0 0 120 60"><g fill="none" stroke-linecap="round">' +
+      [14, 26, 38].map((r, i) => `<path style="--i:${i}" d="M${60 - r * .62} ${30 - r * .78} Q${60 - r * 1.12} 30 ${60 - r * .62} ${30 + r * .78}"/><path style="--i:${i}" d="M${60 + r * .62} ${30 - r * .78} Q${60 + r * 1.12} 30 ${60 + r * .62} ${30 + r * .78}"/>`).join('') +
+      '</g></svg>' });
+    const node = el(`div.radio${compact ? '.radio--compact' : ''}${big ? '.radio--big' : ''}`, { role: 'img', 'aria-label': 'جهاز راديو المحطة' },
+      el('div.radio-antenna', { 'aria-hidden': 'true' }, arcs),
       el('div.radio-body', null,
         el('div.radio-display', null, canvas),
         el('div.radio-bottom', { 'aria-hidden': 'true' },
@@ -108,12 +118,13 @@ Kanaan.UI = (function () {
   }
 
   /* ---------------- مُظهِر الموجة الصوتية ----------------
-   * live: يرسم بيانات حقيقية من AnalyserNode (صوت مولّد أو ميكروفون)
-   * speech: موجة تقريبية أثناء كلام الصوت الآلي (لا تتوفر بياناته الفعلية)
-   * idle: خط هادئ — لا حركة دون صوت */
+   * live: بيانات حقيقية من AnalyserNode (تسجيل، صوت مولّد، ميكروفون)
+   * speech: موجة تتبع مستوى الصوت المقدَّر (الصوت الآلي لا يتيح بياناته)
+   * idle: خط هادئ — لا حركة دون صوت
+   * إن لم تتحكم الشاشة بالموجة، تستجيب وحدها لكلام كنعان وأي صوت آخر. */
   function waveView(canvas) {
     const ctx = canvas.getContext('2d');
-    let mode = 'idle', analyser = null, raf = 0, t = 0;
+    let mode = 'idle', analyser = null, raf = 0, t = 0, manual = false;
     const buf = new Float32Array(1024);
     const color = getComputedStyle(document.documentElement).getPropertyValue('--wave').trim() || '#FFC857';
 
@@ -132,9 +143,10 @@ Kanaan.UI = (function () {
         }
       } else if (mode === 'speech') {
         t += 0.12;
+        const lv = window.Kanaan.Voice ? 0.25 + Kanaan.Voice.state.level * 0.85 : 0.8;
         for (let x = 0; x < w; x++) {
           const env = Math.sin((x / w) * Math.PI);
-          const y = h / 2 + env * (Math.sin(x * 0.09 + t * 3) * 0.6 + Math.sin(x * 0.031 - t) * 0.4) * (h / 3);
+          const y = h / 2 + env * lv * (Math.sin(x * 0.09 + t * 3) * 0.6 + Math.sin(x * 0.031 - t) * 0.4) * (h / 2.6);
           x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
         }
       } else {
@@ -144,11 +156,19 @@ Kanaan.UI = (function () {
       if (mode !== 'idle') raf = requestAnimationFrame(draw);
     }
 
+    const onVoice = ({ detail }) => {
+      if (manual || !canvas.isConnected) return;
+      if (detail.state === 'start') { analyser = detail.analyser; mode = analyser ? 'live' : 'speech'; cancelAnimationFrame(raf); draw(); }
+      else if (!(window.Kanaan.Voice && Kanaan.Voice.state.any)) { mode = 'idle'; cancelAnimationFrame(raf); draw(); }
+    };
+    window.addEventListener('kanaan:voice', onVoice);
+    draw();
+
     return {
-      live(a) { analyser = a; mode = 'live'; cancelAnimationFrame(raf); draw(); },
-      speech() { mode = 'speech'; cancelAnimationFrame(raf); draw(); },
-      idle() { mode = 'idle'; cancelAnimationFrame(raf); draw(); },
-      destroy() { cancelAnimationFrame(raf); }
+      live(a) { manual = true; analyser = a; mode = 'live'; cancelAnimationFrame(raf); draw(); },
+      speech() { manual = true; mode = 'speech'; cancelAnimationFrame(raf); draw(); },
+      idle() { manual = false; mode = 'idle'; cancelAnimationFrame(raf); draw(); },
+      destroy() { cancelAnimationFrame(raf); window.removeEventListener('kanaan:voice', onVoice); }
     };
   }
 

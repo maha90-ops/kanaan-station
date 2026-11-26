@@ -3,11 +3,11 @@
  *   الخلفية (plate) · الرأس · الفم · الجفنان (SVG) · اليد
  * كل الإحداثيات بوحدات بكسل الرسم الأصلي (1672×941)، والحاوية تُحجَّم بـ transform.
  *
- * الحركة (ولكلٍّ وظيفة):
- *   رمش طبيعي متقطع ............ يجعل الشخصية حيّة دون أن تشتّت
- *   تمايل خفيف جدًا للرأس ....... حضور هادئ (يتوقف مع «أوقف الحركة» أو تقليل الحركة)
+ * قاعدة الحركة: كنعان ساكن حين يصمت (رمش طبيعي متقطع فقط)، ويتحرك حين يتكلم:
  *   الشفتان مع الصوت ........... تحدد بصريًا «من يتكلم الآن» (تعمل دائمًا)
- *   إيماءة اليد أثناء الكلام .... توجيه الانتباه إلى الراديو/الرسالة
+ *   إيماءة رأس خفيفة ............ مع مقاطع الكلام
+ *   إيماءة اليد ................. توجيه الانتباه إلى الراديو أثناء الكلام
+ *   تعبيرات قصيرة .............. express('happy') هزّة رأس فرِحة · 'encourage' ميل مشجّع · 'ask' ميل متسائل
  *
  * التزامن: مع الملفات المسجّلة يُقرأ الصوت الحقيقي (AnalyserNode)؛
  * مع الصوت الآلي لا تتوفر بياناته فتُقدَّر حركة الفم بإيقاع مقاطع تقريبي.
@@ -46,6 +46,7 @@ Kanaan.Voice = (function () {
     if (!anyCount) state.analyser = null;
     state.any = anyCount > 0;
     state.kanaan = kCount > 0;
+    document.documentElement.classList.toggle('voice-live', state.any);
   });
 
   // إيقاع مقاطع تقريبي للصوت الآلي: ~٤٫٥ مقطع/ث مع تنوّع عشوائي ووقفات قصيرة
@@ -94,6 +95,7 @@ Kanaan.Puppet = (function () {
   ];
 
   const instances = new Set();
+  let expr = null;
   const NS = 'http://www.w3.org/2000/svg';
 
   function svg(tag, attrs) {
@@ -187,10 +189,16 @@ Kanaan.Puppet = (function () {
       p.mouthS = p.mouthS == null ? 1 : p.mouthS + (target - p.mouthS) * 0.5;
       p.mouth.style.transform = `scaleY(${p.mouthS.toFixed(3)})`;
 
-      // الرأس: تمايل هادئ + إيماءة خفيفة مع الكلام
+      // الرأس: ساكن حين يصمت؛ إيماءة خفيفة مع الكلام؛ وتعبيرات قصيرة عند الطلب
       let rot = 0, ty = 0;
-      if (!calm) { rot = 0.45 * Math.sin(now / 1900); ty = 0.9 * Math.sin(now / 1450); }
       if (talk) { rot += (open - 0.4) * 0.9; ty += -open * 1.2; }
+      if (expr) {
+        const e = now - expr.t0;
+        if (expr.kind === 'happy' && e < 760) ty += 3.2 * Math.abs(Math.sin(Math.PI * e / 380));            // هزّتان فرِحتان
+        else if (expr.kind === 'encourage' && e < 1400) rot += 2.6 * Math.sin(Math.PI * Math.min(1, e / 1400)); // ميل مشجّع
+        else if (expr.kind === 'ask' && e < 1400) rot -= 2.2 * Math.sin(Math.PI * Math.min(1, e / 1400));
+        else expr = null;
+      }
       p.head.style.transform = `translateY(${ty.toFixed(2)}px) rotate(${rot.toFixed(3)}deg)`;
 
       // اليد: إيماءة لطيفة أثناء الكلام فقط
@@ -216,5 +224,11 @@ Kanaan.Puppet = (function () {
     }
   }
 
-  return { mount, avatar, HEAD };
+  /** تعبير قصير يظهر على كل نسخ كنعان المرئية */
+  function express(kind) {
+    if (Kanaan.Motion.calm && kind !== 'happy') return;
+    expr = { kind, t0: performance.now() };
+  }
+
+  return { mount, avatar, express, HEAD };
 })();

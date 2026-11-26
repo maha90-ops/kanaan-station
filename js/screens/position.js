@@ -1,12 +1,10 @@
 /**
- * الشاشة ٦ — اكتشاف المعنى + موضع الصوت
- * لماذا تظهر الصورة الآن فقط؟ الصورة «مكافأة معنى»: الطفل بنى الكلمة من أصواتها،
- * والآن يكتشف ما تعنيه (ترميز مزدوج: صوت + رمز + صورة).
- * ثم سؤال «أين تسمع صوت ش في كلمة شَمْس؟» يعيد الانتباه من المعنى إلى الصوت
- * (وعي فونيمي بموضع الصوت: بداية / وسط / نهاية) — يُجاب بالأذن مع إمكانية الإبطاء.
+ * ٧ أوظّف (١) — أين تسمع الصوت في الكلمة؟
+ * وعي فونيمي بموضع الصوت: بداية / وسط / نهاية — يُجاب بالأذن مع إمكانية إبطاء الكلمة.
+ * الصورة صغيرة هنا (ظهرت بعد البناء): تذكير بالمعنى لا أكثر.
  */
 Kanaan.UI.registerScreen({
-  id: 'meaning',
+  id: 'position',
   stage: 'apply',
   render({ ep, next, alive }) {
     const { el, button, feedback, wait } = Kanaan.UI;
@@ -16,7 +14,7 @@ Kanaan.UI.registerScreen({
     let solved = false;
 
     const caption = el('figcaption.scene-word', null, el('span.word', null, word.text));
-    const scene = el('figure.scene', null,
+    const scene = el('figure.scene.scene--small', null,
       word.image.src
         ? el('div.scene-art', null, el('img', { src: word.image.src, alt: word.image.alt }))
         : el('div.scene-art', { role: 'img', 'aria-label': word.image.alt, html: Kanaan.Scenes[word.image.scene] }),
@@ -32,8 +30,8 @@ Kanaan.UI.registerScreen({
       return b;
     });
 
-    const slow = button('اسمع الكلمة ببطء', { variant: 'secondary', icon: '🐢', onClick: () => Kanaan.Sound.say(word.text, { audio: word.audio, rate: 0.45 }) });
-    const question = el('div.question', { hidden: true },
+    const slow = button('اسمع الكلمة ببطء', { variant: 'secondary', icon: '🐢', onClick: () => Kanaan.Sound.say(word.text, { cue: word.cue, rate: 0.45 }) });
+    const question = el('div.question', null,
       el('p.question-text', null, act.prompt),
       el('div.row.row--center', null, slow),
       el('div.pos-cards', { role: 'group', 'aria-label': act.prompt }, opts));
@@ -47,10 +45,11 @@ Kanaan.UI.registerScreen({
         b.classList.add('is-correct');
         b.querySelector('.choice-mark').textContent = '✔';
         opts.forEach((o) => o !== b && o.setAttribute('disabled', ''));
-        caption.replaceChildren(Kanaan.UI.highlightLetter(word.text, ep.letter, { firstOnly: true }));
+        caption.replaceChildren(Kanaan.UI.highlightLetter(word.text, ep.wordLetter, { firstOnly: true }));
+        Kanaan.Puppet.express('happy');
         Kanaan.Sound.sfx('success');
         fbSlot.replaceChildren(feedback('success', ep.feedback.meaning.correct));
-        await Kanaan.Sound.say(ep.feedback.meaning.correct, { who: 'kanaan' });
+        await Kanaan.Sound.say(ep.feedback.meaning.correct, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.meaning.correct') });
         await wait(600);
         if (alive()) next();
       } else {
@@ -58,27 +57,19 @@ Kanaan.UI.registerScreen({
         b.querySelector('.choice-mark').textContent = '↺';
         Kanaan.Sound.sfx('gentle');
         fbSlot.replaceChildren(feedback('retry', ep.feedback.meaning.retry));
-        await Kanaan.Sound.say(ep.feedback.meaning.retry, { who: 'kanaan' });
-        if (alive()) Kanaan.Sound.say(word.text, { audio: word.audio, rate: 0.45 });
+        await Kanaan.Sound.say(ep.feedback.meaning.retry, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.meaning.retry') });
+        if (alive()) Kanaan.Sound.say(word.text, { cue: word.cue, rate: 0.45 });
       }
     }
 
     const node = el('section.screen.screen--meaning', { 'aria-labelledby': 'meaning-title' },
-      el('h2.screen-title', { id: 'meaning-title', tabindex: '-1' }, 'ماذا بنيتَ؟'),
+      el('h2.screen-title', { id: 'meaning-title', tabindex: '-1' }, 'أين الصوت؟'),
       scene, question, fbSlot);
 
     return {
       node,
-      async onEnter() {
-        Kanaan.Sound.sfx('reveal');
-        scene.classList.add('is-revealing');
-        await wait(900);
-        if (!alive()) return;
-        await Kanaan.Host.say(ep.script.meaning);
-        if (!alive()) return;
-        question.hidden = false;
-        question.classList.add('appear');
-        await Kanaan.Host.say(act.prompt, { keep: false });
+      onEnter() {
+        Kanaan.Host.say(act.prompt, { cue: Kanaan.AudioLib.lineCue(ep, 'meaningActivity.prompt'), keep: false });
       }
     };
   }

@@ -57,6 +57,20 @@ Kanaan.Alphabet = (function () {
   /** طريقة تقييم النطق الافتراضية حسب الحرف */
   const EVALUATOR = { 'ش': 'fricative', 'س': 'fricative', 'ز': 'voicedFricative', 'م': 'nasal', 'ن': 'nasal' };
 
+  /** إعدادات التقييم الصوتي التقريبي للحروف التي يستطيع الجهاز تقديرها */
+  const PROFILE = {
+    'ش': { profile: { targetBandHz: [1700, 5200], competitorBandHz: [5200, 11000], minFricativeMs: 250, shortFricativeMs: 120 },
+      tips: { short: 'أطِل الصوت هكذا: شـشـشـشـش.', competitor: 'صوتك يشبه «س». دوِّر شفتيك إلى الأمام وأرجع لسانك قليلًا.', voiced: 'ش صوت هواء هادئ بلا نغمة. ضع إصبعك على فمك كأنك تقول «اسكت»: شـشـشـش.' } },
+    'س': { profile: { targetBandHz: [5200, 11000], competitorBandHz: [1700, 5200], minFricativeMs: 250, shortFricativeMs: 120 },
+      tips: { short: 'أطِل الصوت هكذا: سسسسس.', competitor: 'صوتك يشبه «ش». ابتسم وقرّب أسنانك: سسسس.', voiced: 'س صوت هواء بلا نغمة: سسسس.' } },
+    'ز': { profile: { targetBandHz: [4000, 11000], competitorBandHz: [1000, 4000], minFricativeMs: 250, shortFricativeMs: 120 },
+      tips: { short: 'أطِل الصوت هكذا: زززززز.', voiceless: 'صوتك يشبه «س». ضع يدك على رقبتك وانطق: زززز — هل تشعر بالاهتزاز؟', noHiss: 'قرّب أسنانك من بعضها ودع الهواء يمرّ بينها: زززز.' } },
+    'م': { profile: { targetBandHz: [1000, 3000], competitorBandHz: [3000, 8000], minHumMs: 300, shortHumMs: 120 },
+      tips: { short: 'أطِل الصوت هكذا: ممممممم.', open: 'أغلق شفتيك جيدًا ودع الصوت يخرج من أنفك: ممممم.' } },
+    'ن': { profile: { targetBandHz: [1000, 3000], competitorBandHz: [3000, 8000], minHumMs: 300, shortHumMs: 120 },
+      tips: { short: 'أطِل الصوت هكذا: ننننن.', open: 'ضع لسانك خلف أسنانك العليا ودع الصوت يخرج من أنفك: ننننن.' } }
+  };
+
   const NON_JOINING = 'اأإآدذرزوؤة';
   const byLetter = new Map(ROWS.map(([letter, name, cls, voiced, contrast, words]) => [letter, { letter, name, cls, voiced, contrast, words }]));
 
@@ -80,6 +94,8 @@ Kanaan.Alphabet = (function () {
     soundOf,
     forms,
     evaluatorOf: (letter) => EVALUATOR[letter] || 'clarity',
+    profileOf: (letter) => (PROFILE[letter] || {}).profile,
+    tipsOf: (letter) => (PROFILE[letter] || {}).tips || {},
     joinsNext: (letter) => !NON_JOINING.includes(letter)
   };
 })();

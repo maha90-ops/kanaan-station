@@ -1,5 +1,5 @@
 /**
- * الشاشة ٣ — اكتشاف الحرف
+ * ٣ أكتشف — يظهر الحرف تدريجيًا من الراديو
  * لماذا الآن؟ بعد أن ميّز الطفل الصوت بأذنه، نربط الصوت المعروف برمزه المكتوب
  * (مبدأ: الصوت أولًا ثم الرمز). الحرف «يخرج» من الراديو = الصوت يتحوّل إلى شكل.
  */
@@ -32,7 +32,7 @@ Kanaan.UI.registerScreen({
     const actions = el('div.row.row--center', { hidden: true }, again, go);
 
     const node = el('section.screen.screen--reveal', { 'aria-labelledby': 'reveal-title' },
-      el('h2.screen-title', { id: 'reveal-title', tabindex: '-1' }, 'الحرف السرّي'),
+      el('h2.screen-title', { id: 'reveal-title', tabindex: '-1' }, 'أكتشف الحرف'),
       el('p.sr-only', null, `الحرف المكتشف: ${ep.letter}`),
       stageBox, name, hint, actions);
 
@@ -46,7 +46,8 @@ Kanaan.UI.registerScreen({
         await wait(1100);
         if (!alive()) return;
         name.hidden = false;
-        await Kanaan.Host.say(ep.script.reveal);
+        await Kanaan.Host.say(ep.script.reveal, { cue: Kanaan.AudioLib.lineCue(ep, 'script.reveal') });
+        Kanaan.Puppet.express('happy');
         if (!alive()) return;
         await model();
         if (!alive()) return;
@@ -54,7 +55,7 @@ Kanaan.UI.registerScreen({
         Kanaan.Host.hide();
         hint.hidden = false;
         actions.hidden = false;
-        Kanaan.Sound.say(ep.script.revealHint);
+        Kanaan.Sound.say(ep.script.revealHint, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'script.revealHint') });
       },
       cleanup() { wave.destroy(); }
     };
