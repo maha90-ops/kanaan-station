@@ -10,14 +10,13 @@ Kanaan.Curriculum = (function () {
     {
       id: 'g1',
       title: 'المجموعة الأولى',
-      letters: ['alif', 'baa', 'taa', 'thaa', 'jeem', 'haa', 'khaa', 'daal', 'thaal'],
+      letters: ['baa', 'taa', 'thaa', 'jeem', 'haa', 'khaa', 'daal', 'thaal'],
       message: {
         title: 'رسالة من قرية فلسطينية',
         // كل خانة: كلمة يختفي حرفها الأول حتى يُكتشف حرفها
         parts: [
           'فِي قَرْيَتِنَا: ',
           { ep: 'baa', word: 'بَيْت' }, '، ',
-          { ep: 'alif', word: 'أَرْنَب' }, '، ',
           { ep: 'taa', word: 'تِين' }, '، ',
           { ep: 'thaa', word: 'ثَوْب' }, '، ',
           { ep: 'jeem', word: 'جَمَل' }, '، ',

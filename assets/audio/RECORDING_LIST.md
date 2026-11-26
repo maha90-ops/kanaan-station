@@ -1,6 +1,6 @@
 # قائمة التسجيلات — محطة كنعان للحروف
 
-يُولَّد تلقائيًا: `node tools/recording_list.js` — 271 تسجيلًا.
+يُولَّد تلقائيًا: `node tools/recording_list.js` — 254 تسجيلًا.
 
 ضع كل ملف في `assets/audio/` بالمسار المكتوب هنا مع الامتداد (`.mp3` مثلًا)، ثم شغّل `python3 tools/build_audio_manifest.py`.
 أي ملف غير موجود يُنطق بالصوت الآلي — يمكن التسجيل تدريجيًا.
@@ -31,11 +31,10 @@
 | `phonemes/ن` | نَ |
 | `phonemes/هـ` | هَ |
 
-## نماذج الاستماع (listen/) — 13
+## نماذج الاستماع (listen/) — 12
 
 | اسم الملف | النص |
 |---|---|
-| `listen/أ` | أَ أَ أَ |
 | `listen/ب` | بَ بَ بَ |
 | `listen/ت` | تَ تَ تَ |
 | `listen/ث` | ثَ ثَ ثَ |
@@ -49,12 +48,11 @@
 | `listen/ع` | عَ عَ عَ |
 | `listen/م` | ممم ممم ممم |
 
-## الكلمات (words/) — 35
+## الكلمات (words/) — 33
 
 | اسم الملف | النص |
 |---|---|
 | `words/أرنب` | أَرْنَب |
-| `words/أسد` | أَسَد |
 | `words/باب` | بَاب |
 | `words/بيت` | بَيْت |
 | `words/تفاح` | تُفَّاح |
@@ -87,7 +85,6 @@
 | `words/موز` | مَوْز |
 | `words/نار` | نَار |
 | `words/هلال` | هِلَال |
-| `words/ولد` | وَلَد |
 
 ## جمل كنعان المشتركة (common/) — 20
 
@@ -114,7 +111,7 @@
 | `common/script.write2` | الآن أكمل الحرف. النقاط أقل هذه المرة. |
 | `common/script.write3` | والآن اكتب الحرف بنفسك. |
 
-## جمل خاصة بكل حرف (letters/) — 182
+## جمل خاصة بكل حرف (letters/) — 168
 
 | اسم الملف | النص |
 |---|---|
@@ -129,23 +126,9 @@
 | `letters/ain/script.built` | رائع! لقد بنيت كلمة عِنَب. |
 | `letters/ain/script.revealHint` | انظر: رأس الحرف ع مفتوح مثل فم صغير. |
 | `letters/ain/script.speak` | الآن دورك! انطق صوت الحرف ع. |
-| `letters/ain/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثالثة عشرة. |
+| `letters/ain/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية عشرة. |
 | `letters/ain/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ع. |
 | `letters/ain/script.write` | لنكتب حرف ع! ابدأ من النقطة الخضراء واتبع السهم. |
-| `letters/alif/feedback.build.correct` | رائع! لقد بنيت كلمة أَرْنَب. |
-| `letters/alif/feedback.build.retry` | اقتربت! ابدأ بالحرف الذي صوته أَ. |
-| `letters/alif/feedback.discriminationScaffold` | استمع إلى الفرق: هذا صوت «ع»… وهذا الصوت الذي سمعته. |
-| `letters/alif/feedback.meaning.correct` | نعم! نسمع صوت ا في بداية كلمة أَرْنَب. |
-| `letters/alif/feedback.meaning.retry` | استمع إلى الكلمة ببطء… أين تسمع صوت ا؟ |
-| `letters/alif/feedback.transfer.correct` | أحسنت! «أَسَد» تبدأ بصوت ا. |
-| `letters/alif/meaningActivity.prompt` | أين تسمع صوت ا في كلمة أَرْنَب؟ |
-| `letters/alif/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ا. |
-| `letters/alif/script.built` | رائع! لقد بنيت كلمة أَرْنَب. |
-| `letters/alif/script.revealHint` | الألف خط مستقيم من أعلى إلى أسفل، وقد تأتي معه همزة: أ. |
-| `letters/alif/script.speak` | الآن دورك! انطق صوت الحرف ا. |
-| `letters/alif/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الأولى. |
-| `letters/alif/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ا. |
-| `letters/alif/script.write` | لنكتب حرف ا! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/baa/feedback.build.correct` | رائع! لقد بنيت كلمة بَيْت. |
 | `letters/baa/feedback.build.retry` | اقتربت! ابدأ بالحرف الذي صوته بَ. |
 | `letters/baa/feedback.discriminationScaffold` | استمع إلى الفرق: هذا صوت «م»… وهذا الصوت الذي سمعته. |
@@ -157,7 +140,7 @@
 | `letters/baa/script.built` | رائع! لقد بنيت كلمة بَيْت. |
 | `letters/baa/script.revealHint` | انظر: تحت الحرف ب نقطة واحدة. |
 | `letters/baa/script.speak` | الآن دورك! انطق صوت الحرف ب. |
-| `letters/baa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية. |
+| `letters/baa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الأولى. |
 | `letters/baa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ب. |
 | `letters/baa/script.write` | لنكتب حرف ب! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/daal/feedback.build.correct` | رائع! لقد بنيت كلمة دِيك. |
@@ -171,7 +154,7 @@
 | `letters/daal/script.built` | رائع! لقد بنيت كلمة دِيك. |
 | `letters/daal/script.revealHint` | انظر: الحرف د بلا نقاط، ولا يتصل بالحرف الذي بعده. |
 | `letters/daal/script.speak` | الآن دورك! انطق صوت الحرف د. |
-| `letters/daal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثامنة. |
+| `letters/daal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السابعة. |
 | `letters/daal/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت د. |
 | `letters/daal/script.write` | لنكتب حرف د! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/haa/feedback.build.correct` | رائع! لقد بنيت كلمة حِصَان. |
@@ -185,7 +168,7 @@
 | `letters/haa/script.built` | رائع! لقد بنيت كلمة حِصَان. |
 | `letters/haa/script.revealHint` | انظر: الحرف ح بلا نقاط. |
 | `letters/haa/script.speak` | الآن دورك! انطق صوت الحرف ح. |
-| `letters/haa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السادسة. |
+| `letters/haa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الخامسة. |
 | `letters/haa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ح. |
 | `letters/haa/script.write` | لنكتب حرف ح! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/jeem/feedback.build.correct` | رائع! لقد بنيت كلمة جَمَل. |
@@ -199,7 +182,7 @@
 | `letters/jeem/script.built` | رائع! لقد بنيت كلمة جَمَل. |
 | `letters/jeem/script.revealHint` | انظر: في بطن الحرف ج نقطة واحدة. |
 | `letters/jeem/script.speak` | الآن دورك! انطق صوت الحرف ج. |
-| `letters/jeem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الخامسة. |
+| `letters/jeem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الرابعة. |
 | `letters/jeem/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ج. |
 | `letters/jeem/script.write` | لنكتب حرف ج! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/khaa/feedback.build.correct` | رائع! لقد بنيت كلمة خُبْز. |
@@ -213,7 +196,7 @@
 | `letters/khaa/script.built` | رائع! لقد بنيت كلمة خُبْز. |
 | `letters/khaa/script.revealHint` | انظر: فوق الحرف خ نقطة واحدة. |
 | `letters/khaa/script.speak` | الآن دورك! انطق صوت الحرف خ. |
-| `letters/khaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السابعة. |
+| `letters/khaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السادسة. |
 | `letters/khaa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت خ. |
 | `letters/khaa/script.write` | لنكتب حرف خ! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/meem/feedback.build.correct` | رائع! لقد بنيت كلمة مَوْز. |
@@ -227,7 +210,7 @@
 | `letters/meem/script.built` | رائع! لقد بنيت كلمة مَوْز. |
 | `letters/meem/script.revealHint` | انظر: رأس الحرف م دائرة صغيرة، مثل فمك وهو مغلق. |
 | `letters/meem/script.speak` | الآن دورك! انطق صوت الحرف م. |
-| `letters/meem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الحادية عشرة. |
+| `letters/meem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة العاشرة. |
 | `letters/meem/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت م. |
 | `letters/meem/script.write` | لنكتب حرف م! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/sheen/feedback.build.correct` | رائع! لقد بنيت كلمة شَمْس. |
@@ -241,7 +224,7 @@
 | `letters/sheen/script.built` | رائع! لقد بنيت كلمة شَمْس. |
 | `letters/sheen/script.revealHint` | انظر: فوق الحرف ش ثلاث نقاط. |
 | `letters/sheen/script.speak` | الآن دورك! انطق صوت الحرف ش. |
-| `letters/sheen/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة العاشرة. |
+| `letters/sheen/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة التاسعة. |
 | `letters/sheen/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ش. |
 | `letters/sheen/script.write` | لنكتب حرف ش! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/taa/feedback.build.correct` | رائع! لقد بنيت كلمة تِين. |
@@ -255,7 +238,7 @@
 | `letters/taa/script.built` | رائع! لقد بنيت كلمة تِين. |
 | `letters/taa/script.revealHint` | انظر: فوق الحرف ت نقطتان. |
 | `letters/taa/script.speak` | الآن دورك! انطق صوت الحرف ت. |
-| `letters/taa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثالثة. |
+| `letters/taa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية. |
 | `letters/taa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ت. |
 | `letters/taa/script.write` | لنكتب حرف ت! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/thaa/feedback.build.correct` | رائع! لقد بنيت كلمة ثَوْب. |
@@ -269,7 +252,7 @@
 | `letters/thaa/script.built` | رائع! لقد بنيت كلمة ثَوْب. |
 | `letters/thaa/script.revealHint` | انظر: فوق الحرف ث ثلاث نقاط. |
 | `letters/thaa/script.speak` | الآن دورك! انطق صوت الحرف ث. |
-| `letters/thaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الرابعة. |
+| `letters/thaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثالثة. |
 | `letters/thaa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ث. |
 | `letters/thaa/script.write` | لنكتب حرف ث! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/thaal/feedback.build.correct` | رائع! لقد بنيت كلمة ذُرَة. |
@@ -283,7 +266,7 @@
 | `letters/thaal/script.built` | رائع! لقد بنيت كلمة ذُرَة. |
 | `letters/thaal/script.revealHint` | انظر: فوق الحرف ذ نقطة واحدة. |
 | `letters/thaal/script.speak` | الآن دورك! انطق صوت الحرف ذ. |
-| `letters/thaal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة التاسعة. |
+| `letters/thaal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثامنة. |
 | `letters/thaal/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ذ. |
 | `letters/thaal/script.write` | لنكتب حرف ذ! ابدأ من النقطة الخضراء واتبع السهم. |
 | `letters/zay/feedback.build.correct` | رائع! لقد بنيت كلمة زَيْت. |
@@ -297,7 +280,7 @@
 | `letters/zay/script.built` | رائع! لقد بنيت كلمة زَيْت. |
 | `letters/zay/script.revealHint` | انظر: فوق الحرف ز نقطة واحدة. بدونها يصبح ر. |
 | `letters/zay/script.speak` | الآن دورك! انطق صوت الحرف ز. |
-| `letters/zay/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية عشرة. |
+| `letters/zay/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الحادية عشرة. |
 | `letters/zay/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ز. |
 | `letters/zay/script.write` | لنكتب حرف ز! ابدأ من النقطة الخضراء واتبع السهم. |
 
