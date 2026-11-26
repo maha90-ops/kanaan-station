@@ -80,9 +80,11 @@ Kanaan.Sound = (function () {
   }
 
   /** تشغيل ملف صوتي عبر محلّل (لتزامن الشفاه والموجة مع الصوت الحقيقي) */
-  function playFile(src, { who = 'radio' } = {}) {
+  function playFile(src, { who = 'radio', onWord, text } = {}) {
     return new Promise((resolve) => {
       const a = new Audio(src);
+      // تظليل تقديري للكلمة المنطوقة في التسجيلات: موضع الحرف ∝ الزمن المنقضي
+      if (onWord && text) a.ontimeupdate = () => { if (a.duration) onWord(Math.floor((a.currentTime / a.duration) * text.length)); };
       let analyser = null;
       const c = audioCtx();
       if (c) {
@@ -107,7 +109,7 @@ Kanaan.Sound = (function () {
   async function say(text, { audio, cue, rate, pitch, who, onWord } = {}) {
     audio = audio || (Kanaan.AudioLib && Kanaan.AudioLib.url(cue));
     if (audio) {
-      const r = await playFile(audio, { who });
+      const r = await playFile(audio, { who, onWord, text });
       if (r === true) return 'file';
       if (r === 'blocked') return 'blocked';
     }

@@ -207,7 +207,7 @@ Kanaan.Studio = (function () {
       window.addEventListener('kanaan:voice', onVoice);
       const r = await Kanaan.Sound.say(text, {
         who: 'kanaan',
-        audio: ep.script.welcomeAudio || null,
+        cue: 'common/script.welcome', // assets/audio/common/script.welcome.mp3 إن وُجد
         onWord: (ci) => { gotBoundary = true; highlight(ci); }
       });
       window.removeEventListener('kanaan:voice', onVoice);
