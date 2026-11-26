@@ -100,6 +100,9 @@ button { font: inherit; color: inherit; }
   padding: 6px 12px; font-size: .9rem; color: var(--ink-soft); min-height: 44px;
 }
 .icon-btn:hover { border-color: var(--ink-soft); }
+.home-btn { border-color: var(--studio); color: var(--studio); font-weight: 700; }
+.station-bar { flex-wrap: nowrap; }
+.station-brand { margin-inline-end: auto; }
 .icon-btn--round { width: 52px; height: 52px; padding: 0; justify-content: center; font-size: 1.3rem; background: var(--surface); }
 
 /* ---------- المسرح ---------- */
@@ -649,7 +652,10 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 @media (max-width: 640px) {
   :root { --host-space: 150px; }
   body { font-size: 1.1rem; }
-  .station-bar { padding: 8px 12px; }
+  .station-bar { padding: 8px 12px; flex-wrap: wrap; row-gap: 6px; }
+  /* صفّان على الهاتف: الأزرار فوق، و«رحلتي» بعرض الشاشة تحتها */
+  .station-bar .journey { order: 5; width: 100%; }
+  .journey-steps { justify-content: center; }
   .journey-title { display: none; }
   .journey-step { padding: 2px; border-width: 2px; }
   .journey-step .journey-label { display: none; }

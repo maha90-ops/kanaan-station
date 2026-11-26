@@ -74,6 +74,8 @@
   }
   sfxBtn.addEventListener('click', () => { Sound.setSfx(!Sound.sfxOn); paintSfx(); });
   document.getElementById('dial-open').addEventListener('click', () => Kanaan.Panels.achievements());
+  // العودة إلى الاستوديو: تبقى الحلقة الحالية وتقدّمها كما هو، و«ابدأ الاستماع» يعيد الطفل إليها
+  document.getElementById('home-btn').addEventListener('click', () => { Sound.stop(); Sound.sfx('whoosh'); show(0); });
   paintSfx();
 
   Host.init();
