@@ -397,7 +397,9 @@ body[data-screen="welcome"] { background: var(--tatreez-band) bottom / 22px 14px
 /* ---------- الصورة الصغيرة (بعد البناء / في موضع الصوت) ---------- */
 .scene--small { width: min(100%, 240px); }
 .scene--small .scene-word { font-size: 2.4rem; }
+.meaning-slot { width: 100%; display: flex; justify-content: center; }
 .meaning-slot:empty { display: none; }
+.scene.scene--small { width: min(100%, 320px); margin-inline: auto; }
 
 /* ---------- ✍️ ورشة الكتابة ---------- */
 .write-levels { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
@@ -562,6 +564,7 @@ body[data-screen="welcome"] { background: var(--tatreez-band) bottom / 22px 14px
 .scene { margin: 0; width: min(100%, 380px); }
 .scene-art { border-radius: 26px; overflow: hidden; border: 3px solid var(--surface); box-shadow: 0 10px 30px rgba(61,64,102,.15); }
 .scene-art svg { display: block; width: 100%; height: auto; }
+.scene-art img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .scene.is-revealing .scene-art { animation: unveil 1s ease-out both; }
 @keyframes unveil { from { opacity: 0; filter: blur(12px); transform: scale(.94); } }
 .scene-word { margin-top: 4px; font-family: var(--font-letter); font-size: 3rem; font-weight: 700; line-height: 1.4; }

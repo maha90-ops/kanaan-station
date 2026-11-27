@@ -6,7 +6,8 @@ Kanaan.Letters.add({
     text: 'بَيْت',
     letters: ['ب', 'ي', 'ت'],
     scene: 'stone-house',
-    alt: 'بيت فلسطيني من حجر له باب مقوّس'
+    image: 'assets/images/words/bayt.webp',   // صورة حقيقية (تتقدّم على الرسمة)
+    alt: 'بيت فلسطيني من حجر بباب أزرق مقوّس ونافذة فيها زهور، وبجانبه شجرة زيتون'
   },
   options: ['ت', 'ب', 'م'],
   transfer: [
