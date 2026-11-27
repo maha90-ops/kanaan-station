@@ -141,7 +141,7 @@ Kanaan.Studio = (function () {
       startWrap.classList.add('is-pressed');
       // كنعان يبدأ الكلام هنا في الاستوديو: تتحرك شفتاه وموجات الراديو، ثم ينطلق المسار
       await Promise.race([
-        Kanaan.Sound.say(ep.script.go, { who: 'kanaan', cue: 'common/go' }),
+        Kanaan.Sound.say(ep.script.go, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'script.go') }),
         Kanaan.UI.wait(2600)
       ]);
       onStart();

@@ -96,7 +96,7 @@ Kanaan.Sound = (function () {
       }
       let started = false;
       const end = (r) => { if (started) { started = false; emit('end', who); } resolve(r); };
-      current.push({ stop: () => { a.pause(); end(false); } });
+      current.push({ stop: () => { a.pause(); end('stopped'); } }); // إيقاف مقصود، لا فشل
       a.onplaying = () => { if (!started) { started = true; emit('start', who, analyser); } };
       a.onended = () => end(true);
       a.onerror = () => end(false);
@@ -111,7 +111,7 @@ Kanaan.Sound = (function () {
     if (audio) {
       const r = await playFile(audio, { who, onWord, text });
       if (r === true) return 'file';
-      if (r === 'blocked') return 'blocked';
+      if (r === 'blocked' || r === 'stopped') return r;   // لا نعيد الجملة بالصوت الآلي بعد إيقافها
     }
     const r = await speakTTS(text, { rate, pitch, who, onWord });
     return r === 'blocked' ? 'blocked' : r ? 'tts' : 'none';
