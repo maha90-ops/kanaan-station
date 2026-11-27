@@ -80,28 +80,78 @@ Kanaan.Sound = (function () {
   }
 
   /** تشغيل ملف صوتي عبر محلّل (لتزامن الشفاه والموجة مع الصوت الحقيقي) */
-  function playFile(src, { who = 'radio', onWord, text } = {}) {
+  /* ---------- تشغيل التسجيلات ----------
+   * عبر WebAudio (قناة صوت واحدة تُفتح مرة عند أول لمسة وتبقى مفتوحة): يعمل على الهاتف
+   * (iPhone/Safari يمنع ملفات <audio> الجديدة خارج لحظة اللمس)، ويُفكّ كل ملف مرة ثم يُعاد استخدامه.
+   * احتياط: <audio> عند فتح الصفحة من ملف مباشرة (file://) حيث لا يعمل fetch. */
+  const buffers = new Map();
+  function loadBuffer(c, src) {
+    if (!buffers.has(src)) {
+      buffers.set(src, fetch(src)
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then((ab) => new Promise((ok, no) => c.decodeAudioData(ab, ok, no)))
+        .catch((e) => { buffers.delete(src); throw e; }));
+    }
+    return buffers.get(src);
+  }
+
+  function playFile(src, opts = {}) {
+    const c = audioCtx();
+    if (!c || location.protocol === 'file:') return playElement(src, opts);
+    const { who = 'radio', onWord, text } = opts;
+    return new Promise((resolve) => {
+      let started = false, src0 = null, raf = 0, stopped = false;
+      const end = (r) => {
+        cancelAnimationFrame(raf);
+        if (started) { started = false; emit('end', who); }
+        resolve(r);
+      };
+      const handle = { stop: () => { stopped = true; try { src0 && src0.stop(); } catch (e) { /* انتهى */ } end('stopped'); } };
+      current.push(handle);
+      loadBuffer(c, src).then(async (buf) => {
+        if (stopped) return;
+        if (c.state === 'suspended') {
+          try { await Promise.race([c.resume(), new Promise((r) => setTimeout(r, 400))]); } catch (e) { /* تجاهل */ }
+        }
+        if (stopped) return;
+        if (c.state !== 'running') return end('blocked'); // لم يلمس المستخدم الصفحة بعد
+        src0 = c.createBufferSource();
+        src0.buffer = buf;
+        const an = c.createAnalyser(); an.fftSize = 1024;
+        src0.connect(an); an.connect(c.destination);
+        src0.onended = () => { if (!stopped) end(true); };
+        const t0 = c.currentTime;
+        src0.start();
+        started = true;
+        emit('start', who, an);
+        // تظليل تقديري للكلمة المنطوقة: موضع الحرف ∝ الزمن المنقضي
+        if (onWord && text) {
+          const tick = () => { onWord(Math.floor(((c.currentTime - t0) / buf.duration) * text.length)); raf = requestAnimationFrame(tick); };
+          raf = requestAnimationFrame(tick);
+        }
+      }).catch(() => { if (!stopped) playElement(src, opts).then(resolve); });
+    });
+  }
+
+  function playElement(src, { who = 'radio', onWord, text } = {}) {
     return new Promise((resolve) => {
       const a = new Audio(src);
-      // تظليل تقديري للكلمة المنطوقة في التسجيلات: موضع الحرف ∝ الزمن المنقضي
       if (onWord && text) a.ontimeupdate = () => { if (a.duration) onWord(Math.floor((a.currentTime / a.duration) * text.length)); };
-      let analyser = null;
-      const c = audioCtx();
-      if (c) {
-        try {
-          const node = c.createMediaElementSource(a);
-          analyser = c.createAnalyser(); analyser.fftSize = 1024;
-          node.connect(analyser); analyser.connect(c.destination);
-        } catch (e) { analyser = null; }
-      }
       let started = false;
       const end = (r) => { if (started) { started = false; emit('end', who); } resolve(r); };
       current.push({ stop: () => { a.pause(); end('stopped'); } }); // إيقاف مقصود، لا فشل
-      a.onplaying = () => { if (!started) { started = true; emit('start', who, analyser); } };
+      a.onplaying = () => { if (!started) { started = true; emit('start', who, null); } };
       a.onended = () => end(true);
       a.onerror = () => end(false);
       a.play().catch((e) => end(e && e.name === 'NotAllowedError' ? 'blocked' : false));
     });
+  }
+
+  /** تحميل مسبق لتسجيلات (يُفكّ ترميزها مسبقًا لتبدأ فورًا) */
+  function preload(urls) {
+    const c = ctx;
+    if (!c || location.protocol === 'file:') return;
+    urls.filter(Boolean).forEach((u) => loadBuffer(c, u).catch(() => {}));
   }
 
   /** كلام كنعان أو نطق كلمة: الملف أولًا، ثم الصوت الآلي.
@@ -251,6 +301,7 @@ Kanaan.Sound = (function () {
     say, phoneme, sfx, stop, canSpeak, canPlay,
     get speaking() { return speaking > 0; },
     playClip: playFile,
+    preload,
     get sfxOn() { return sfxOn; },
     setSfx(on) {
       sfxOn = on;

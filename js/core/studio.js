@@ -136,8 +136,12 @@ Kanaan.Studio = (function () {
     async function begin() {
       if (starting) return;
       starting = true;
+      dropWaiter();
       Kanaan.Sound.unlock();
       Kanaan.Sound.stop();
+      // فكّ ترميز كل التسجيلات الآن (أول لمسة) لتبدأ فورًا في كل الشاشات
+      const M = Kanaan.AudioManifest || { files: [] };
+      Kanaan.Sound.preload(M.files.map((f) => M.base + f));
       startWrap.classList.add('is-pressed');
       // كنعان يبدأ الكلام هنا في الاستوديو: تتحرك شفتاه وموجات الراديو، ثم ينطلق المسار
       await Promise.race([
@@ -189,8 +193,17 @@ Kanaan.Studio = (function () {
     }
     const clearHighlight = () => words.forEach((w) => w.s.classList.remove('is-now', 'is-said'));
 
+    // مستمع «أول لمسة تشغّل الترحيب» — يُزال عند البدء أو مغادرة الاستوديو
+    let waiter = null;
+    function dropWaiter() {
+      if (!waiter) return;
+      document.removeEventListener('pointerdown', waiter, true);
+      document.removeEventListener('keydown', waiter, true);
+      waiter = null;
+    }
+
     async function greet() {
-      if (talking) return;
+      if (talking || !root.isConnected) return;
       needsTap = false;
       talking = true; paintVoice();
       clearHighlight();
@@ -216,15 +229,16 @@ Kanaan.Studio = (function () {
       if (r === 'blocked') {
         // المتصفح يمنع الصوت قبل أول لمسة: أول لمسة على المشهد تشغّل الترحيب
         needsTap = true;
-        const once = (e) => {
+        dropWaiter();
+        waiter = (e) => {
           if (e.target.closest && e.target.closest('button, a, dialog')) return;
-          document.removeEventListener('pointerdown', once, true);
-          document.removeEventListener('keydown', once, true);
+          dropWaiter();
+          if (!root.isConnected) return;   // غادرنا الاستوديو: لا ترحيب في مكان آخر
           Kanaan.Sound.unlock();
           greet();
         };
-        document.addEventListener('pointerdown', once, true);
-        document.addEventListener('keydown', once, true);
+        document.addEventListener('pointerdown', waiter, true);
+        document.addEventListener('keydown', waiter, true);
       } else {
         words.forEach((w) => { w.s.classList.remove('is-now'); w.s.classList.add('is-said'); });
         startWrap.classList.add('call-attention'); // الآن فقط نوجّه الانتباه إلى الزر
@@ -303,6 +317,7 @@ Kanaan.Studio = (function () {
       mounted() { layout(); puppet.enter(); },
       greet,
       destroy() {
+        dropWaiter();
         cancelAnimationFrame(raf);
         clearInterval(clockTimer);
         clearTimeout(tipTimer);
