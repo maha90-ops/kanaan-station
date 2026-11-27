@@ -11,7 +11,7 @@ Kanaan.UI.registerScreen({
     const { el, button, feedback, wait, digits } = Kanaan.UI;
     const act = ep.transferActivity;
     const fbSlot = el('div.feedback-slot');
-    const canHear = Kanaan.Sound.canSpeak() || act.channels.every((c) => c.audio);
+    const canHear = Kanaan.Sound.canSpeak() || act.channels.every((c) => Kanaan.AudioLib.has(c.cue));
     let tuned = null, solved = false;
 
     const radio = Kanaan.UI.radio({ compact: true });
