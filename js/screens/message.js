@@ -98,6 +98,10 @@ Kanaan.UI.registerScreen({
         Kanaan.Host.hide();
         nextRow.hidden = false;
         nextRow.classList.add('appear');
+        const k = nextEp ? 'nextAsk' : 'allDone';
+        Kanaan.Puppet.express(nextEp ? 'ask' : 'happy');
+        await Kanaan.Host.say(ep.script[k], { cue: Kanaan.AudioLib.lineCue(ep, 'script.' + k) });
+        if (alive()) Kanaan.Host.hide();
       }
     };
   }

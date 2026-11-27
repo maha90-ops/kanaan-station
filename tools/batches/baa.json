@@ -36,5 +36,7 @@
  "43": "letters/baa/script.messageBack",
  "44": "letters/baa/script.mission",
  "45": "common/script.discoverAsk",
- "46": "common/script.discoverRetry"
+ "46": "common/script.discoverRetry",
+ "47": "common/script.nextAsk",
+ "48": "common/script.allDone"
 }

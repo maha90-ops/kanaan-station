@@ -1,6 +1,6 @@
 # قائمة التسجيلات — محطة كنعان للحروف
 
-يُولَّد تلقائيًا: `node tools/recording_list.js` — 379 تسجيلًا.
+يُولَّد تلقائيًا: `node tools/recording_list.js` — 381 تسجيلًا.
 
 ضع كل ملف في `assets/audio/` بالمسار المكتوب هنا مع الامتداد (`.mp3` مثلًا)، ثم شغّل `python3 tools/build_audio_manifest.py`.
 أي ملف غير موجود يُنطق بالصوت الآلي — يمكن التسجيل تدريجيًا.
@@ -86,7 +86,7 @@
 | `words/nar` | نَار |
 | `words/hlal` | هِلَال |
 
-## جمل كنعان المشتركة (common/) — 25
+## جمل كنعان المشتركة (common/) — 27
 
 | اسم الملف | النص |
 |---|---|
@@ -102,12 +102,14 @@
 | `common/feedback.writing.retry` | محاولة جميلة، لنحاول مرة أخرى. |
 | `common/feedback.writing.traced` | أحسنت! تتبّعت الحرف جيدًا. |
 | `common/phonemeActivity.prompt` | أيُّ صوت سمعت؟ |
+| `common/script.allDone` | أنهيتَ كل رسائل المحطة! أحسنت يا بطل. |
 | `common/script.discoverAsk` | هذا الصوت يُكتب بأحد هذه الحروف. استمع إلى التلميح، واختر الحرف. |
 | `common/script.discoverRetry` | انظر جيدًا إلى شكل الحرف ونقاطه، وحاول مرة أخرى. |
 | `common/script.go` | هيا نستمع! |
 | `common/script.listenAfter` | هل سمعته؟ لنكتشف أيّ صوت هو. |
 | `common/script.listenIntro` | استمع جيدًا… هناك صوت يختبئ في محطة الحروف. |
 | `common/script.missionLater` | لا بأس! الأصوات حولنا في كل مكان، ستجدها. |
+| `common/script.nextAsk` | هل أنت مستعد للرسالة التالية؟ |
 | `common/script.onairStart` | حان وقت البث! سيسمع الجميع صوتك على محطة كنعان. |
 | `common/script.reveal` | أحسنت! لقد اكتشفت الحرف. |
 | `common/script.reviewAsk` | وصلتنا إشارة قديمة من أرشيف المحطة… أيّ حرف هذا؟ |
