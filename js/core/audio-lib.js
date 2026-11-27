@@ -22,7 +22,7 @@ Kanaan.AudioLib = (function () {
   const fileKey = (cue) => String(cue).replace(/[\u064B-\u0652\u0670]/g, '').replace(/[\u0621-\u064A\u0640]/g, (c) => (c in TR ? TR[c] : 'x')).replace(/\s+/g, '-');
   const M = window.Kanaan.AudioManifest || { base: 'assets/audio/', files: [] };
   const byCue = new Map();
-  M.files.forEach((f) => byCue.set(f.replace(/\.(mp3|m4a|ogg|wav)$/i, ''), M.base + f));
+  M.files.forEach((f) => byCue.set(f.replace(/\.(mp3|m4a|ogg|wav)$/i, ''), M.base + f + (M.ver && M.ver[f] ? '?v=' + M.ver[f] : '')));
 
   const plain = (t) => String(t).replace(/[ً-ْٰ]/g, '').trim();
 
