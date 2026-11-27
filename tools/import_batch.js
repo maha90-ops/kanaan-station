@@ -14,7 +14,8 @@ const fileKey = sb.Kanaan.AudioLib.fileKey;
 const map = JSON.parse(fs.readFileSync(path.join(root, `tools/batches/${id}.json`), 'utf8'));
 const files = inputs.flatMap((p) => (fs.statSync(p).isDirectory() ? fs.readdirSync(p).map((f) => path.join(p, f)) : [p]));
 for (const f of files) {
-  const m = path.basename(f).match(/(\d+)/);
+  // نتجاهل رمز الرفع العشوائي في أول الاسم (مثل 5905b32b-) ونأخذ رقم الملف
+  const m = path.basename(f).replace(/^[0-9a-f]{8}-/i, '').match(/^\D*(\d+)/);
   const cue = m && map[+m[1]];
   if (!cue) { console.log(`؟ لم أجد رقمًا معروفًا في: ${path.basename(f)}`); continue; }
   const dest = path.join(root, 'assets/audio', fileKey(cue) + path.extname(f).toLowerCase());
