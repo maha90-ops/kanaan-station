@@ -55,6 +55,8 @@ Kanaan.Episodes = (function () {
         listenIntro: 'استمع جيدًا… هناك صوت يختبئ في محطة الحروف.',
         listenAfter: 'هل سمعته؟ لنكتشف أيّ صوت هو.',
         signal: 'اضغط على كل صوت لتسمعه، ثم اختر الصوت الذي سمعته.',
+        discoverAsk: 'هذا الصوت يُكتب بأحد هذه الحروف. استمع إلى التلميح، واختر الحرف.',
+        discoverRetry: 'انظر جيدًا إلى شكل الحرف ونقاطه، وحاول مرة أخرى.',
         reveal: 'أحسنت! لقد اكتشفت الحرف.',
         speak: `الآن دورك! انطق صوت الحرف ${L}.`,
         build: 'لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ' + L + '.',
@@ -134,6 +136,8 @@ Kanaan.Episodes = (function () {
         image: { scene: W.scene, src: W.image || null, alt: W.alt }
       },
       phonemeActivity: { options, correct: wordLetter, contrast, sounds },
+      // «أكتشف»: الحرف + حرفان يشبهانه شكلًا؛ يختاره الطفل بالتلميح البصري (النقاط)
+      discoverActivity: { options: src.discover || [src.letter, ...Kanaan.Alphabet.lookalikes(src.letter)] },
       pronunciationActivity: {
         maxRecordMs: 4000,
         evaluator: src.evaluator || Kanaan.Alphabet.evaluatorOf(wordLetter),

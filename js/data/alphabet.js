@@ -71,6 +71,16 @@ Kanaan.Alphabet = (function () {
       tips: { short: 'أطِل الصوت هكذا: ننننن.', open: 'ضع لسانك خلف أسنانك العليا ودع الصوت يخرج من أنفك: ننننن.' } }
   };
 
+  /** عائلات الشكل: حروف يفرّق بينها عدد النقاط أو موضعها — تُستخدم في «أكتشف» */
+  const SHAPE_FAMILIES = [['ز', 'ر', 'ذ'], ['ب', 'ت', 'ث', 'ن', 'ي'], ['ج', 'ح', 'خ'], ['د', 'ذ', 'ر', 'ز'], ['ر', 'ز', 'و'], ['س', 'ش', 'ص'],
+    ['ص', 'ض', 'ط'], ['ط', 'ظ', 'ص'], ['ع', 'غ', 'ح'], ['ف', 'ق', 'و'], ['ك', 'ل', 'ا'], ['م', 'ه', 'و'], ['ن', 'ب', 'ت'], ['ه', 'م', 'و'], ['و', 'ر', 'ز'], ['ي', 'ب', 'ن'], ['ا', 'ل', 'ك']];
+
+  /** حرفان يشبهان الحرف في الشكل (للاختيار البصري) */
+  function lookalikes(letter) {
+    const fam = SHAPE_FAMILIES.find((f) => f[0] === letter) || SHAPE_FAMILIES.find((f) => f.includes(letter)) || [];
+    return fam.filter((l) => l !== letter).slice(0, 2);
+  }
+
   const NON_JOINING = 'اأإآدذرزوؤة';
   const byLetter = new Map(ROWS.map(([letter, name, cls, voiced, contrast, words]) => [letter, { letter, name, cls, voiced, contrast, words }]));
 
@@ -93,6 +103,7 @@ Kanaan.Alphabet = (function () {
     get: (letter) => byLetter.get(letter),
     soundOf,
     forms,
+    lookalikes,
     evaluatorOf: (letter) => EVALUATOR[letter] || 'clarity',
     profileOf: (letter) => (PROFILE[letter] || {}).profile,
     tipsOf: (letter) => (PROFILE[letter] || {}).tips || {},

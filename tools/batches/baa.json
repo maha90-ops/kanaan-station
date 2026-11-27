@@ -34,5 +34,7 @@
  "41": "letters/baa/script.onairNoVoice",
  "42": "letters/baa/script.onairWord",
  "43": "letters/baa/script.messageBack",
- "44": "letters/baa/script.mission"
+ "44": "letters/baa/script.mission",
+ "45": "common/script.discoverAsk",
+ "46": "common/script.discoverRetry"
 }
