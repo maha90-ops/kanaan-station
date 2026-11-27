@@ -9,82 +9,82 @@
 
 | اسم الملف | النص |
 |---|---|
-| `phonemes/أ` | أَ |
-| `phonemes/ب` | بَ |
-| `phonemes/ت` | تَ |
-| `phonemes/ث` | ثَ |
-| `phonemes/ج` | جَ |
-| `phonemes/ح` | حَ |
-| `phonemes/خ` | خَ |
-| `phonemes/د` | دَ |
-| `phonemes/ذ` | ذَ |
-| `phonemes/ر` | رَ |
-| `phonemes/ز` | زززز |
-| `phonemes/س` | سسس |
-| `phonemes/ش` | ششش |
-| `phonemes/ط` | طَ |
-| `phonemes/ع` | عَ |
-| `phonemes/غ` | غَ |
-| `phonemes/ف` | فففف |
-| `phonemes/ك` | كَ |
-| `phonemes/م` | ممم |
-| `phonemes/ن` | نَ |
-| `phonemes/هـ` | هَ |
+| `phonemes/a2` | أَ |
+| `phonemes/b` | بَ |
+| `phonemes/t` | تَ |
+| `phonemes/th` | ثَ |
+| `phonemes/j` | جَ |
+| `phonemes/h7` | حَ |
+| `phonemes/kh` | خَ |
+| `phonemes/d` | دَ |
+| `phonemes/dh` | ذَ |
+| `phonemes/r` | رَ |
+| `phonemes/z` | زززز |
+| `phonemes/s` | سسس |
+| `phonemes/sh` | ششش |
+| `phonemes/t6` | طَ |
+| `phonemes/e3` | عَ |
+| `phonemes/gh` | غَ |
+| `phonemes/f` | فففف |
+| `phonemes/k` | كَ |
+| `phonemes/m` | ممم |
+| `phonemes/n` | نَ |
+| `phonemes/h` | هَ |
 
 ## نماذج الاستماع (listen/) — 12
 
 | اسم الملف | النص |
 |---|---|
-| `listen/ب` | بَ بَ بَ |
-| `listen/ت` | تَ تَ تَ |
-| `listen/ث` | ثَ ثَ ثَ |
-| `listen/ج` | جَ جَ جَ |
-| `listen/ح` | حَ حَ حَ |
-| `listen/خ` | خَ خَ خَ |
-| `listen/د` | دَ دَ دَ |
-| `listen/ذ` | ذَ ذَ ذَ |
-| `listen/ز` | زززز زززز زززز |
-| `listen/ش` | ششش ششش ششش |
-| `listen/ع` | عَ عَ عَ |
-| `listen/م` | ممم ممم ممم |
+| `listen/b` | بَ بَ بَ |
+| `listen/t` | تَ تَ تَ |
+| `listen/th` | ثَ ثَ ثَ |
+| `listen/j` | جَ جَ جَ |
+| `listen/h7` | حَ حَ حَ |
+| `listen/kh` | خَ خَ خَ |
+| `listen/d` | دَ دَ دَ |
+| `listen/dh` | ذَ ذَ ذَ |
+| `listen/z` | زززز زززز زززز |
+| `listen/sh` | ششش ششش ششش |
+| `listen/e3` | عَ عَ عَ |
+| `listen/m` | ممم ممم ممم |
 
 ## الكلمات (words/) — 33
 
 | اسم الملف | النص |
 |---|---|
-| `words/أرنب` | أَرْنَب |
-| `words/باب` | بَاب |
-| `words/بيت` | بَيْت |
-| `words/تفاح` | تُفَّاح |
-| `words/تين` | تِين |
-| `words/ثلج` | ثَلْج |
-| `words/ثوب` | ثَوْب |
-| `words/جبل` | جَبَل |
-| `words/جمل` | جَمَل |
-| `words/حصان` | حِصَان |
-| `words/حليب` | حَلِيب |
-| `words/خبز` | خُبْز |
-| `words/خروف` | خَرُوف |
-| `words/دار` | دَار |
-| `words/دب` | دُبّ |
-| `words/ديك` | دِيك |
-| `words/ذرة` | ذُرَة |
-| `words/ذهب` | ذَهَب |
-| `words/زهرة` | زَهْرَة |
-| `words/زيت` | زَيْت |
-| `words/سمك` | سَمَك |
-| `words/شاي` | شَاي |
-| `words/شمس` | شَمْس |
-| `words/طير` | طَيْر |
-| `words/عنب` | عِنَب |
-| `words/عين` | عَيْن |
-| `words/غيمة` | غَيْمَة |
-| `words/قمر` | قَمَر |
-| `words/كعك` | كَعْك |
-| `words/ماء` | مَاء |
-| `words/موز` | مَوْز |
-| `words/نار` | نَار |
-| `words/هلال` | هِلَال |
+| `words/a2rnb` | أَرْنَب |
+| `words/bab` | بَاب |
+| `words/byt` | بَيْت |
+| `words/tfah7` | تُفَّاح |
+| `words/tyn` | تِين |
+| `words/thlj` | ثَلْج |
+| `words/thwb` | ثَوْب |
+| `words/jbl` | جَبَل |
+| `words/jml` | جَمَل |
+| `words/h7s9an` | حِصَان |
+| `words/h7lyb` | حَلِيب |
+| `words/khbz` | خُبْز |
+| `words/khrwf` | خَرُوف |
+| `words/dar` | دَار |
+| `words/db` | دُبّ |
+| `words/dyk` | دِيك |
+| `words/dhrh0` | ذُرَة |
+| `words/dhhb` | ذَهَب |
+| `words/zhrh0` | زَهْرَة |
+| `words/zyt` | زَيْت |
+| `words/smk` | سَمَك |
+| `words/shay` | شَاي |
+| `words/shms` | شَمْس |
+| `words/t6yr` | طَيْر |
+| `words/e3nb` | عِنَب |
+| `words/e3yn` | عَيْن |
+| `words/ghymh0` | غَيْمَة |
+| `words/qmr` | قَمَر |
+| `words/ke3k` | كَعْك |
+| `words/mae2` | مَاء |
+| `words/mwz` | مَوْز |
+| `words/nar` | نَار |
+| `words/hlal` | هِلَال |
 
 ## جمل كنعان المشتركة (common/) — 23
 

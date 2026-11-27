@@ -9,7 +9,8 @@ const root = path.resolve(__dirname, '..');
 const [id = 'baa', startArg = '1'] = process.argv.slice(2);
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const sb = { window: {}, console }; sb.window.Kanaan = sb.Kanaan = {}; vm.createContext(sb);
-for (const f of [...html.matchAll(/<script src="(js\/data\/[^"]+)"/g)].map((m) => m[1])) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), sb);
+for (const f of [...html.matchAll(/<script src="(js\/data\/[^"?']+\.js)"/g)].map((m) => m[1])) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), sb);
+vm.runInContext(fs.readFileSync(path.join(root, 'js/data/audio-manifest.js'), 'utf8'), sb);
 vm.runInContext(fs.readFileSync(path.join(root, 'js/core/audio-lib.js'), 'utf8'), sb);
 const K = sb.Kanaan, A = K.AudioLib, ep = K.Episodes.get(id);
 const line = (key, note) => ({ cue: A.lineCue(ep, key), text: A.lineText(ep, key), note });
@@ -39,6 +40,12 @@ for (const [stage, items] of seq) {
   out += `\n## ${stage}\n`;
   for (const it of todo) { seen.add(it.cue); map[n] = it.cue; out += `${n}. ${it.text}${it.note ? `   ← ${it.note}` : ''}\n`; n++; }
 }
-fs.mkdirSync(path.join(root, 'tools/batches'), { recursive: true });
-fs.writeFileSync(path.join(root, `tools/batches/${id}.json`), JSON.stringify(map, null, 1));
+// الترقيم المحفوظ لا يُستبدل أبدًا: الملفات المرسلة تُسمّى به
+const batchFile = path.join(root, `tools/batches/${id}.json`);
+if (fs.existsSync(batchFile) && !process.argv.includes('--new')) {
+  out += `\n(ترقيم هذه المحطة محفوظ مسبقًا في tools/batches/${id}.json ولم يُغيَّر؛ للترقيم من جديد: --new)\n`;
+} else {
+  fs.mkdirSync(path.dirname(batchFile), { recursive: true });
+  fs.writeFileSync(batchFile, JSON.stringify(map, null, 1));
+}
 console.log(out);

@@ -203,7 +203,7 @@ Kanaan.Studio = (function () {
     }
 
     async function greet() {
-      if (talking || !root.isConnected) return;
+      if (talking || starting || !root.isConnected) return;   // بدأ الطفل المسار: لا ترحيب بعد الآن
       needsTap = false;
       talking = true; paintVoice();
       clearHighlight();

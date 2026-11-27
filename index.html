@@ -62,7 +62,8 @@
   <script src="js/data/registry.js"></script>
   <script src="js/data/alphabet.js"></script>
   <script src="js/data/curriculum.js"></script>
-  <script src="js/data/audio-manifest.js"></script>
+  <!-- قائمة التسجيلات: تُحمَّل دائمًا بأحدث نسخة (لا نسخة مخزّنة قديمة بعد النشر) -->
+  <script>document.write('<script src="js/data/audio-manifest.js?v=' + Date.now() + '"><\/script>');</script>
   <script src="js/data/scenes.js"></script>
   <!-- الحروف: ملف بيانات لكل حرف (الترتيب في curriculum.js) -->
   <script src="js/data/letters/baa.js"></script>
