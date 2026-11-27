@@ -9,7 +9,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const files = [...html.matchAll(/<script src="(js\/data\/[^"?']+\.js)"/g)].map((m) => m[1]);
+const files = [...html.matchAll(/<script src="(js\/data\/[^"?']+\.js)(?:\?v=\d+)?"/g)].map((m) => m[1]);
 const sandbox = { window: {}, console };
 sandbox.window.Kanaan = sandbox.Kanaan = {};
 vm.createContext(sandbox);

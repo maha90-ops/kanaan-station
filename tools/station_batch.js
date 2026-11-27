@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const [id = 'baa', startArg = '1'] = process.argv.slice(2);
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const sb = { window: {}, console }; sb.window.Kanaan = sb.Kanaan = {}; vm.createContext(sb);
-for (const f of [...html.matchAll(/<script src="(js\/data\/[^"?']+\.js)"/g)].map((m) => m[1])) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), sb);
+for (const f of [...html.matchAll(/<script src="(js\/data\/[^"?']+\.js)(?:\?v=\d+)?"/g)].map((m) => m[1])) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), sb);
 vm.runInContext(fs.readFileSync(path.join(root, 'js/data/audio-manifest.js'), 'utf8'), sb);
 vm.runInContext(fs.readFileSync(path.join(root, 'js/core/audio-lib.js'), 'utf8'), sb);
 const K = sb.Kanaan, A = K.AudioLib, ep = K.Episodes.get(id);
