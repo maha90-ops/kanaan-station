@@ -33,12 +33,12 @@ Kanaan.UI.registerScreen({
       const w = el(`button.msg-word${isNew ? '.is-new' : ''}`, {
         type: 'button',
         'aria-label': learned(p) ? p.word : 'كلمة ينقصها حرف لم يُكتشف بعد',
-        onclick: () => learned(p) && Kanaan.Sound.say(p.word, { rate: 0.75 })
+        onclick: () => learned(p) && Kanaan.Sound.say(p.word, { rate: 0.75, cue: Kanaan.AudioLib.wordCue(p.word) })
       });
       if (learned(p)) w.append(el('mark.target', null, first), rest);
       else w.append(el('span.msg-gap', { 'aria-hidden': 'true' }), (NON_JOINING.includes(first[0]) ? '' : 'ـ') + rest);
       line.append(w);
-      pieces.push({ node: w, text: p.word });
+      pieces.push({ node: w, text: p.word, cue: Kanaan.AudioLib.wordCue(p.word) });
     });
 
     const missionCard = el('div.mission-card', { hidden: true },
@@ -65,7 +65,7 @@ Kanaan.UI.registerScreen({
       for (const p of pieces) {
         if (!alive()) return;
         p.node.classList.add('is-reading');
-        await Kanaan.Sound.say(p.text, { rate: 0.8 });
+        await Kanaan.Sound.say(p.text, { rate: 0.8, cue: p.cue });
         p.node.classList.remove('is-reading');
       }
       reading = false;
@@ -86,15 +86,14 @@ Kanaan.UI.registerScreen({
         Kanaan.Progress.assignMission(ep.id);
         await wait(500);
         Kanaan.Sound.sfx('reveal');
-        await Kanaan.Host.say(complete
-          ? `عاد الحرف ${ep.letter} إلى الرسالة… واكتملت الرسالة كلها! استمع إليها:`
-          : `عاد الحرف ${ep.letter} إلى مكانه في الرسالة! بقي ${remaining === 1 ? 'حرف واحد' : `${digits(remaining)} حروف`}.`);
+        await Kanaan.Host.say(complete ? ep.script.messageComplete : ep.script.messageBack,
+          { cue: Kanaan.AudioLib.lineCue(ep, complete ? 'script.messageComplete' : 'script.messageBack') });
         if (!alive()) return;
         if (complete) { Kanaan.Host.hide(); await readAll(); }
         if (!alive()) return;
         missionCard.hidden = false;
         missionCard.classList.add('appear');
-        await Kanaan.Host.say(`مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ${ep.letter}.`);
+        await Kanaan.Host.say(ep.script.mission, { cue: Kanaan.AudioLib.lineCue(ep, 'script.mission') });
         if (!alive()) return;
         Kanaan.Host.hide();
         nextRow.hidden = false;

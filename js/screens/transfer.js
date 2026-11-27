@@ -83,7 +83,11 @@ Kanaan.UI.registerScreen({
         const msg = `«${ch.data.word}» تبدأ بصوت ${ch.data.startSound}. ${ep.feedback.transfer.retry}`;
         Kanaan.Sound.sfx('gentle');
         fbSlot.replaceChildren(feedback('retry', msg));
-        Kanaan.Sound.say(msg, { who: 'kanaan' });
+        // بصوت مسجّل: الكلمة نفسها ثم جملة الإعادة المشتركة (النص الكامل على الشاشة)
+        if (Kanaan.AudioLib.url(Kanaan.AudioLib.lineCue(ep, 'feedback.transfer.retry'))) {
+          await Kanaan.Sound.say(ch.data.word, { cue: ch.data.cue, rate: 0.7 });
+          if (alive()) Kanaan.Sound.say(ep.feedback.transfer.retry, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'feedback.transfer.retry') });
+        } else Kanaan.Sound.say(msg, { who: 'kanaan' });
       }
     }
 

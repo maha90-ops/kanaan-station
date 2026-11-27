@@ -1,6 +1,6 @@
 # قائمة التسجيلات — محطة كنعان للحروف
 
-يُولَّد تلقائيًا: `node tools/recording_list.js` — 254 تسجيلًا.
+يُولَّد تلقائيًا: `node tools/recording_list.js` — 377 تسجيلًا.
 
 ضع كل ملف في `assets/audio/` بالمسار المكتوب هنا مع الامتداد (`.mp3` مثلًا)، ثم شغّل `python3 tools/build_audio_manifest.py`.
 أي ملف غير موجود يُنطق بالصوت الآلي — يمكن التسجيل تدريجيًا.
@@ -86,7 +86,7 @@
 | `words/نار` | نَار |
 | `words/هلال` | هِلَال |
 
-## جمل كنعان المشتركة (common/) — 20
+## جمل كنعان المشتركة (common/) — 23
 
 | اسم الملف | النص |
 |---|---|
@@ -105,13 +105,16 @@
 | `common/script.go` | هيا نستمع! |
 | `common/script.listenAfter` | هل سمعته؟ لنكتشف أيّ صوت هو. |
 | `common/script.listenIntro` | استمع جيدًا… هناك صوت يختبئ في محطة الحروف. |
+| `common/script.missionLater` | لا بأس! الأصوات حولنا في كل مكان، ستجدها. |
+| `common/script.onairStart` | حان وقت البث! سيسمع الجميع صوتك على محطة كنعان. |
 | `common/script.reveal` | أحسنت! لقد اكتشفت الحرف. |
+| `common/script.reviewAsk` | وصلتنا إشارة قديمة من أرشيف المحطة… أيّ حرف هذا؟ |
 | `common/script.signal` | اضغط على كل صوت لتسمعه، ثم اختر الصوت الذي سمعته. |
 | `common/script.welcome` | مرحبًا يا أصدقاء! أنا كنعان، مذيع محطة الحروف. وصلتني اليوم رسالة غامضة… لكن أحد الحروف اختفى منها! هل تساعدني في اكتشافه؟ |
 | `common/script.write2` | الآن أكمل الحرف. النقاط أقل هذه المرة. |
 | `common/script.write3` | والآن اكتب الحرف بنفسك. |
 
-## جمل خاصة بكل حرف (letters/) — 168
+## جمل خاصة بكل حرف (letters/) — 288
 
 | اسم الملف | النص |
 |---|---|
@@ -124,7 +127,17 @@
 | `letters/ain/meaningActivity.prompt` | أين تسمع صوت ع في كلمة عِنَب؟ |
 | `letters/ain/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ع. |
 | `letters/ain/script.built` | رائع! لقد بنيت كلمة عِنَب. |
+| `letters/ain/script.messageBack` | عاد الحرف ع إلى مكانه في الرسالة! |
+| `letters/ain/script.messageComplete` | عاد الحرف ع إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/ain/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ع. |
+| `letters/ain/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ع. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/ain/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ع؟ استمع وتأكّد. |
+| `letters/ain/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ع: |
+| `letters/ain/script.onairNoVoice` | نطق مذيعنا الصغير صوت ع بصوت واضح! |
+| `letters/ain/script.onairWord` | وهذه كلمة اليوم: عِنَب |
 | `letters/ain/script.revealHint` | انظر: رأس الحرف ع مفتوح مثل فم صغير. |
+| `letters/ain/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ع. |
+| `letters/ain/script.reviewRetry` | هذه إشارة الحرف ع. استمع إليها مرة أخرى. |
 | `letters/ain/script.speak` | الآن دورك! انطق صوت الحرف ع. |
 | `letters/ain/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية عشرة. |
 | `letters/ain/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ع. |
@@ -138,7 +151,17 @@
 | `letters/baa/meaningActivity.prompt` | أين تسمع صوت ب في كلمة بَيْت؟ |
 | `letters/baa/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ب. |
 | `letters/baa/script.built` | رائع! لقد بنيت كلمة بَيْت. |
+| `letters/baa/script.messageBack` | عاد الحرف ب إلى مكانه في الرسالة! |
+| `letters/baa/script.messageComplete` | عاد الحرف ب إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/baa/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ب. |
+| `letters/baa/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ب. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/baa/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ب؟ استمع وتأكّد. |
+| `letters/baa/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ب: |
+| `letters/baa/script.onairNoVoice` | نطق مذيعنا الصغير صوت ب بصوت واضح! |
+| `letters/baa/script.onairWord` | وهذه كلمة اليوم: بَيْت |
 | `letters/baa/script.revealHint` | انظر: تحت الحرف ب نقطة واحدة. |
+| `letters/baa/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ب. |
+| `letters/baa/script.reviewRetry` | هذه إشارة الحرف ب. استمع إليها مرة أخرى. |
 | `letters/baa/script.speak` | الآن دورك! انطق صوت الحرف ب. |
 | `letters/baa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الأولى. |
 | `letters/baa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ب. |
@@ -152,7 +175,17 @@
 | `letters/daal/meaningActivity.prompt` | أين تسمع صوت د في كلمة دِيك؟ |
 | `letters/daal/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت د. |
 | `letters/daal/script.built` | رائع! لقد بنيت كلمة دِيك. |
+| `letters/daal/script.messageBack` | عاد الحرف د إلى مكانه في الرسالة! |
+| `letters/daal/script.messageComplete` | عاد الحرف د إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/daal/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت د. |
+| `letters/daal/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت د. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/daal/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت د؟ استمع وتأكّد. |
+| `letters/daal/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف د: |
+| `letters/daal/script.onairNoVoice` | نطق مذيعنا الصغير صوت د بصوت واضح! |
+| `letters/daal/script.onairWord` | وهذه كلمة اليوم: دِيك |
 | `letters/daal/script.revealHint` | انظر: الحرف د بلا نقاط، ولا يتصل بالحرف الذي بعده. |
+| `letters/daal/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت د. |
+| `letters/daal/script.reviewRetry` | هذه إشارة الحرف د. استمع إليها مرة أخرى. |
 | `letters/daal/script.speak` | الآن دورك! انطق صوت الحرف د. |
 | `letters/daal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السابعة. |
 | `letters/daal/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت د. |
@@ -166,7 +199,17 @@
 | `letters/haa/meaningActivity.prompt` | أين تسمع صوت ح في كلمة حِصَان؟ |
 | `letters/haa/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ح. |
 | `letters/haa/script.built` | رائع! لقد بنيت كلمة حِصَان. |
+| `letters/haa/script.messageBack` | عاد الحرف ح إلى مكانه في الرسالة! |
+| `letters/haa/script.messageComplete` | عاد الحرف ح إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/haa/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ح. |
+| `letters/haa/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ح. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/haa/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ح؟ استمع وتأكّد. |
+| `letters/haa/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ح: |
+| `letters/haa/script.onairNoVoice` | نطق مذيعنا الصغير صوت ح بصوت واضح! |
+| `letters/haa/script.onairWord` | وهذه كلمة اليوم: حِصَان |
 | `letters/haa/script.revealHint` | انظر: الحرف ح بلا نقاط. |
+| `letters/haa/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ح. |
+| `letters/haa/script.reviewRetry` | هذه إشارة الحرف ح. استمع إليها مرة أخرى. |
 | `letters/haa/script.speak` | الآن دورك! انطق صوت الحرف ح. |
 | `letters/haa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الخامسة. |
 | `letters/haa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ح. |
@@ -180,7 +223,17 @@
 | `letters/jeem/meaningActivity.prompt` | أين تسمع صوت ج في كلمة جَمَل؟ |
 | `letters/jeem/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ج. |
 | `letters/jeem/script.built` | رائع! لقد بنيت كلمة جَمَل. |
+| `letters/jeem/script.messageBack` | عاد الحرف ج إلى مكانه في الرسالة! |
+| `letters/jeem/script.messageComplete` | عاد الحرف ج إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/jeem/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ج. |
+| `letters/jeem/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ج. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/jeem/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ج؟ استمع وتأكّد. |
+| `letters/jeem/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ج: |
+| `letters/jeem/script.onairNoVoice` | نطق مذيعنا الصغير صوت ج بصوت واضح! |
+| `letters/jeem/script.onairWord` | وهذه كلمة اليوم: جَمَل |
 | `letters/jeem/script.revealHint` | انظر: في بطن الحرف ج نقطة واحدة. |
+| `letters/jeem/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ج. |
+| `letters/jeem/script.reviewRetry` | هذه إشارة الحرف ج. استمع إليها مرة أخرى. |
 | `letters/jeem/script.speak` | الآن دورك! انطق صوت الحرف ج. |
 | `letters/jeem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الرابعة. |
 | `letters/jeem/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ج. |
@@ -194,7 +247,17 @@
 | `letters/khaa/meaningActivity.prompt` | أين تسمع صوت خ في كلمة خُبْز؟ |
 | `letters/khaa/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت خ. |
 | `letters/khaa/script.built` | رائع! لقد بنيت كلمة خُبْز. |
+| `letters/khaa/script.messageBack` | عاد الحرف خ إلى مكانه في الرسالة! |
+| `letters/khaa/script.messageComplete` | عاد الحرف خ إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/khaa/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت خ. |
+| `letters/khaa/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت خ. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/khaa/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت خ؟ استمع وتأكّد. |
+| `letters/khaa/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف خ: |
+| `letters/khaa/script.onairNoVoice` | نطق مذيعنا الصغير صوت خ بصوت واضح! |
+| `letters/khaa/script.onairWord` | وهذه كلمة اليوم: خُبْز |
 | `letters/khaa/script.revealHint` | انظر: فوق الحرف خ نقطة واحدة. |
+| `letters/khaa/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت خ. |
+| `letters/khaa/script.reviewRetry` | هذه إشارة الحرف خ. استمع إليها مرة أخرى. |
 | `letters/khaa/script.speak` | الآن دورك! انطق صوت الحرف خ. |
 | `letters/khaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة السادسة. |
 | `letters/khaa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت خ. |
@@ -208,7 +271,17 @@
 | `letters/meem/meaningActivity.prompt` | أين تسمع صوت م في كلمة مَوْز؟ |
 | `letters/meem/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت م. |
 | `letters/meem/script.built` | رائع! لقد بنيت كلمة مَوْز. |
+| `letters/meem/script.messageBack` | عاد الحرف م إلى مكانه في الرسالة! |
+| `letters/meem/script.messageComplete` | عاد الحرف م إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/meem/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت م. |
+| `letters/meem/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت م. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/meem/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت م؟ استمع وتأكّد. |
+| `letters/meem/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف م: |
+| `letters/meem/script.onairNoVoice` | نطق مذيعنا الصغير صوت م بصوت واضح! |
+| `letters/meem/script.onairWord` | وهذه كلمة اليوم: مَوْز |
 | `letters/meem/script.revealHint` | انظر: رأس الحرف م دائرة صغيرة، مثل فمك وهو مغلق. |
+| `letters/meem/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت م. |
+| `letters/meem/script.reviewRetry` | هذه إشارة الحرف م. استمع إليها مرة أخرى. |
 | `letters/meem/script.speak` | الآن دورك! انطق صوت الحرف م. |
 | `letters/meem/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة العاشرة. |
 | `letters/meem/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت م. |
@@ -222,7 +295,17 @@
 | `letters/sheen/meaningActivity.prompt` | أين تسمع صوت ش في كلمة شَمْس؟ |
 | `letters/sheen/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ش. |
 | `letters/sheen/script.built` | رائع! لقد بنيت كلمة شَمْس. |
+| `letters/sheen/script.messageBack` | عاد الحرف ش إلى مكانه في الرسالة! |
+| `letters/sheen/script.messageComplete` | عاد الحرف ش إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/sheen/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ش. |
+| `letters/sheen/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ش. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/sheen/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ش؟ استمع وتأكّد. |
+| `letters/sheen/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ش: |
+| `letters/sheen/script.onairNoVoice` | نطق مذيعنا الصغير صوت ش بصوت واضح! |
+| `letters/sheen/script.onairWord` | وهذه كلمة اليوم: شَمْس |
 | `letters/sheen/script.revealHint` | انظر: فوق الحرف ش ثلاث نقاط. |
+| `letters/sheen/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ش. |
+| `letters/sheen/script.reviewRetry` | هذه إشارة الحرف ش. استمع إليها مرة أخرى. |
 | `letters/sheen/script.speak` | الآن دورك! انطق صوت الحرف ش. |
 | `letters/sheen/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة التاسعة. |
 | `letters/sheen/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ش. |
@@ -236,7 +319,17 @@
 | `letters/taa/meaningActivity.prompt` | أين تسمع صوت ت في كلمة تِين؟ |
 | `letters/taa/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ت. |
 | `letters/taa/script.built` | رائع! لقد بنيت كلمة تِين. |
+| `letters/taa/script.messageBack` | عاد الحرف ت إلى مكانه في الرسالة! |
+| `letters/taa/script.messageComplete` | عاد الحرف ت إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/taa/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ت. |
+| `letters/taa/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ت. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/taa/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ت؟ استمع وتأكّد. |
+| `letters/taa/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ت: |
+| `letters/taa/script.onairNoVoice` | نطق مذيعنا الصغير صوت ت بصوت واضح! |
+| `letters/taa/script.onairWord` | وهذه كلمة اليوم: تِين |
 | `letters/taa/script.revealHint` | انظر: فوق الحرف ت نقطتان. |
+| `letters/taa/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ت. |
+| `letters/taa/script.reviewRetry` | هذه إشارة الحرف ت. استمع إليها مرة أخرى. |
 | `letters/taa/script.speak` | الآن دورك! انطق صوت الحرف ت. |
 | `letters/taa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثانية. |
 | `letters/taa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ت. |
@@ -250,7 +343,17 @@
 | `letters/thaa/meaningActivity.prompt` | أين تسمع صوت ث في كلمة ثَوْب؟ |
 | `letters/thaa/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ث. |
 | `letters/thaa/script.built` | رائع! لقد بنيت كلمة ثَوْب. |
+| `letters/thaa/script.messageBack` | عاد الحرف ث إلى مكانه في الرسالة! |
+| `letters/thaa/script.messageComplete` | عاد الحرف ث إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/thaa/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ث. |
+| `letters/thaa/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ث. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/thaa/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ث؟ استمع وتأكّد. |
+| `letters/thaa/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ث: |
+| `letters/thaa/script.onairNoVoice` | نطق مذيعنا الصغير صوت ث بصوت واضح! |
+| `letters/thaa/script.onairWord` | وهذه كلمة اليوم: ثَوْب |
 | `letters/thaa/script.revealHint` | انظر: فوق الحرف ث ثلاث نقاط. |
+| `letters/thaa/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ث. |
+| `letters/thaa/script.reviewRetry` | هذه إشارة الحرف ث. استمع إليها مرة أخرى. |
 | `letters/thaa/script.speak` | الآن دورك! انطق صوت الحرف ث. |
 | `letters/thaa/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثالثة. |
 | `letters/thaa/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ث. |
@@ -264,7 +367,17 @@
 | `letters/thaal/meaningActivity.prompt` | أين تسمع صوت ذ في كلمة ذُرَة؟ |
 | `letters/thaal/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ذ. |
 | `letters/thaal/script.built` | رائع! لقد بنيت كلمة ذُرَة. |
+| `letters/thaal/script.messageBack` | عاد الحرف ذ إلى مكانه في الرسالة! |
+| `letters/thaal/script.messageComplete` | عاد الحرف ذ إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/thaal/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ذ. |
+| `letters/thaal/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ذ. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/thaal/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ذ؟ استمع وتأكّد. |
+| `letters/thaal/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ذ: |
+| `letters/thaal/script.onairNoVoice` | نطق مذيعنا الصغير صوت ذ بصوت واضح! |
+| `letters/thaal/script.onairWord` | وهذه كلمة اليوم: ذُرَة |
 | `letters/thaal/script.revealHint` | انظر: فوق الحرف ذ نقطة واحدة. |
+| `letters/thaal/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ذ. |
+| `letters/thaal/script.reviewRetry` | هذه إشارة الحرف ذ. استمع إليها مرة أخرى. |
 | `letters/thaal/script.speak` | الآن دورك! انطق صوت الحرف ذ. |
 | `letters/thaal/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الثامنة. |
 | `letters/thaal/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ذ. |
@@ -278,7 +391,17 @@
 | `letters/zay/meaningActivity.prompt` | أين تسمع صوت ز في كلمة زَيْت؟ |
 | `letters/zay/script.build` | لنَبْنِ كلمة! رتّب الحروف لتبدأ الكلمة بصوت ز. |
 | `letters/zay/script.built` | رائع! لقد بنيت كلمة زَيْت. |
+| `letters/zay/script.messageBack` | عاد الحرف ز إلى مكانه في الرسالة! |
+| `letters/zay/script.messageComplete` | عاد الحرف ز إلى الرسالة… واكتملت الرسالة كلها! استمع إليها: |
+| `letters/zay/script.mission` | مهمتك حتى الرسالة القادمة: ابحث في بيتك عن شيء يبدأ بصوت ز. |
+| `letters/zay/script.missionAsk` | أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ز. هل وجدتَ شيئًا؟ قل اسمه! |
+| `letters/zay/script.missionSaved` | رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ز؟ استمع وتأكّد. |
+| `letters/zay/script.onairIntro` | معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ز: |
+| `letters/zay/script.onairNoVoice` | نطق مذيعنا الصغير صوت ز بصوت واضح! |
+| `letters/zay/script.onairWord` | وهذه كلمة اليوم: زَيْت |
 | `letters/zay/script.revealHint` | انظر: فوق الحرف ز نقطة واحدة. بدونها يصبح ر. |
+| `letters/zay/script.reviewCorrect` | أحسنت! ما زلتَ تتذكّر صوت ز. |
+| `letters/zay/script.reviewRetry` | هذه إشارة الحرف ز. استمع إليها مرة أخرى. |
 | `letters/zay/script.speak` | الآن دورك! انطق صوت الحرف ز. |
 | `letters/zay/script.success` | رائع يا مستكشف الحروف! لقد فككتَ الرسالة الحادية عشرة. |
 | `letters/zay/script.transfer` | وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ز. |

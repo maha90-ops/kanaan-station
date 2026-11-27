@@ -54,7 +54,7 @@ Kanaan.UI.registerScreen({
       node,
       onEnter() {
         Kanaan.Sound.sfx('built');
-        Kanaan.Sound.say(ep.script.success, { who: 'kanaan' });
+        Kanaan.Sound.say(ep.script.success, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(ep, 'script.success') });
       }
     };
   }

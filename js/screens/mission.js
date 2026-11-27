@@ -24,7 +24,7 @@ Kanaan.UI.registerScreen({
         el('div.row.row--center', null,
           button('لم أجد بعد', { variant: 'ghost', icon: '🔎', onClick: async () => {
             Kanaan.Progress.reportMission(prev.id, false);
-            await Kanaan.Host.say('لا بأس! الأصوات حولنا في كل مكان، ستجدها.');
+            await Kanaan.Host.say(prev.script.missionLater, { cue: Kanaan.AudioLib.lineCue(prev, 'script.missionLater') });
             if (alive()) next();
           } })));
     }
@@ -69,7 +69,7 @@ Kanaan.UI.registerScreen({
           url ? button('استمع لصوتك', { variant: 'secondary', icon: '▶', onClick: () => new Audio(url).play() }) : null,
           button('متابعة', { icon: '←', onClick: () => done(true) })));
       Kanaan.Sound.sfx('success');
-      Kanaan.Host.say(`رائع! حفظتُ اكتشافك في أرشيف المحطة. هل يبدأ بصوت ${prev.letter}؟ استمع وتأكّد.`);
+      Kanaan.Host.say(prev.script.missionSaved, { cue: Kanaan.AudioLib.lineCue(prev, 'script.missionSaved') });
     }
 
     ask();
@@ -82,7 +82,7 @@ Kanaan.UI.registerScreen({
 
     return {
       node,
-      onEnter() { Kanaan.Host.say(`أهلًا بعودتك! في الرسالة السابقة كانت مهمتك أن تبحث عن شيء يبدأ بصوت ${prev.letter}. هل وجدتَ شيئًا؟ قل اسمه!`); },
+      onEnter() { Kanaan.Host.say(prev.script.missionAsk, { cue: Kanaan.AudioLib.lineCue(prev, 'script.missionAsk') }); },
       cleanup() { if (rec) rec.stop(); if (url) URL.revokeObjectURL(url); }
     };
   }

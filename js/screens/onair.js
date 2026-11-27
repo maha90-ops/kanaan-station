@@ -20,14 +20,14 @@ Kanaan.UI.registerScreen({
       sign.classList.add('is-live');
       Kanaan.Sound.sfx('tune');
       await wait(600);
-      await Kanaan.Host.say(`معنا اليوم مذيع جديد في محطة كنعان! استمعوا إلى صوت الحرف ${ep.letter}:`);
+      await Kanaan.Host.say(ep.script.onairIntro, { cue: Kanaan.AudioLib.lineCue(ep, 'script.onairIntro') });
       if (!alive()) return;
       const had = await Kanaan.Archive.play(`voice:${ep.id}`);
       if (!alive()) return;
-      if (!had) await Kanaan.Host.say(`نطق مذيعنا الصغير صوت ${ep.letter} بصوت واضح!`);
-      await Kanaan.Host.say(`وهذه كلمة اليوم: ${ep.exampleWord.text}`);
+      if (!had) await Kanaan.Host.say(ep.script.onairNoVoice, { cue: Kanaan.AudioLib.lineCue(ep, 'script.onairNoVoice') });
+      await Kanaan.Host.say(ep.script.onairWord, { cue: Kanaan.AudioLib.lineCue(ep, 'script.onairWord') });
       if (!alive()) return;
-      await Kanaan.Sound.say(ep.exampleWord.text, { audio: ep.exampleWord.audio, rate: 0.75 });
+      await Kanaan.Sound.say(ep.exampleWord.text, { cue: ep.exampleWord.cue, rate: 0.75 });
       sign.classList.remove('is-live');
       Kanaan.Sound.sfx('built');
       Kanaan.Host.hide();
@@ -46,6 +46,6 @@ Kanaan.UI.registerScreen({
       el('h2.screen-title', { id: 'onair-title', tabindex: '-1' }, 'أنت مذيع اليوم!'),
       sign, actions, dialSlot);
 
-    return { node, onEnter() { Kanaan.Host.say('حان وقت البث! سيسمع الجميع صوتك على محطة كنعان.'); } };
+    return { node, onEnter() { Kanaan.Host.say(ep.script.onairStart, { cue: Kanaan.AudioLib.lineCue(ep, 'script.onairStart') }); } };
   }
 });

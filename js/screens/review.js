@@ -54,16 +54,16 @@ Kanaan.UI.registerScreen({
       right.querySelector('.choice-mark').textContent = '✔';
       if (ok) {
         Kanaan.Sound.sfx('success');
-        fbSlot.replaceChildren(feedback('success', `أحسنت! ما زلتَ تتذكّر صوت ${old.letter}.`));
-        await Kanaan.Sound.say(`أحسنت! ما زلتَ تتذكّر صوت ${old.letter}.`, { who: 'kanaan' });
+        fbSlot.replaceChildren(feedback('success', old.script.reviewCorrect));
+        await Kanaan.Sound.say(old.script.reviewCorrect, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(old, 'script.reviewCorrect') });
         await wait(400);
         if (alive()) next();
       } else {
         b.classList.add('is-tried');
         Kanaan.Sound.sfx('gentle');
-        const msg = `هذه إشارة الحرف ${old.letter}. استمع إليها مرة أخرى.`;
+        const msg = old.script.reviewRetry;
         fbSlot.replaceChildren(feedback('retry', msg));
-        await Kanaan.Sound.say(msg, { who: 'kanaan' });
+        await Kanaan.Sound.say(msg, { who: 'kanaan', cue: Kanaan.AudioLib.lineCue(old, 'script.reviewRetry') });
         if (!alive()) return;
         await play();
         after.replaceChildren(button('متابعة', { icon: '←', onClick: next }));
@@ -81,7 +81,7 @@ Kanaan.UI.registerScreen({
     return {
       node,
       async onEnter() {
-        await Kanaan.Host.say('وصلتنا إشارة قديمة من أرشيف المحطة… أيّ حرف هذا؟', { keep: false });
+        await Kanaan.Host.say(ep.script.reviewAsk, { cue: Kanaan.AudioLib.lineCue(ep, 'script.reviewAsk'), keep: false });
         if (alive()) play();
       },
       cleanup() { wave.destroy(); }
