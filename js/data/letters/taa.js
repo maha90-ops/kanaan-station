@@ -6,7 +6,8 @@ Kanaan.Letters.add({
     text: 'تِين',
     letters: ['ت', 'ي', 'ن'],
     scene: 'figs',
-    alt: 'طبق فيه ثمار تين بنفسجية'
+    image: 'assets/images/words/teen.webp',   // صورة حقيقية (تتقدّم على الرسمة)
+    alt: 'ثمار تين بنفسجية على غصن شجرة، إحداها مقسومة، وخلفها بيوت حجرية وشجرة زيتون وقبة الصخرة'
   },
   options: ['د', 'ت', 'ط'],
   transfer: [
