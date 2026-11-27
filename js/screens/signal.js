@@ -120,8 +120,11 @@ Kanaan.UI.registerScreen({
 
     return {
       node,
-      onEnter() {
-        // الصوت سُمع في «أستمع»؛ هنا تبدأ المقارنة مباشرة
+      async onEnter() {
+        // الصوت سُمع في «أستمع»؛ كنعان يسأل، ثم يشرح كيف نختار
+        Kanaan.Puppet.express('ask');
+        await Kanaan.Host.say(act.prompt, { cue: Kanaan.AudioLib.lineCue(ep, 'phonemeActivity.prompt') });
+        if (!alive()) return;
         Kanaan.Host.say(ep.script.signal, { cue: Kanaan.AudioLib.lineCue(ep, 'script.signal'), keep: false });
       },
       cleanup() { wave.destroy(); }
