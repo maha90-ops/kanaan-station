@@ -33,7 +33,7 @@ Kanaan.Panels = (function () {
     const eps = Kanaan.Episodes.list();
     const n = eps.filter((e) => Kanaan.Progress.isDone(e.id)).length;
     open('achievements', '🏆 إنجازاتي',
-      el('p.instruction', null, n ? `اكتشفتَ ${digits(n)} من ${digits(eps.length)} حروف. كل حرف صار محطة: استمع إليه وإلى صوتك.` : 'لم تكتشف أي حرف بعد. ابدأ الاستماع، وكل حرف تكتشفه يصير محطة هنا!'),
+      el('p.instruction', null, n ? `اكتشفتَ ${digits(n)} من ${digits(eps.length)} حروف. كل حرف صار محطة: استمع إليه، وإلى صوتك، وإلى الكلمة التي اكتشفتَها.` : 'لم تكتشف أي حرف بعد. ابدأ الاستماع، وكل حرف تكتشفه يصير محطة هنا!'),
       Kanaan.Dial.create().node);
   }
 

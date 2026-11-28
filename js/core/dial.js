@@ -1,7 +1,8 @@
 /**
  * لوحة الترددات — خريطة الحروف المكتشفة على مؤشر راديو.
  * كل حرف «محطة» بتردد. المحطة المكتشفة تضيء؛ الضغط عليها يشغّل:
- *   صوت الحرف (النموذج) ← صوت الطفل من الأرشيف ← الكلمة.
+ *   صوت الحرف (النموذج) ← صوت الطفل وهو ينطقه ← كلمة المحطة ←
+ *   الكلمة التي اكتشفها الطفل بنفسه في بيته (مهمة المحطة) إن سجّلها.
  * وظيفتها: مراجعة يختارها الطفل بنفسه + دليل مرئي على ما تعلّمه.
  */
 Kanaan.Dial = (function () {
@@ -38,9 +39,17 @@ Kanaan.Dial = (function () {
       now.textContent = `📻 ${freq(ep)} — محطة الحرف ${ep.letter}`;
       await Kanaan.UI.wait(500);
       await Kanaan.Sound.phoneme(ep.sound).done;
-      const hadVoice = await Kanaan.Archive.play(`voice:${ep.id}`);
-      if (hadVoice) now.textContent = `📻 ${freq(ep)} — صوتك وأنت تنطق ${ep.letter}`;
-      await Kanaan.Sound.say(ep.exampleWord.text, { audio: ep.exampleWord.audio, rate: 0.75 });
+      if (await Kanaan.Archive.get(`voice:${ep.id}`)) {
+        now.textContent = `🎙️ ${freq(ep)} — صوتك وأنت تنطق ${ep.letter}`;
+        await Kanaan.Archive.play(`voice:${ep.id}`);
+      }
+      now.textContent = `📻 ${freq(ep)} — كلمة المحطة: ${ep.exampleWord.text}`;
+      await Kanaan.Sound.say(ep.exampleWord.text, { cue: Kanaan.AudioLib.wordCue(ep.exampleWord.text), rate: 0.75 });
+      // اكتشاف الطفل نفسه: ما وجده في بيته يبدأ بهذا الصوت — من كلماته هو، لا من الدرس
+      if (!(await Kanaan.Archive.get(`mission:${ep.id}`))) { busy = false; return; }
+      now.textContent = `🔎 ${freq(ep)} — كلمة اكتشفتَها في بيتك تبدأ بصوت ${ep.letter}`;
+      await Kanaan.UI.wait(400);
+      await Kanaan.Archive.play(`mission:${ep.id}`);
       busy = false;
     }
 
