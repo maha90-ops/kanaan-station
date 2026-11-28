@@ -38,5 +38,13 @@
  "45": "common/script.discoverAsk",
  "46": "common/script.discoverRetry",
  "47": "common/script.nextAsk",
- "48": "common/script.allDone"
+ "48": "common/script.allDone",
+ "49": "common/script.formsIntro",
+ "50": "common/feedback.forms.retry",
+ "51": "common/feedback.forms.start",
+ "52": "common/feedback.forms.middle",
+ "53": "common/feedback.forms.end",
+ "54": "common/script.formsDone",
+ "55": "words/حبل",
+ "56": "words/كلب"
 }

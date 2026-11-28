@@ -24,5 +24,6 @@ Kanaan.Letters.add({
       [136, 86]
     ]
   },
-  revealHint: 'انظر: فوق الحرف ت نقطتان.'
+  revealHint: 'انظر: فوق الحرف ت نقطتان.',
+  shapes: [['تِين', 'start'], ['كِتَاب', 'middle'], ['بَيْت', 'end']]
 });

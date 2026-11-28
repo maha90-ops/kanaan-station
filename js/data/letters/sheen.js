@@ -14,5 +14,6 @@ Kanaan.Letters.add({
     ['سَمَك', false],
     ['شَاي', true]
   ],
-  revealHint: 'انظر: فوق الحرف ش ثلاث نقاط.'
+  revealHint: 'انظر: فوق الحرف ش ثلاث نقاط.',
+  shapes: [['شَمْس', 'start'], ['مِشْمِش', 'middle'], ['رِيش', 'end']]
 });

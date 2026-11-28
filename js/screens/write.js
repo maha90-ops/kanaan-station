@@ -261,7 +261,7 @@ Kanaan.UI.registerScreen({
         button('حاول مرة أخرى', { variant: 'secondary', icon: '↻', onClick: () => { clearInk(); fbSlot.replaceChildren(); tipSlot.textContent = ''; after.replaceChildren(); } }),
         level < 2
           ? button(`المستوى التالي: ${LEVELS[level + 1].label}`, { icon: '←', onClick: () => goLevel(level + 1) })
-          : button('أوظّف الحرف', { icon: '🎯', big: true, onClick: next }));
+          : button(ep.flow.includes('forms') ? 'الحرف في الكلمة' : 'أوظّف الحرف', { icon: ep.flow.includes('forms') ? '🔤' : '🎯', big: true, onClick: next }));
     }
 
     /* ---------- عرض توضيحي: كيف يُكتب الحرف ---------- */

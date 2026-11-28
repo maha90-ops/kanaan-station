@@ -770,3 +770,26 @@ mark.target { background: transparent; color: var(--amber-deep); text-decoration
 }
 
 .noscript { padding: 24px; text-align: center; }
+
+/* ---------- الحرف في الكلمة: أشكاله حسب موضعه ---------- */
+.forms-stage { display: grid; justify-items: center; gap: 6px; }
+.forms-word { margin: 0; font-family: var(--font-letter); font-size: clamp(3.6rem, 14vw, 5.6rem); font-weight: 700; color: var(--studio); line-height: 1.5; min-height: 1.5em; }
+.forms-word mark.target { text-underline-offset: 14px; }
+.forms-letter { color: var(--amber-deep); }
+.forms-count { margin: 0; color: var(--ink-soft); font-weight: 600; min-height: 1.4em; }
+.forms-board { display: flex; gap: 16px; justify-content: center; align-items: flex-start; margin-top: 10px; }
+.form-col { display: grid; justify-items: center; gap: 8px; min-width: 104px; }
+.form-card { min-width: 104px; height: 110px; padding: 0 12px; }
+.form-card .choice-glyph { font-size: 3.8rem; }
+.form-examples { display: grid; gap: 4px; justify-items: center; }
+.form-example { font-family: var(--font-letter); font-size: 1.9rem; font-weight: 700; color: var(--studio); line-height: 1.6; }
+.form-example mark.target { text-underline-offset: 7px; text-decoration-thickness: 3px; }
+@media (max-width: 430px) {
+  .forms-board { gap: 10px; }
+  .form-col, .form-card { min-width: 92px; }
+  .form-card { height: 96px; }
+  .form-card .choice-glyph { font-size: 3.2rem; }
+}
+.forms-board.is-done .form-card[disabled] { opacity: 1; cursor: default; }
+.forms-note:empty { display: none; }
+.forms-note { display: flex; justify-content: center; }

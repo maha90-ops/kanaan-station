@@ -1,6 +1,6 @@
 # قائمة التسجيلات — محطة كنعان للحروف
 
-يُولَّد تلقائيًا: `node tools/recording_list.js` — 381 تسجيلًا.
+يُولَّد تلقائيًا: `node tools/recording_list.js` — 388 تسجيلًا.
 
 ضع كل ملف في `assets/audio/` بالمسار المكتوب هنا مع الامتداد (`.mp3` مثلًا)، ثم شغّل `python3 tools/build_audio_manifest.py`.
 أي ملف غير موجود يُنطق بالصوت الآلي — يمكن التسجيل تدريجيًا.
@@ -86,12 +86,16 @@
 | `words/nar` | نَار |
 | `words/hlal` | هِلَال |
 
-## جمل كنعان المشتركة (common/) — 27
+## جمل كنعان المشتركة (common/) — 34
 
 | اسم الملف | النص |
 |---|---|
 | `common/feedback.discrimination.correct` | أحسنت! لقد ميّزت الصوت. |
 | `common/feedback.discrimination.retry` | استمع مرة أخرى وحاول. |
+| `common/feedback.forms.end` | صحيح! هذا شكله في آخر الكلمة. |
+| `common/feedback.forms.middle` | صحيح! هذا شكله في وسط الكلمة. |
+| `common/feedback.forms.retry` | انظر جيدًا: هل يتصل الحرف الملوّن بما قبله؟ وهل يتصل بما بعده؟ |
+| `common/feedback.forms.start` | صحيح! هذا شكله في أول الكلمة. |
 | `common/feedback.pronunciation.clear` | سمعتُ صوتك بوضوح! استمع لصوتك وقارنه بالنموذج. |
 | `common/feedback.pronunciation.close` | محاولة جميلة! استمع إلى النموذج وحاول مرة أخرى. |
 | `common/feedback.pronunciation.excellent` | رائع! نطقك واضح. |
@@ -105,6 +109,9 @@
 | `common/script.allDone` | أنهيتَ كل رسائل المحطة! أحسنت يا بطل. |
 | `common/script.discoverAsk` | هذا الصوت يُكتب بأحد هذه الحروف. استمع إلى التلميح، واختر الحرف. |
 | `common/script.discoverRetry` | انظر جيدًا إلى شكل الحرف ونقاطه، وحاول مرة أخرى. |
+| `common/script.formsDone` | رائع! عرفتَ أشكال الحرف في أول الكلمة ووسطها وآخرها. |
+| `common/script.formsIntro` | الحرف يغيّر شكله حسب مكانه في الكلمة. انظر إلى الحرف الملوّن، واختر شكله. |
+| `common/script.formsNonJoining` | لاحظ: هذا الحرف لا يتصل بما بعده، لذلك شكله في وسط الكلمة وآخرها واحد. |
 | `common/script.go` | هيا نستمع! |
 | `common/script.listenAfter` | هل سمعته؟ لنكتشف أيّ صوت هو. |
 | `common/script.listenIntro` | استمع جيدًا… هناك صوت يختبئ في محطة الحروف. |

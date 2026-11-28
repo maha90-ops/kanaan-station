@@ -17,7 +17,8 @@
  *     options: ['ت','ب','م'],                       // تمييز سمعي (أصوات)
  *     transfer: [['بَاب', true], ['مَاء', false], ['دَار', false]],
  *     writing: { strokes: ['M…'], dots: [[x,y]] },   // اختياري: بدونه يُتتبَّع شكل الخط نفسه
- *     revealHint: 'انظر: تحت الحرف ب نقطة واحدة.'
+ *     revealHint: 'انظر: تحت الحرف ب نقطة واحدة.',
+ *     shapes: [['بَيْت','start'], ['حَبْل','middle'], ['كَلْب','end']]  // أشكال الحرف في كلمات
  *   });
  */
 window.Kanaan = window.Kanaan || {};
@@ -25,7 +26,7 @@ window.Kanaan = window.Kanaan || {};
 Kanaan.Episodes = (function () {
   const store = new Map();
 
-  const FLOW = ['welcome', 'listen', 'signal', 'reveal', 'speak', 'build', 'write', 'position', 'transfer', 'success', 'onair', 'message'];
+  const FLOW = ['welcome', 'listen', 'signal', 'reveal', 'speak', 'build', 'write', 'forms', 'position', 'transfer', 'success', 'onair', 'message'];
   const POS_AR = { start: 'بداية', middle: 'وسط', end: 'نهاية' };
   const ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة', 'السابعة', 'الثامنة', 'التاسعة', 'العاشرة',
     'الحادية عشرة', 'الثانية عشرة', 'الثالثة عشرة', 'الرابعة عشرة', 'الخامسة عشرة', 'السادسة عشرة', 'السابعة عشرة',
@@ -64,6 +65,9 @@ Kanaan.Episodes = (function () {
         write: `لنكتب حرف ${L}! ابدأ من النقطة الخضراء واتبع السهم.`,
         write2: 'الآن أكمل الحرف. النقاط أقل هذه المرة.',
         write3: 'والآن اكتب الحرف بنفسك.',
+        formsIntro: 'الحرف يغيّر شكله حسب مكانه في الكلمة. انظر إلى الحرف الملوّن، واختر شكله.',
+        formsDone: 'رائع! عرفتَ أشكال الحرف في أول الكلمة ووسطها وآخرها.',
+        formsNonJoining: 'لاحظ: هذا الحرف لا يتصل بما بعده، لذلك شكله في وسط الكلمة وآخرها واحد.',
         transfer: `وصلتنا ثلاث قنوات جديدة! استمع إليها، واكتشف أيّ كلمة تبدأ بصوت ${L}.`,
         success: `رائع يا مستكشف الحروف! لقد فككتَ ${ep.title}.`,
         onairStart: 'حان وقت البث! سيسمع الجميع صوتك على محطة كنعان.',
@@ -95,6 +99,12 @@ Kanaan.Episodes = (function () {
         },
         build: { correct: `رائع! لقد بنيت كلمة ${W.text}.`, retry: `اقتربت! ابدأ بالحرف الذي صوته ${S}.` },
         writing: { excellent: 'ممتاز! لقد كتبت الحرف بنفسك.', traced: 'أحسنت! تتبّعت الحرف جيدًا.', retry: 'محاولة جميلة، لنحاول مرة أخرى.' },
+        forms: {
+          start: 'صحيح! هذا شكله في أول الكلمة.',
+          middle: 'صحيح! هذا شكله في وسط الكلمة.',
+          end: 'صحيح! هذا شكله في آخر الكلمة.',
+          retry: 'انظر جيدًا: هل يتصل الحرف الملوّن بما قبله؟ وهل يتصل بما بعده؟'
+        },
         meaning: { correct: `نعم! نسمع صوت ${L} في ${POS_AR[W.position]} كلمة ${W.text}.`, retry: `استمع إلى الكلمة ببطء… أين تسمع صوت ${L}؟` },
         transfer: { correct: `أحسنت! «${correct.word}» تبدأ بصوت ${L}.`, retry: 'هذه كلمة تبدأ بصوت آخر. استمع للقنوات مرة أخرى.' }
       },
@@ -106,6 +116,22 @@ Kanaan.Episodes = (function () {
         transfer: `أيّ قناة تبدأ كلمتها بصوت ${L}؟`
       }
     };
+  }
+
+  /** شكل الحرف في كلمة حسب موضعه: يُحسب من قواعد الاتصال لا يُكتب يدويًا،
+   *  فإن اختيرت كلمة لا يطابق شكلُ الحرف فيها موضعَه نُبّه إلى ذلك. */
+  function shapeItem(letter, word, pos) {
+    const chars = [...strip(word)];
+    const idx = pos === 'start' ? 0 : pos === 'end' ? chars.length - 1
+      : chars.findIndex((c, i) => c === letter && i > 0 && i < chars.length - 1);
+    const A = Kanaan.Alphabet, F = A.forms(letter);
+    if (idx < 0 || chars[idx] !== letter) { console.error('[Kanaan] الحرف ليس في موضعه:', letter, word, pos); return null; }
+    const prevJoins = idx > 0 && A.joinsNext(chars[idx - 1]);
+    const nextJoins = idx < chars.length - 1 && A.joinsNext(letter);
+    const form = prevJoins ? (nextJoins ? F.medial : F.final) : (nextJoins ? F.initial : F.isolated);
+    const expected = { start: F.initial, middle: F.medial, end: F.final }[pos];
+    if (form !== expected) console.error('[Kanaan] شكل الحرف لا يطابق موضعه:', word, pos, form);
+    return { word, plain: strip(word), cue: `words/${strip(word)}`, pos, index: idx, form };
   }
 
   /** بيانات الحرف المختصرة → حلقة كاملة */
@@ -148,11 +174,16 @@ Kanaan.Episodes = (function () {
       },
       wordBuildingActivity: { target: W.letters, tiles: src.tiles || scramble(W.letters) },
       writingActivity: { ...(src.writing || {}) },
+      formsActivity: (() => {
+        const F = Kanaan.Alphabet.forms(src.letter);
+        const items = (src.shapes || []).map(([w, p]) => shapeItem(src.letter, w, p)).filter(Boolean);
+        return { items, choices: [...new Set([F.initial, F.medial, F.final])], joins: Kanaan.Alphabet.joinsNext(src.letter) };
+      })(),
       meaningActivity: {},
       transferActivity: {
         channels: src.transfer.map(([word, starts]) => ({ word, startsWithTarget: starts, startSound: strip(word)[0], cue: `words/${strip(word)}` }))
       },
-      flow: FLOW
+      flow: src.shapes ? FLOW : FLOW.filter((s) => s !== 'forms')
     };
     const d = defaults(ep);
     ep.script = { ...d.script, revealHint: src.revealHint || '', ...(src.script || {}) };

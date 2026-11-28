@@ -28,6 +28,9 @@ const seq = [
   ['٤ أنطق', [line('script.speak'), ...['clear', 'excellent', 'close', 'retry'].map((k) => line(`feedback.pronunciation.${k}`))]],
   ['٥ أبني', [line('script.build'), word(ep.exampleWord.text), line('feedback.build.correct'), line('feedback.build.retry')]],
   ['٦ أكتب', [line('script.write'), line('script.write2'), line('script.write3'), line('feedback.writing.traced'), line('feedback.writing.excellent'), line('feedback.writing.retry')]],
+  ['٦ب الحرف في الكلمة', [line('script.formsIntro'), line('feedback.forms.retry'), line('feedback.forms.start'), line('feedback.forms.middle'), line('feedback.forms.end'), line('script.formsDone'),
+    ...(ep.formsActivity.joins ? [] : [line('script.formsNonJoining')]),
+    ...ep.formsActivity.items.map((it) => word(it.word, 'كلمة وحدها'))]],
   ['٧ أوظّف', [line('meaningActivity.prompt'), line('feedback.meaning.correct'), line('feedback.meaning.retry'), line('script.transfer'),
     ...ep.transferActivity.channels.map((c) => word(c.word, 'كلمة قناة — وحدها')), line('feedback.transfer.correct'), line('feedback.transfer.retry')]],
   ['النهاية', [line('script.success'), line('script.onairStart'), line('script.onairIntro'), line('script.onairNoVoice', 'تُسمع إن لم يسجّل الطفل صوته'), line('script.onairWord'), line('script.messageBack'), line('script.mission')]]

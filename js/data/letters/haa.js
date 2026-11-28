@@ -20,5 +20,6 @@ Kanaan.Letters.add({
     ],
     dots: []
   },
-  revealHint: 'انظر: الحرف ح بلا نقاط.'
+  revealHint: 'انظر: الحرف ح بلا نقاط.',
+  shapes: [['حِصَان', 'start'], ['بَحْر', 'middle'], ['مِلْح', 'end']]
 });
